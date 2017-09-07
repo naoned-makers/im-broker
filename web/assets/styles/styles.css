@@ -1,0 +1,18 @@
+body {
+    background-color: #202020;
+    /*width: 100%;
+	height: 100%;*/
+	overflow: hidden;
+}
+#touchzone {
+    display: block;
+	width: 20%;
+	height: 20%;
+	margin: auto;
+}
+#coords {
+    color: white;
+}
+.head {
+	opacity: 0.4;
+}

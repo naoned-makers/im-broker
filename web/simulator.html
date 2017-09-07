@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>IM-Simulator</title>
+    <link rel="stylesheet" type="text/css" href="styles/styles.css">
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+    <script src="scripts/mqtt.min.js"></script>
+    <script type="text/javascript">
+        var client = mqtt.connect('ws://'+window.location.hostname+':3000', { clientId: 'websimulator' });
+
+        //Emitted on successful (re)connection 
+        client.on('connect', function () {
+            console.log('connect');
+            client.subscribe('im/rpiheart/pwmbreakout/#');
+            document.getElementById("mqtton").style.color = "white";
+        })
+
+        //Emitted when the client goes offline.
+        client.on('offline', function () {
+            console.log('offline');
+            document.getElementById("mqtton").style.color = "black";
+        })
+        //Emitted after a disconnection.
+        client.on('close', function () {
+            console.log('close');
+            document.getElementById("mqtton").style.color = "red";
+        })
+        //Emitted when a reconnect starts.
+        client.on('reconnect', function () {
+            console.log('reconnect');
+            document.getElementById("mqtton").style.color = "orange";
+        })
+        //Emitted when the client cannot connect (i.e. connack rc != 0) or when a parsing error occurs.
+        client.on('error', function () {
+            console.log('error');
+            document.getElementById("mqtton").style.color = "gray";
+        })
+
+        //A new command as arrived
+        client.on('message', function (topic, strPlayload) {
+            var pwmChannel = topic.split("/")[3];
+            var pwmpulse = parseInt(strPlayload);
+            //call the matching entity domain
+            console.log(pwmChannel + "  " + pwmpulse);
+            document.getElementById(pwmChannel).value = pwmpulse;
+            document.getElementById(pwmChannel).className = 'newmessage';
+            window.setTimeout(function(){
+                document.getElementById(pwmChannel).className ='';   
+            },30);
+        })
+    </script>
+    <style>
+        input[type=range][orient=vertical] {
+            writing-mode: bt-lr;
+            /* IE */
+            -webkit-appearance: slider-vertical;
+            /* WebKit */
+            width: 8px;
+            height: 175px;
+            padding: 0 5px;
+        }
+
+        body {
+            color: white;
+        }
+        .newmessage {
+            -webkit-appearance: none !important;
+            visibility: hidden;
+            /*background:red;*/
+        }
+    </style>
+</head>
+
+<body>
+    <div id="mqtton" >MQTT Brocker</div><hr/>
+    head&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input id="2" name="head" type="range" min="165" max="450" />
+    <br/> <br/> rightarm
+    <input id="1" name="rightarm" type="range" orient="vertical" min="290" max="480" value="480" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;leftarm
+    <input id="0" name="leftarm" type="range" orient="vertical" min="170" max="350" value="170" /> 
+     <br/>
+     <br/>
+    <input id="4" name="righthand" type="range" min="240" max="440" value="360" />
+    <input id="5" name="lefthand" type="range" min="160" max="350" value="240" />
+    <br/> righthand&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lefthand
+    
+</body>
+
+</html>
