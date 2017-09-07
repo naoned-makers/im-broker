@@ -1,6 +1,6 @@
 {
-  "name": "ws-ironman2",
-  "version": "1.1.0-SNAPSHOT",
+  "name": "im-bowels",
+  "version": "1.0.0-SNAPSHOT",
   "description": "",
   "main": "service/broker.js",
   "scripts": {
@@ -8,24 +8,25 @@
     "brain": "node service/brain.js",
     "web": "node service/web.js",
     "cloud": "node service/cloud.js",
-    "broker": "node service/broker.js", 
-    "synapse": "python python/synapse.py",   
+    "broker": "node service/broker.js",
+    "synapse": "python python/synapse.py",
     "prod": "pm2 start ecosystem.config.js --env production",
     "dev": "pm2 start ecosystem.config.js",
     "delete": "pm2 delete all",
-    "flush": "pm2 flush",    
+    "flush": "pm2 flush",
     "watch": "echo \"TODO pm2 watch \" && exit 1"
   },
   "author": "dbatiot",
   "license": "ISC",
   "dependencies": {
-    "@reactivex/rxjs": "^5.4.3",
     "express": "^4.15.3",
+    "firebase": "^4.3.0",
     "ip": "^1.1.5",
     "lodash": "^4.17.4",
     "mosca": "^2.5.2",
     "mqtt": "^2.12.0",
     "path": "^0.12.7",
-    "pm2": "^2.6.1"
+    "pm2": "^2.6.1",
+    "rxjs": "^5.4.3"
   }
 }

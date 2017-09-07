@@ -3,9 +3,9 @@
 
 //for pmwservodriver
 sudo apt-get install python-smbus
+npm install -g pm2
 
 npm install
-
 
 *Start all applications*
 

@@ -17,16 +17,16 @@ def on_connect(client, userdata, flags_dict, resultcode):
     print "Synapse connected "+str(resultcode)
     # Subscribing in on_connect() means that if we lose the connection and
     # reconnect then subscriptions will be renewed.
-    client.subscribe("im/rpiheart/pwmbreakout/+")
+    client.subscribe("im/event/rpiheart/pwmbreakout/+")
 
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
-    print "Synapse Topic: ", msg.topic+" Message: "+str(msg.payload)
+    #print "Synapse Topic: ", msg.topic+" Message: "+str(msg.payload)
+    payload_json = json.loads(str(msg.payload))
     # useless check as we only suscribe to one topice for now
-    if msg.topic.startswith("im/rpiheart/pwmbreakout/"):
+    if msg.topic.startswith("im/event/rpiheart/pwmbreakout/"):
         channel = msg.topic.split("/")[-1]
-        pwm = int(str(msg.payload))
-        pwmservo.setPWM(channel,pwm);
+        pwmservo.setPWM(channel,payload_json['pulse']);
     else: # Nul
         print("Unknown message")
 
@@ -37,7 +37,6 @@ client.on_message = on_message
 
 #init pwm servo driver (i2c connection)
 pwmservo.init(mock)
-
 time.sleep(2)
 client.connect("localhost", 1883, 60)
 

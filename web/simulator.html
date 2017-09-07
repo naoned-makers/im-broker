@@ -13,7 +13,7 @@
         //Emitted on successful (re)connection 
         client.on('connect', function () {
             console.log('connect');
-            client.subscribe('im/rpiheart/pwmbreakout/#');
+            client.subscribe('im/event/rpiheart/pwmbreakout/#');
             document.getElementById("mqtton").style.color = "white";
         })
 
@@ -40,11 +40,11 @@
 
         //A new command as arrived
         client.on('message', function (topic, strPlayload) {
-            var pwmChannel = topic.split("/")[3];
-            var pwmpulse = parseInt(strPlayload);
+            var pwmChannel = topic.split("/")[4];
+            var evtPlayload = JSON.parse(strPlayload);
             //call the matching entity domain
-            console.log(pwmChannel + "  " + pwmpulse);
-            document.getElementById(pwmChannel).value = pwmpulse;
+            console.log(pwmChannel + "  " + evtPlayload.pulse);
+            document.getElementById(pwmChannel).value = +evtPlayload.pulse;
             document.getElementById(pwmChannel).className = 'newmessage';
             window.setTimeout(function(){
                 document.getElementById(pwmChannel).className ='';   
