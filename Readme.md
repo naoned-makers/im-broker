@@ -3,6 +3,10 @@
 
 //for pmwservodriver
 sudo apt-get install python-smbus
+sudo apt-get install libzmq-dev
+pip install paho-mqtt
+
+
 npm install -g pm2
 
 npm install

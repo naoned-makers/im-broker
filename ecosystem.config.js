@@ -10,6 +10,11 @@ module.exports = {
       script: 'service/web.js',
       merge_logs: true,
       log_date_format: 'YYYY-MM-DD HH:mm',
+      watch: ["service/web.js"],
+      ignore_watch : ["node_modules"],
+      watch_options: {
+        "followSymlinks": true
+      },
       env: {},
       env_production: {}
     },
@@ -19,6 +24,10 @@ module.exports = {
       script: 'service/broker.js',
       merge_logs: true,
       log_date_format: 'YYYY-MM-DD HH:mm',
+      watch: ["service/broker.js"],
+      watch_options: {
+        "followSymlinks": true
+      },
       env: {},
       env_production: {}
     },
@@ -29,6 +38,10 @@ module.exports = {
       script: 'service/brain.js',
       merge_logs: true,
       log_date_format: 'YYYY-MM-DD HH:mm',
+      watch: ["service/brains.js", "domain/*"],
+      watch_options: {
+        "followSymlinks": true
+      },
       env: {},
       env_production: {}
     }
@@ -39,6 +52,10 @@ module.exports = {
       script: 'service/cloud.js',
       merge_logs: true,
       log_date_format: 'YYYY-MM-DD HH:mm',
+      watch: ["service/cloud.js"],
+      watch_options: {
+        "followSymlinks": true
+      },
       env: {},
       env_production: {}
     }
@@ -52,6 +69,10 @@ module.exports = {
       restart_delay: 1000,
       merge_logs: true,
       log_date_format: 'YYYY-MM-DD HH:mm',
+      watch: ["python/synapse.py","python/pwmservo.py"],
+      watch_options: {
+        "followSymlinks": true
+      },
       env: {
         IM_SYNAPSE_MOCK: 'True'
       },
