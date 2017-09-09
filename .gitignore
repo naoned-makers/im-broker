@@ -57,5 +57,7 @@ typings/
 # dotenv environment variables file
 .env
 
+# secure content
 *key.env
+*firebase-adminsdk.json
 

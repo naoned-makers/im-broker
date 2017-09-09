@@ -1,14 +1,21 @@
 let mqtt = require('mqtt');
 let firebase = require("firebase");
+let admin = require("firebase-admin");
 
 /**************************************************************************************************************************
  * A internet gateway that synchronize one way between an internet firebase realtime database and local mqtt broker
  *      firebase path  <-->   mqtt topic url
  *************************************************************************************************************************/
 
+// Fetch the service account key JSON file contents
+var serviceAccount = require("../firebase-adminsdk.json");
 
 //FIREBASE config store un environnement variables
 let config = {
+    credential: admin.credential.cert(serviceAccount),
+    databaseAuthVariableOverride: {
+        uid: "im-cloud"
+    },
     apiKey: process.env.im_cloud_apiKey,
     authDomain: process.env.im_cloud_projectId + ".firebaseapp.com",
     databaseURL: "https://" + process.env.im_cloud_databaseName + ".firebaseio.com",
@@ -18,8 +25,8 @@ let config = {
 /*************************************************
 * Connect to firebase realtimedatabase
 ***********************************************/
-firebase.initializeApp(config);
-let defaultDatabase = firebase.database();
+admin.initializeApp(config);
+let defaultDatabase = admin.database();
 
 
 /************************************************
@@ -53,7 +60,7 @@ commandRef.on('child_added', function (entitySnapshot) {
         let commandType = entityCommandSnapshot.key;//move
         let playload = entityCommandSnapshot.val();// { origin: 'im-cloud' }
         let topic = "im/command/" + entity + "/" + commandType;
-        console.log('changed ' + topic, playload);
+        console.log('Firebase changed ' + topic, playload);
         client.publish(topic, JSON.stringify(playload), console.info); 0
     });
 });

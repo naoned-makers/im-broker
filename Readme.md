@@ -1,5 +1,5 @@
 
-**INSTAL**
+**Install**
 ```
 sudo apt-get install python-smbus
 sudo apt-get install libzmq-dev
@@ -7,6 +7,16 @@ sudo pip install paho-mqtt
 sudo npm install -g pm2
 npm install
 ```
+Set auth envrionnement variables
+```
+export im_cloud_apiKey=XXX
+export im_cloud_projectId=XXX
+export im_cloud_databaseName=XXX
+```
+Copy firebase service account file on root dir  xxx-firebase-adminsdk.json
+
+---
+
 **Start all applications**
 ```
 npm run prod
