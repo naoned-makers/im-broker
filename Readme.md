@@ -1,50 +1,66 @@
 
-*INSTAL*
-
-//for pmwservodriver
+**INSTAL**
+```
 sudo apt-get install python-smbus
 sudo apt-get install libzmq-dev
-pip install paho-mqtt
-
-
-npm install -g pm2
-
+sudo pip install paho-mqtt
+sudo npm install -g pm2
 npm install
-
-*Start all applications*
-
+```
+**Start all applications**
+```
 npm run prod
-
-*STARTUP script*
-
+```
+**Boot script**
+```
 pm2 startup
+```
+**Monitoring**
+```
+pm2 dashoboard
+```
+**LOGS**
+```
+pm2 logs
+pm2 flush
+```
 
-*Monitoring*
 
-pm2 monit
+# MQTT and Firebase **Command** topics
+##  im/command/\<entity\>/\<command>
+entity path|command|playload
+--- | --- | ---
+im/command/energy/|off/blue/loading| {'origin':'im-web'}
+im/command/eyes/|true/false| {'origin':'im-web'}
+im/command/head/|move| {'origin':'im-web'}
+im/command/leftarm/|move| {'origin':'im-web'}
+im/command/rightarm/|move| {'origin':'im-web'}
+im/command/lefthand/|move| {'origin':'im-web'}
+im/command/righthand/|move| {'origin':'im-web'}
+im/command/reset/|all|{'origin':'im-web'}
 
-Logs see: pm2 logs
-Logs flush: npm run clean
+Playload en json qui contient au moins un attribut origin
 
-Command topics im/command/<entity>/<command>
-* im/command/energy/        on | off | blue
-* im/command/eyes/        true | false
-* im/command/head/        move    |  set
-* im/command/leftarm/        move    | set
-* im/command/rightarm/        move    | set
-* im/command/lefthand/        move    | set
-* im/command/righthand/    move    | set
-* im/command/reset/        all
-playload en json qui contient au moins un attribut origin
-{'status':status,'origin':'im-web'}
+# MQTT and Firebase **Event** topics
+## im/event/\<network target>/\<hardware target>/\<optional detail>
 
-===============================
+Event path|playload
+--- | --- 
+im/event/rpiheart/pwmbreakout/2 | { pulse: \<pulsevalue> }
+im/event/rpiheart/pin/2| todefine       
+im/event/rpiheart/ledring|  todefine
 
-Domaine Model (execute validation and consequential logic)
-Aggregate:
+---
+---
+---
+
+# DDD Model
+Execute validation and consequential logic
+## Aggregate:
 
     im
-Entity(Objects that have a distinct identity that runs through time and different representations):
+## Entity
+Objects that have a distinct identity that runs through time and different representations:
 
     * eyes
     * energy
@@ -53,18 +69,8 @@ Entity(Objects that have a distinct identity that runs through time and differen
     * rightarm
     * lefthand
     * righthand
-ValueObject:
+## ValueObject:
 
     TODO
-===============================
 
-Event topics
-    *im/event/<rpiheart>/<pwmbreakout>/<channel>
-exemple 
-         im/event/rpiheart/pwmbreakout/2
-          { pulse: <pulsevalue> }
 
-*im/event/rpiheart/pin/2
-         todefine
-*im/event/rpiheart/ledring
-         todefine
