@@ -18,6 +18,7 @@ def init(mocks='False'):
 
 def setPWM(channel=0,servopulse = 0):
   print "PWM CHANNEL:"+str(channel)+" setPWM:"+str(servopulse)
-  if pwmservomock is False:
+  global pwmservomock  
+  if pwmservomock =='False':
     global pwmservodevice
-    pwmservodevice.setPWM(channel, 0, servopulse)
+    pwmservodevice.setPWM(int(channel), 0, int(servopulse))

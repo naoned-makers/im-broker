@@ -25,7 +25,7 @@ def on_message(client, userdata, msg):
     payload_json = json.loads(str(msg.payload))
     # useless check as we only suscribe to one topice for now
     if msg.topic.startswith("im/event/rpiheart/pwmbreakout/"):
-        channel = msg.topic.split("/")[-1]
+        channel = int(msg.topic.split("/")[-1])
         pwmservo.setPWM(channel,payload_json['pulse']);
     else: # Nul
         print("Unknown message")
@@ -37,7 +37,6 @@ client.on_message = on_message
 
 #init pwm servo driver (i2c connection)
 pwmservo.init(mock)
-time.sleep(2)
 client.connect("localhost", 1883, 60)
 
 # Blocking call that processes network traffic, dispatches callbacks and

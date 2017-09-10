@@ -73,6 +73,8 @@ module.exports = {
       watch_options: {
         "followSymlinks": true
       },
+      max_restarts:20,
+      restart_delay:2000,
       env: {
         IM_SYNAPSE_MOCK: 'True'
       },
