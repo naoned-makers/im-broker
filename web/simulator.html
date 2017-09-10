@@ -8,7 +8,7 @@
     <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
     <script src="scripts/mqtt.min.js"></script>
     <script type="text/javascript">
-        var client = mqtt.connect('ws://'+window.location.hostname+':3000', { clientId: 'websimulator' });
+        var client = mqtt.connect('ws://'+window.location.hostname+':3000', { clientId: 'websimulator_'+ Math.random().toString(16).substr(2, 8) });
 
         //Emitted on successful (re)connection 
         client.on('connect', function () {
