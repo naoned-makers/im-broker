@@ -2,6 +2,10 @@
 let Rx = require('rxjs/Rx');
 
 var entities = {};
+
+//Entity internal volatile current state
+entities.imState = {};
+
 /**
  * leftarm entity domain
  * execute validation and consequential logic
@@ -163,5 +167,25 @@ PWM CHANNEL:2 setPWM:450
         time.sleep(sleep)
         */
     }
+}
+
+/**
+* im aggregate domain
+* execute validation and consequential logic
+*/
+entities.imEntity = function (client, entityCommand, inPlayLoad) {
+
+    if (entityCommand == 'server') {
+        //update internal state
+        entities.imState.server=inPlayLoad;
+        client.publish("im/event/rpiheart/status",JSON.stringify(entities.imState),{retain:true});
+    }
+
+    if (entityCommand == 'clients') {
+        //update internal state
+        entities.imState.brokerClients=inPlayLoad.clients;
+        client.publish("im/event/rpiheart/status",JSON.stringify(entities.imState),{retain:true});
+    }
+
 }
 module.exports = entities;

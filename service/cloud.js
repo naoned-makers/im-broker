@@ -1,6 +1,7 @@
 let mqtt = require('mqtt');
 let firebase = require("firebase");
 let admin = require("firebase-admin");
+let os = require("os");
 
 /**************************************************************************************************************************
  * A internet gateway that synchronize one way between an internet firebase realtime database and local mqtt broker
@@ -32,15 +33,17 @@ let defaultDatabase = admin.database();
 /************************************************
 suscribe to mqtt event topics and update corresponding firebase event entry
 ***********************************************/
-let client = mqtt.connect('mqtt://localhost', { clientId: 'cloud' })
+let client = mqtt.connect('mqtt://localhost', { clientId: 'cloud_'+os.hostname() })
 client.on('connect', function () {
     //commnad topics look like  im/event/
-    client.subscribe('im/event/#')
+    client.subscribe('im/event/#');
 })
 //A new event as arrived
 client.on('message', function (topic, strPlayload) {
     let playLoad = JSON.parse(strPlayload);
-    //console.log(topic, playLoad);
+    //Firebase don't trigger event if there is no difference so we need to add a timestamp
+    if (!playLoad.ts) { playLoad.ts = Date.now();}
+
     //sync it to firebase
     defaultDatabase.ref(topic).set(playLoad).catch(function (error) {
         // Uh-oh, an error occurred!
@@ -61,6 +64,6 @@ commandRef.on('child_added', function (entitySnapshot) {
         let playload = entityCommandSnapshot.val();// { origin: 'im-cloud' }
         let topic = "im/command/" + entity + "/" + commandType;
         console.log('Firebase changed ' + topic, playload);
-        client.publish(topic, JSON.stringify(playload), console.info); 0
+        client.publish(topic, JSON.stringify(playload), console.log);
     });
 });

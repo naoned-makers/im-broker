@@ -7,7 +7,7 @@ import json
 import sys
 import os
 import time
-
+import socket
 
 #mock if they are almost one paramter
 mock = os.getenv('IM_SYNAPSE_MOCK', 'False')
@@ -31,7 +31,7 @@ def on_message(client, userdata, msg):
         print("Unknown message")
 
 
-client = mqtt.Client(client_id="synapse")
+client = mqtt.Client(client_id="synapse_"+socket.gethostname())
 client.on_connect = on_connect 
 client.on_message = on_message
 
