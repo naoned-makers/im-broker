@@ -64,7 +64,7 @@ entities.rightarmEntity = function (client, entityCommand, playLoad) {
  * head entity domain
  * execute validation and consequential logic
  */
-entities.headEntity = function (client, entityCommand, playLoad) {
+entities.headEntity = function (client, entityCommand, inPlayLoad) {
     //HITEC HS-5645MG 50Hz LEFT ARM
     const CHANNEL_HEAD = 2;
     const SERVO_MIN_HEAD = 165;//Min pulse length out of 4096 POSITION BASSE
@@ -80,6 +80,17 @@ entities.headEntity = function (client, entityCommand, playLoad) {
             .subscribe(function (pulseStrPlayload) {
                 client.publish("im/event/rpiheart/pwmbreakout/" + CHANNEL_HEAD, pulseStrPlayload);
             })
+    }
+    if (entityCommand == 'facetrackmove') {
+        //    /im/command/head/facetrackstart
+        //          {origin:'camera',face:'base64faceimage',absPosition:%}
+        //     /im/command/head/facetrackmove
+        //          {origin:'camera',absPosition:%}
+        //      /im/command/head/facetrackend
+        //          {origin:'camera'}
+        let currentPulse = SERVO_MIN_HEAD + inPlayLoad.absPosition*(SERVO_MAX_HEAD-SERVO_MIN_HEAD)/100;
+        pulseStrPlayload = JSON.stringify({ pulse: currentPulse });
+        client.publish("im/event/rpiheart/pwmbreakout/" + CHANNEL_HEAD, pulseStrPlayload);
     }
 }
 /**
