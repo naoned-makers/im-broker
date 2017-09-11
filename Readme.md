@@ -1,14 +1,14 @@
 
 **Install**
 ```
-sudo apt-get install python-smbus
-sudo apt-get install libzmq-dev
-sudo apt-get install python-pip python-dev build-essential 
+
+sudo apt-get install python-pip python-dev build-essential python-smbus libzmq-dev i2c-tools
 curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
 sudo apt-get install npm nodejs
 sudo npm install -g npm
-sudo pip install paho-mqtt
 sudo npm install -g pm2
+sudo pip install paho-mqtt
+sudo pip install adafruit-pca9685
 git clone   ... cd ...
 npm install
 ```
