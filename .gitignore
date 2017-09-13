@@ -61,3 +61,4 @@ typings/
 *key.env
 *firebase-adminsdk.json
 
+*.pyc
