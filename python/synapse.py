@@ -6,7 +6,6 @@ import pwmservo
 import json
 import sys
 import os
-import time
 import socket
 
 #mock if they are almost one paramter

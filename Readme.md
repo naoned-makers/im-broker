@@ -43,27 +43,31 @@ pm2 flush
 
 # MQTT and Firebase **Command** topics
 ##  im/command/\<entity\>/\<command>
-entity path|command|playload
+entity path|command|playload|comment
 --- | --- | ---
-im/command/energy/|off/blue/loading| {'origin':'im-web'}
-im/command/eyes/|true/false| {'origin':'im-web'}
-im/command/head/|move| {'origin':'im-web'}
-im/command/leftarm/|move| {'origin':'im-web'}
-im/command/rightarm/|move| {'origin':'im-web'}
-im/command/lefthand/|move| {'origin':'im-web'}
-im/command/righthand/|move| {'origin':'im-web'}
-im/command/reset/|all|{'origin':'im-web'}
+im/command/energy/|off/blue/loading| {origin:'im-*'}|TO_DEFINE
+im/command/eyes/|true/false| {origin:'im-*'}|TO_DEFINE
+im/command/head/|move| {origin:'im-*'}
+im/command/head/|facetrackmove| {origin:'im-*', absPosition: \<int absolute percent Position>}
+im/command/leftarm/|move| {origin:'im-*'}
+im/command/rightarm/|move| {origin:'im-*'}
+im/command/lefthand/|move| {origin:'im-*'}
+im/command/righthand/|move| {origin:'im-*'}
+im/command/im/|server| {origin:'im-*',ip:\<ip> ,hostname:\<hostname>, mqttPort:\<mqttPort>, wsPort:\<wsPort>,httpPort:\<httpPort>}
+im/command/im/|clients| {origin:'im-*', clients:[\< array broker client name>]}
+im/command/reset/|all|{'origin':'im-*'}|TODO
 
 Playload en json qui contient au moins un attribut origin
 
 # MQTT and Firebase **Event** topics
 ## im/event/\<network target>/\<hardware target>/\<optional detail>
 
-Event path|playload
+Event path|playload|comment
 --- | --- 
-im/event/rpiheart/pwmbreakout/2 | { pulse: \<pulsevalue> }
-im/event/rpiheart/pin/2| todefine       
-im/event/rpiheart/ledring|  todefine
+im/event/rpiheart/pwmbreakout/2 | { pulse: \< int pulse value > }
+im/event/rpiheart/status|{server:</json serverInfo>, brokerClients:[\< array broker client name>]}
+im/event/rpiheart/pin/2| TO_DEFINE|TO_DEFINE       
+im/event/rpiheart/ledring|loading|TO_DEFINE
 
 ---
 ---
