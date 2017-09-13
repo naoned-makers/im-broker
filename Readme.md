@@ -44,7 +44,7 @@ pm2 flush
 # MQTT and Firebase **Command** topics
 ##  im/command/\<entity\>/\<command>
 entity path|command|playload|comment
---- | --- | ---
+--- | --- | --- | ---
 im/command/energy/|off/blue/loading| {origin:'im-*'}|TO_DEFINE
 im/command/eyes/|true/false| {origin:'im-*'}|TO_DEFINE
 im/command/head/|move| {origin:'im-*'}
@@ -63,9 +63,9 @@ Playload en json qui contient au moins un attribut origin
 ## im/event/\<network target>/\<hardware target>/\<optional detail>
 
 Event path|playload|comment
---- | --- 
+--- | --- | ---
 im/event/rpiheart/pwmbreakout/2 | { pulse: \< int pulse value > }
-im/event/rpiheart/status|{server:</json serverInfo>, brokerClients:[\< array broker client name>]}
+im/event/rpiheart/status|{server:/<json serverInfo>, brokerClients:[\< array broker client name>]}
 im/event/rpiheart/pin/2| TO_DEFINE|TO_DEFINE       
 im/event/rpiheart/ledring|loading|TO_DEFINE
 
