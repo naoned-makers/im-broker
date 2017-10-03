@@ -1,4 +1,4 @@
-
+"use strict";
 let Rx = require('rxjs/Rx');
 
 var entities = {};
@@ -93,7 +93,7 @@ entities.headEntity = function (client, entityCommand, inPlayLoad) {
         //      /im/command/head/facetrackend
         //          {origin:'camera'}
         let currentPulse = SERVO_MIN_HEAD + inPlayLoad.absPosition*(SERVO_MAX_HEAD-SERVO_MIN_HEAD)/100;
-        pulseStrPlayload = JSON.stringify({ pulse: currentPulse });
+        let pulseStrPlayload = JSON.stringify({ pulse: currentPulse });
         client.publish("im/event/rpiheart/pwmbreakout/" + CHANNEL_HEAD, pulseStrPlayload);
     }
 }

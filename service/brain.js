@@ -1,4 +1,4 @@
-
+"use strict";
 let mqtt = require('mqtt');
 let os = require("os");
 let entities = require('../domain/entities.js'); //Domains Entity
@@ -32,5 +32,5 @@ client.on('message', function (topic, strPlayload) {
     } else {
         console.log('\x1b[36m%s\x1b[0m', "Entity domain not found");
     }
-
+    
 })

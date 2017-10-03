@@ -1,3 +1,4 @@
+"use strict";
 let mosca = require('mosca');
 let mqtt = require('mqtt');
 let ip = require("ip");
@@ -39,7 +40,7 @@ const HTTP_PORT = 8080;
 
 let server = new mosca.Server(moscaSettings);
 //Wire in memory persistence
-var db = new mosca.persistence.Memory();
+let db = new mosca.persistence.Memory();
 db.wire(server);
 
 

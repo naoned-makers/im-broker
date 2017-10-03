@@ -62,3 +62,4 @@ typings/
 *firebase-adminsdk.json
 
 *.pyc
+.vscode/launch.json

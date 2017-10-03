@@ -1,7 +1,10 @@
+"use strict";
 let mqtt = require('mqtt');
 let firebase = require("firebase");
 let admin = require("firebase-admin");
 let os = require("os");
+
+
 
 /**************************************************************************************************************************
  * A internet gateway that synchronize one way between an internet firebase realtime database and local mqtt broker
@@ -9,10 +12,10 @@ let os = require("os");
  *************************************************************************************************************************/
 
 // Fetch the service account key JSON file contents
-var serviceAccount = require("../firebase-adminsdk.json");
+const serviceAccount = require("../firebase-adminsdk.json");
 
 //FIREBASE config store un environnement variables
-let config = {
+const config = {
     credential: admin.credential.cert(serviceAccount),
     databaseAuthVariableOverride: {
         uid: "im-cloud"
@@ -26,30 +29,66 @@ let config = {
 /*************************************************
 * Connect to firebase realtimedatabase
 ***********************************************/
-admin.initializeApp(config);
+let app = admin.initializeApp(config);
 let defaultDatabase = admin.database();
 
-
-/************************************************
-suscribe to mqtt event topics and update corresponding firebase event entry
+/*************************************************
+* watch real firebase connected status
+* and connect to mqtt when it is up
+*
+*   Need to inform both part of the connection state
+*   firebase Side: FS_ON/OFF
+*   mqtt side: MS_ON/OFF
+*
 ***********************************************/
-let client = mqtt.connect('mqtt://localhost', { clientId: 'cloud_'+os.hostname() })
-client.on('connect', function () {
-    //commnad topics look like  im/event/
-    client.subscribe('im/event/#');
-})
-//A new event as arrived
-client.on('message', function (topic, strPlayload) {
-    let playLoad = JSON.parse(strPlayload);
-    //Firebase don't trigger event if there is no difference so we need to add a timestamp
-    if (!playLoad.ts) { playLoad.ts = Date.now();}
-
-    //sync it to firebase
-    defaultDatabase.ref(topic).set(playLoad).catch(function (error) {
-        // Uh-oh, an error occurred!
-        console.log('error', error);
-    });
-})
+var client;
+defaultDatabase.ref(".info/connected").on("value", function (snap) {
+    console.log(defaultDatabase.INTERNAL.isWebSocketsAvailable);
+    if (snap.val() === true) {
+        console.log('Firebase connected');
+        //MS_OFF will: a message that will sent by the broker automatically when the client disconnect badly. The format is:
+        client = mqtt.connect('mqtt://localhost', {
+            clientId: 'cloud_' + os.hostname(),
+            will: {
+                topic: "im/command/im/cloud",
+                payload: JSON.stringify({ origin: 'cloud', online: false })
+            }
+        });
+        /************************************************
+        suscribe to mqtt event topics and update corresponding firebase event entry
+        ***********************************************/
+        client.on('connect', function () {
+            //only event topics usefull on internet
+            //FS_ON Retain status will be soon handle 
+            client.subscribe('im/event/rpiheart/status');
+            //MS_ON We are ONLINE !!
+            client.publish("im/command/im/cloud", JSON.stringify({ origin: 'cloud', online: true }));
+        })
+        //A new mqtt event need to be sync to firebase
+        client.on('message', function (topic, strPlayload) {
+            let playLoad = JSON.parse(strPlayload);
+            //Firebase don't trigger event if there is no difference so we need to add a timestamp
+            if (!playLoad.ts) { playLoad.ts = Date.now(); }
+            //sync it to firebase
+            defaultDatabase.ref(topic).set(playLoad).catch(function (error) {
+                // Uh-oh, an error occurred!
+                console.log('error', error);
+            });
+        })
+        /**
+         * FS_OFF Direct change the rpiheart/status on firebase server side whitout brain uses
+         */
+        defaultDatabase.ref('im/event/rpiheart/status/offline').onDisconnect().set(firebase.database.ServerValue.TIMESTAMP);
+        defaultDatabase.ref('im/event/rpiheart/status/offline').remove();
+    } else {
+        console.log('Firebase not connected');
+        //Send cloud offline command information
+        if (client) {
+            client.end();
+            client = undefined;
+        }
+    }
+});
 
 /**********************************************
 *watch firebase command entry, and publish them as a mqtt one in the corresponding item
@@ -64,6 +103,17 @@ commandRef.on('child_added', function (entitySnapshot) {
         let playload = entityCommandSnapshot.val();// { origin: 'im-cloud' }
         let topic = "im/command/" + entity + "/" + commandType;
         console.log('Firebase changed ' + topic, playload);
-        client.publish(topic, JSON.stringify(playload), console.log);
+        if (client) {
+            client.publish(topic, JSON.stringify(playload));
+        } else {
+            console.log('But mqtt broket is not connected ');
+        }
+
     });
+});
+
+process.on('SIGINT', function() {
+    console.log('cloud shutdown');
+    defaultDatabase.goOffline();
+    process.exit(0);
 });

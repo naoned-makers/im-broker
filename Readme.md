@@ -56,6 +56,9 @@ im/command/righthand/|move| {origin:'im-*'}
 im/command/im/|server| {origin:'im-*',ip:\<ip> ,hostname:\<hostname>, mqttPort:\<mqttPort>, wsPort:\<wsPort>,httpPort:\<httpPort>}
 im/command/im/|clients| {origin:'im-*', clients:[\< array broker client name>]}
 im/command/reset/|all|{'origin':'im-*'}|TODO
+im/command/chat/|listenstart|{'origin':'im-*'}
+im/command/chat/|request|{'origin':'im-*','text':'la question'}
+im/command/chat/|response|{'origin':'im-*','text':'la reponse du bot'}
 
 Playload en json qui contient au moins un attribut origin
 
@@ -68,6 +71,7 @@ im/event/rpiheart/pwmbreakout/2 | { pulse: \< int pulse value > }
 im/event/rpiheart/status|{server:/<json serverInfo>, brokerClients:[\< array broker client name>]}
 im/event/rpiheart/pin/2| TO_DEFINE|TO_DEFINE       
 im/event/rpiheart/ledring|loading|TO_DEFINE
+im/event/ia/chat/message|TODO
 
 ---
 ---

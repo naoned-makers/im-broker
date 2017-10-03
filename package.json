@@ -2,7 +2,7 @@
   "name": "im-bowels",
   "version": "1.0.0-SNAPSHOT",
   "description": "",
-  "main": "service/broker.js",
+  "main": "service/cloud.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "brain": "node service/brain.js",
@@ -12,6 +12,7 @@
     "synapse": "python python/synapse.py",
     "prod": "pm2 start ecosystem.config.js --env production",
     "dev": "pm2 start ecosystem.config.js",
+    "camera": "pm2 start --name camera --restart-delay 2000 --execute-command ../im-camera/src/main.py --interpreter-args '-u' --log-date-format 'YYYY-MM-DD HH:mm' --merge-logs -- -d",
     "delete": "pm2 delete all",
     "flush": "pm2 flush",
     "watch": "echo \"TODO pm2 watch \" && exit 1"
