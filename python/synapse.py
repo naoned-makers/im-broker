@@ -30,7 +30,7 @@ def on_message(client, userdata, msg):
     if msg.topic.startswith("im/event/rpiheart/ledring/"):
         animation = msg.topic.split("/")[-1]
         speed = payload_json['speed']
-        repeat = payload_json['repeat']
+        repeat = int(payload_json['repeat'])
         red = payload_json['red']
         green = payload_json['green']
         blue = payload_json['blue']
@@ -39,7 +39,7 @@ def on_message(client, userdata, msg):
             neoring = neo.Neo(0, speed, repeat, red, green, blue)
             neoring.go()
         if (animation == 'off') :
-            nering = neo.Neo(1, speed, repeat, red, green, blue)
+            neoring = neo.Neo(1, speed, repeat, red, green, blue)
             neoring.go()
         if (animation == 'beat') :
             neoring= neo.Neo(2, speed, repeat, red, green, blue)
