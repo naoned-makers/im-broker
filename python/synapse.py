@@ -2,7 +2,7 @@
 # coding=UTF-8
 
 import paho.mqtt.client as mqtt
-import pwmservo
+import pwmservo as pwm
 import json
 import sys
 import os
@@ -35,7 +35,7 @@ client.on_connect = on_connect
 client.on_message = on_message
 
 #init pwm servo driver (i2c connection)
-pwmservo.init(mock)
+pwmservo = pwm.PwmServo(mock)
 client.connect("localhost", 1883, 60)
 
 # Blocking call that processes network traffic, dispatches callbacks and

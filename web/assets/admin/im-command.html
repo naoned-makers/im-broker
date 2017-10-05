@@ -1,0 +1,58 @@
+<link rel="import" href="https://polygit.org/components/polymer/polymer-element.html">
+<link rel="import" href="https://polygit.org/components/paper-button/paper-button.html">
+
+<dom-module id="im-command">
+
+  <template>
+    <paper-button raised id="myButton">[[label]]</paper-button>
+  </template>
+
+  <script>
+    // Define the class for a new element called im-command
+    class ImCommand extends Polymer.Element {
+      static get is() { return "im-command"; }
+      constructor() {
+        super();
+        //this.textContent = "I'm a custom-element.";
+      }
+      // configure owner property
+      static get properties() {
+        return {
+          label: {
+            type: String,
+            value: "label",
+          },
+          topic: {
+            type: String,
+            value: "topic",
+          },
+          payload: {
+            type: String,
+            value: "payload",
+          }
+        };
+      }
+
+      ready() {
+        super.ready();
+        this.$.myButton.addEventListener('click', e => {this._handleClick(e)});
+      }
+
+      _handleClick() {
+        let strPayLoad = "{\"origin\":\"im-admin\"" + this.payload + " }";
+        console.log(this.topic,strPayLoad);
+        client.publish("im/command/"+this.topic,strPayLoad);
+        return true;
+      }
+    }
+    //topic="head/move" payload=""
+    // Register the new element with the browser
+    customElements.define(ImCommand.is, ImCommand);
+  </script>
+</dom-module>
+
+
+
+
+
+</script>

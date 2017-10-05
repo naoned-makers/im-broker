@@ -32,7 +32,7 @@ pm2 startup
 ```
 **Monitoring**
 ```
-pm2 dashoboard
+pm2 dash
 ```
 **LOGS**
 ```
@@ -45,8 +45,9 @@ pm2 flush
 ##  im/command/\<entity\>/\<command>
 entity path|command|playload|comment
 --- | --- | --- | ---
-im/command/energy/|off/blue/loading| {origin:'im-*'}|TO_DEFINE
-im/command/eyes/|true/false| {origin:'im-*'}|TO_DEFINE
+im/command/energy/|loading/pulse| {origin:'im-*'}|TO_DEFINE
+im/command/eyes/|on/off| {origin:'im-*'}|
+im/command/eyes/|color| {origin:'im-*',rgba:'FFFFFFFF'}|
 im/command/head/|move| {origin:'im-*'}
 im/command/head/|facetrackmove| {origin:'im-*', absPosition: \<int absolute percent Position>}
 im/command/leftarm/|move| {origin:'im-*'}

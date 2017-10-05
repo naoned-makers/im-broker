@@ -1,0 +1,75 @@
+<link rel="import" href="https://polygit.org/components/polymer/polymer-element.html">
+
+<dom-module id="im-subscribe">
+
+  <template>
+    <style>
+
+    </style>
+    <div style$="overflow-y:auto;height:[[height]];width:100%;background-color: #DDDDDD">
+      <b>[[topic]]</b> [[payload]]
+    </div>
+  </template>
+
+  <script>
+    // Define the class for a new element called im-command
+    class ImSubscribe extends Polymer.Element {
+      static get is() { return "im-subscribe"; }
+      constructor() {
+        super();
+        this._connectListener = this._handleConnect.bind(this);
+        this._messageListener = this._handleMessage.bind(this);
+        //this.textContent = "I'm a custom-element.";
+      }
+      // configure owner property
+      static get properties() {
+        return {
+          filter: {
+            type: String,
+            reflectToAttribute: true,
+          },
+          height: {
+            type: String,
+            reflectToAttribute: true,
+            value: "",
+          },
+          payload: {
+            type: Object
+          },
+          topic: {
+            type: String
+          }
+        };
+      }
+      connectedCallback() {
+        super.connectedCallback();
+        window.addEventListener('mqttconnect', this._connectListener);
+      }
+      disconnectedCallback() {
+        super.disconnectedCallback();
+        window.removeEventListener('mqttconnect', this._connectListener);
+      }
+      _handleConnect(e) {
+        e.detail.subscribe(this.filter);
+        e.detail.on('message', this._messageListener);
+      }
+      _handleMessage(mTopic, mStrPlayload) {
+        let filterRegExp =  this.filter.replace(new RegExp('\/', 'g'), '\\/').replace(new RegExp('#', 'g'), '(\\w+)');//+"/";
+        //console.log(topicFilter, mTopic)
+        let found = mTopic.match(filterRegExp);
+        if (found) {
+          console.log(mTopic, JSON.parse(mStrPlayload));
+          this.topic=mTopic;
+          this.payload = mStrPlayload;
+        }
+      }
+    }
+    customElements.define(ImSubscribe.is, ImSubscribe);
+  </script>
+</dom-module>
+
+
+
+
+
+</script>

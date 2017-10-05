@@ -22,7 +22,7 @@ app.get('/simulator', function (req, res, next) {
 });
 app.get('/admin', function (req, res, next) {
     //console.log('arrivé sur la page...');
-    res.sendFile(path.join(__dirname + '/../web/index.html'));
+    res.sendFile(path.join(__dirname + '/../web/admin.html'));
 });
 server.listen(HTTP_PORT);
 console.log('\x1b[35m%s\x1b[0m',"web server is up on "+ip.address()+":8080");

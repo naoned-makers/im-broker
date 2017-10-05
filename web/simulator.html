@@ -14,7 +14,7 @@
         client.on('connect', function () {
             console.log('connect');
             client.subscribe('im/event/rpiheart/pwmbreakout/#');
-            document.getElementById("mqtton").style.color = "white";
+            document.getElementById("mqtton").style.color = "green";
         })
 
         //Emitted when the client goes offline.
@@ -75,6 +75,10 @@
 
 <body>
     <div id="mqtton" >MQTT Brocker</div><hr/>
+    eyes RGB 
+    <input id="10" name="eyesR" type="range" orient="vertical" style="height:50px" min="0" max="4096" value="0" />
+    <input id="11" name="eyesG" type="range" orient="vertical" style="height:50px" min="0" max="4096" value="0" />
+    <input id="12" name="eyesB" type="range"orient="vertical"  style="height:50px" min="0" max="4096" value="0" /><br/>
     head&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input id="2" name="head" type="range" min="165" max="450" />
     <br/> <br/> rightarm
     <input id="1" name="rightarm" type="range" orient="vertical" min="290" max="480" value="480" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;leftarm

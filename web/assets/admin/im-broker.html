@@ -1,0 +1,73 @@
+<link rel="import" href="https://polygit.org/components/polymer/polymer-element.html">
+<link rel="import" href="https://polygit.org/components/iron-icons/iron-icons.html">
+<dom-module id="im-broker">
+
+    <template>
+        MQTT Status:
+        <iron-icon icon="[[status]]"></iron-icon>
+    </template>
+
+    <script>
+        // Define the class for a new element called im-command
+        class ImBroker extends Polymer.Element {
+            static get is() { return "im-broker"; }
+            constructor() {
+                super();
+            }
+            // configure owner property
+            static get properties() {
+                return {
+                    status: {
+                        type: String,
+                        value: "help",
+                        notify: true
+                    }
+                };
+            }
+            publish(){
+                console.log('publish'+client);
+            }
+            // Element class can define custom element reactions
+            connectedCallback() {
+                super.connectedCallback();
+                /**
+                    PARTIE MQTT sur WEBSOCKET
+                */
+                var client = mqtt.connect('ws://' + window.location.hostname + ':3000', { clientId: 'webadmin_' + Math.random().toString(16).substr(2, 8) });
+                window.client = client;
+                var curBroker = this;
+                //Emitted on successful (re)connection 
+                client.on('connect', function () {
+                    curBroker.status = 'swap-horiz';
+                    curBroker.dispatchEvent(new CustomEvent('mqttconnect',{bubbles: true, composed: true, detail:this}));
+                })
+                //Emitted when the client goes offline.
+                client.on('offline', function () {
+                    console.log('offline');
+                    //this.dispatchEvent(new CustomEvent('connect'));
+                    curBroker.status = 'clear';
+
+                })
+                //Emitted after a disconnection.    document.getElementById("legosvg").getSVGDocument().getElementById("energy").querySelector("circle").setAttribute("fill", "gray"); 
+                client.on('close', function () {
+                    console.log('close');
+                    curBroker.status = 'clear';
+
+                })
+                //Emitted when a reconnect starts.
+                client.on('reconnect', function () {
+                    console.log('reconnect');
+                    curBroker.status = 'hourglass-empty';
+
+                })
+                //Emitted when the client cannot connect (i.e. connack rc != 0) or when a parsing error occurs.
+                client.on('error', function () {
+                    console.log('error');
+                    curBroker.status = 'bug-report';
+
+                })
+            }
+        }
+        customElements.define(ImBroker.is, ImBroker);
+    </script>
+</dom-module>

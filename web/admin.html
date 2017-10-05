@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
+    <script src="https://polygit.org/components/webcomponentsjs/webcomponents-loader.js"></script>
+    <link rel="import" href="https://polygit.org/components/paper-swatch-picker/paper-swatch-picker.html">
+    <link rel="import" href="https://polygit.org/components/paper-slider/paper-slider.html">
+    <script src="mqtt.min.js"></script>
+    <link rel="import" href="im-command.html">
+    <link rel="import" href="im-broker.html">
+    <link rel="import" href="im-subscribe.html">
+    <script>
+        window.addEventListener('WebComponentsReady', function () {
+            document.querySelector('#eyeColor').addEventListener('color-changed', fcEyesColor);
+            document.querySelector('#faceTrack').addEventListener('change', fcFaceTrack);
+        });
+
+
+        function fcEyesColor() {
+            let value = document.querySelector('#eyeColor').color;
+            console.log('eyeColor',value.substr(1)+'ff');
+            var payLoad = { origin: 'im-admin', rgba: value.substr(1)+'ff' }
+            client.publish("im/command/eyes/color", JSON.stringify(payLoad));
+        }
+        function fcFaceTrack() {
+            let value = document.querySelector('#faceTrack').value
+            console.log('fcFaceTrack', value);
+            var payLoad = { origin: 'im-admin', absPosition: value }
+            client.publish("im/command/head/facetrackmove", JSON.stringify(payLoad));
+        }
+    </script>
+</head>
+
+<body>
+    <div id="container">
+        <im-broker id="imBroker" status="help"></im-broker>
+        <hr/>
+        <im-command topic="eyes/on" payload="" label="eyesOn"></im-command>
+        <im-command topic="eyes/off" payload="" label="eyseOff"></im-command>
+        <paper-swatch-picker id="eyeColor"></paper-swatch-picker><br/>
+        <im-command topic="head/move" payload="" label="head"></im-command>
+        <paper-slider id="faceTrack" min="0" value="50" max="100" pin step="5"></paper-slider><br/>
+        <im-command topic="head/move" payload="" label="PLASTRON_LOAD"></im-command>
+        <im-command topic="head/move" payload="" label="PLASTRON_PULSE"></im-command><br/>
+        <im-command topic="rightarm/move" payload="" label="rightarm"></im-command>
+        <im-command topic="leftarm/move" payload="" label="leftarm"></im-command><br/>
+        <im-command topic="righthand/move" payload="" label="righthand"></im-command>
+        <im-command topic="lefthand/move" payload="" label="Healefthand"></im-command>
+        <hr/>
+        Last Command: <im-subscribe filter="im/command/#" height=""></im-subscribe>
+        Status: <im-subscribe filter="im/event/rpiheart/status" height="100px"></im-subscribe>
+        <hr/>
+        <a href="../" target="command">Local web command</a><hr/>
+        <a href="../simulator" target="simulator">Local web simulator</a><hr/>
+        <a href="https://app.keymetrics.io/#/r/8km0ccrcentc7o5" target="supervisor">Pm2 supervisor</a><hr/>
+        <a href="https://www.dataplicity.com" target="dataplicity">Dataplicity</a><hr/>
+    </div>
+</body>
+
+</html>

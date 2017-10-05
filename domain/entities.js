@@ -132,6 +132,38 @@ entities.lefthandEntity = function (client, entityCommand, playLoad) {
         */
     }
 }
+
+/**
+* eyes entity domain
+* execute validation and consequential logic
+*/
+entities.eyesEntity = function (client, entityCommand, inPlayLoad) {
+    // HITEC HS-5645MG 50Hz LEFT ARM
+    const LED_RED_CHANNEL = 10;
+    const LED_GREEN_CHANNEL = 11;
+    const LED_BLUE_CHANNEL = 12;
+    const PWM_MIN = 0;  // Min pulse length out of 4096 POSITION BASSE
+    const PWM_MAX = 4096;  // Max pulse length out of 4096 POSITION HAUTE
+    if (entityCommand == 'TODO_PLUG_on') {
+        let pulse=PWM_MAX;
+        client.publish("im/event/rpiheart/pwmbreakout/" + LED_RED_CHANNEL, JSON.stringify({ pulse: 300 }));
+        client.publish("im/event/rpiheart/pwmbreakout/" + LED_GREEN_CHANNEL, JSON.stringify({ pulse: 300 }));
+        client.publish("im/event/rpiheart/pwmbreakout/" + LED_BLUE_CHANNEL, JSON.stringify({ pulse: 3000 }));
+    }else if (entityCommand == 'TODO_PLUG_off') {
+        let pulse=PWM_MIN;
+        client.publish("im/event/rpiheart/pwmbreakout/" + LED_RED_CHANNEL, JSON.stringify({ pulse: pulse }));
+        client.publish("im/event/rpiheart/pwmbreakout/" + LED_GREEN_CHANNEL, JSON.stringify({ pulse: pulse }));
+        client.publish("im/event/rpiheart/pwmbreakout/" + LED_BLUE_CHANNEL, JSON.stringify({ pulse: pulse }));
+    }else if (entityCommand == 'TODO_PLUG_color') {
+        let a = parseInt(inPlayLoad.rgba.substr(6,2), 16)/256;
+        let r = Math.round(parseInt(inPlayLoad.rgba.substr(0,2), 16)/256*4096*a);
+        let g = Math.round(parseInt(inPlayLoad.rgba.substr(2,2), 16)/256*4096*a);
+        let b = Math.round(parseInt(inPlayLoad.rgba.substr(4,2), 16)/256*4096*a);
+        client.publish("im/event/rpiheart/pwmbreakout/" + LED_RED_CHANNEL, JSON.stringify({ pulse: r }));
+        client.publish("im/event/rpiheart/pwmbreakout/" + LED_GREEN_CHANNEL, JSON.stringify({ pulse: g }));
+        client.publish("im/event/rpiheart/pwmbreakout/" + LED_BLUE_CHANNEL, JSON.stringify({ pulse: b }));
+    }
+}
 /**
 * righthand entity domain
 * execute validation and consequential logic
