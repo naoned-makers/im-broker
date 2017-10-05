@@ -139,9 +139,9 @@ entities.lefthandEntity = function (client, entityCommand, playLoad) {
 */
 entities.eyesEntity = function (client, entityCommand, inPlayLoad) {
     // HITEC HS-5645MG 50Hz LEFT ARM
-    const LED_RED_CHANNEL = 10;
-    const LED_GREEN_CHANNEL = 11;
-    const LED_BLUE_CHANNEL = 12;
+    const LED_RED_CHANNEL = 5;
+    const LED_GREEN_CHANNEL = 7;
+    const LED_BLUE_CHANNEL = 6;
     const PWM_MIN = 0;  // Min pulse length out of 4096 POSITION BASSE
     const PWM_MAX = 4096;  // Max pulse length out of 4096 POSITION HAUTE
     if (entityCommand == 'on') {
