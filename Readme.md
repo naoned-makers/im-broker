@@ -2,13 +2,15 @@
 **Install**
 ```
 
-sudo apt-get install python-pip python-dev build-essential python-smbus libzmq-dev i2c-tools
+sudo apt-get install python-pip python-dev build-essential python-smbus libzmq-dev i2c-tools  git scons swig
+
 curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
 sudo apt-get install npm nodejs
 sudo npm install -g npm
 sudo npm install -g pm2
 sudo pip install paho-mqtt
 sudo pip install adafruit-pca9685
+sudo pip install rpi_ws281x
 git clone   ... cd ...
 npm install
 ```
@@ -45,7 +47,7 @@ pm2 flush
 ##  im/command/\<entity\>/\<command>
 entity path|command|playload|comment
 --- | --- | --- | ---
-im/command/energy/|loading/pulse| {origin:'im-*'}|TO_DEFINE
+im/command/energy/|off/on/beat/chase| {origin:'im-*', speed:\<ms>, repeat:\<nb>, rgb:FFFFFF}|
 im/command/eyes/|on/off| {origin:'im-*'}|
 im/command/eyes/|color| {origin:'im-*',rgba:'FFFFFFFF'}|
 im/command/head/|move| {origin:'im-*'}
@@ -56,7 +58,7 @@ im/command/lefthand/|move| {origin:'im-*'}
 im/command/righthand/|move| {origin:'im-*'}
 im/command/im/|server| {origin:'im-*',ip:\<ip> ,hostname:\<hostname>, mqttPort:\<mqttPort>, wsPort:\<wsPort>,httpPort:\<httpPort>}
 im/command/im/|clients| {origin:'im-*', clients:[\< array broker client name>]}
-im/command/reset/|all|{'origin':'im-*'}|TODO
+im/command/im/|reset|{'origin':'im-*'}|
 im/command/chat/|listenstart|{'origin':'im-*'}
 im/command/chat/|request|{'origin':'im-*','text':'la question'}
 im/command/chat/|response|{'origin':'im-*','text':'la reponse du bot'}
@@ -69,10 +71,9 @@ Playload en json qui contient au moins un attribut origin
 Event path|playload|comment
 --- | --- | ---
 im/event/rpiheart/pwmbreakout/2 | { pulse: \< int pulse value > }
-im/event/rpiheart/status|{server:/<json serverInfo>, brokerClients:[\< array broker client name>]}
-im/event/rpiheart/pin/2| TO_DEFINE|TO_DEFINE       
-im/event/rpiheart/ledring|loading|TO_DEFINE
-im/event/ia/chat/message|TODO
+im/event/rpiheart/status|{server:/<json serverInfo>, brokerClients:[\< array broker client name>]}      
+im/event/rpiheart/ledring|off/on/beat/chase| {speed:\<ms>, repeat:\<nb>, rgb:FFFFFF}
+im/event/ia/chat/message|TO_DEFINE
 
 ---
 ---

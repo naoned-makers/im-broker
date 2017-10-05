@@ -144,17 +144,17 @@ entities.eyesEntity = function (client, entityCommand, inPlayLoad) {
     const LED_BLUE_CHANNEL = 12;
     const PWM_MIN = 0;  // Min pulse length out of 4096 POSITION BASSE
     const PWM_MAX = 4096;  // Max pulse length out of 4096 POSITION HAUTE
-    if (entityCommand == 'TODO_PLUG_on') {
+    if (entityCommand == 'on') {
         let pulse=PWM_MAX;
         client.publish("im/event/rpiheart/pwmbreakout/" + LED_RED_CHANNEL, JSON.stringify({ pulse: 300 }));
         client.publish("im/event/rpiheart/pwmbreakout/" + LED_GREEN_CHANNEL, JSON.stringify({ pulse: 300 }));
         client.publish("im/event/rpiheart/pwmbreakout/" + LED_BLUE_CHANNEL, JSON.stringify({ pulse: 3000 }));
-    }else if (entityCommand == 'TODO_PLUG_off') {
+    }else if (entityCommand == 'off') {
         let pulse=PWM_MIN;
         client.publish("im/event/rpiheart/pwmbreakout/" + LED_RED_CHANNEL, JSON.stringify({ pulse: pulse }));
         client.publish("im/event/rpiheart/pwmbreakout/" + LED_GREEN_CHANNEL, JSON.stringify({ pulse: pulse }));
         client.publish("im/event/rpiheart/pwmbreakout/" + LED_BLUE_CHANNEL, JSON.stringify({ pulse: pulse }));
-    }else if (entityCommand == 'TODO_PLUG_color') {
+    }else if (entityCommand == 'color') {
         let a = parseInt(inPlayLoad.rgba.substr(6,2), 16)/256;
         let r = Math.round(parseInt(inPlayLoad.rgba.substr(0,2), 16)/256*4096*a);
         let g = Math.round(parseInt(inPlayLoad.rgba.substr(2,2), 16)/256*4096*a);
@@ -218,6 +218,34 @@ entities.imEntity = function (client, entityCommand, inPlayLoad) {
         entities.imState.brokerClients=inPlayLoad.clients;
         client.publish("im/event/rpiheart/status",JSON.stringify(entities.imState),{retain:true});
     }
+    if (entityCommand == 'reset') {
+        client.publish("im/event/rpiheart/pwmbreakout/reset","");
+        //client.publish("im/event/rpiheart/ring/off","");
+    }
 
 }
+/**
+* im aggregate domain
+* execute validation and consequential logic
+*/
+entities.energyEntity = function (client, entityCommand, inPlayLoad) {
+
+        let evtPayLoad = inPlayLoad;
+        evtPayLoad.red=parseInt(inPlayLoad.rgb.substr(0,2), 16)
+        evtPayLoad.green=parseInt(inPlayLoad.rgb.substr(2,2), 16)
+        evtPayLoad.blue=parseInt(inPlayLoad.rgb.substr(4,2), 16)
+        evtPayLoad.speed = inPlayLoad.speed/1000.0;
+        delete evtPayLoad.origin;
+        delete evtPayLoad.rgb;
+
+        if (entityCommand == 'on') {
+            client.publish("im/event/rpiheart/ledring/on",JSON.stringify(evtPayLoad));
+        }else if (entityCommand == 'off') {
+            client.publish("im/event/rpiheart/ledring/off",JSON.stringify(evtPayLoad));
+        }else if (entityCommand == 'beat') {
+            client.publish("im/event/rpiheart/ledring/beat",JSON.stringify(evtPayLoad));
+        }else if (entityCommand == 'chase') {
+            client.publish("im/event/rpiheart/ledring/chase",JSON.stringify(evtPayLoad));
+        }
+    }
 module.exports = entities;

@@ -42,12 +42,17 @@
         <paper-swatch-picker id="eyeColor"></paper-swatch-picker><br/>
         <im-command topic="head/move" payload="" label="head"></im-command>
         <paper-slider id="faceTrack" min="0" value="50" max="100" pin step="5"></paper-slider><br/>
-        <im-command topic="head/move" payload="" label="PLASTRON_LOAD"></im-command>
-        <im-command topic="head/move" payload="" label="PLASTRON_PULSE"></im-command><br/>
+        <im-command topic="energy/off"   payload=",&quot;speed&quot;:&quot;20&quot;,  &quot;repeat&quot;:&quot;20&quot;, &quot;rgb&quot;:&quot;2222FF&quot;  " label="ledring off"></im-command>
+        <im-command topic="energy/on"    payload=",&quot;speed&quot;:&quot;20&quot;,  &quot;repeat&quot;:&quot;20&quot;, &quot;rgb&quot;:&quot;2222FF&quot;  " label="ledring on"></im-command>
+        <im-command topic="energy/beat"  payload=",&quot;speed&quot;:&quot;20&quot;,  &quot;repeat&quot;:&quot;20&quot;, &quot;rgb&quot;:&quot;2222FF&quot;  " label="ledring beat"></im-command>
+        <im-command topic="energy/chase" payload=",&quot;speed&quot;:&quot;20&quot;,  &quot;repeat&quot;:&quot;20&quot;, &quot;rgb&quot;:&quot;2222FF&quot;  " label="ledring chase"></im-command>
+        <br/>
         <im-command topic="rightarm/move" payload="" label="rightarm"></im-command>
         <im-command topic="leftarm/move" payload="" label="leftarm"></im-command><br/>
         <im-command topic="righthand/move" payload="" label="righthand"></im-command>
         <im-command topic="lefthand/move" payload="" label="Healefthand"></im-command>
+        <hr/>
+        <im-command topic="im/reset" payload="" label="reset"></im-command>
         <hr/>
         Last Command: <im-subscribe filter="im/command/#" height=""></im-subscribe>
         Status: <im-subscribe filter="im/event/rpiheart/status" height="100px"></im-subscribe>
