@@ -62,25 +62,49 @@ module.exports = {
     ,
     // python hardware-gateway
     {
-      name: 'synapse',
+      name: 'pwmhat',
       //interpreter:'/usr/bin/python'
       interpreter_args:'-u',
-      script: 'python/synapse.py',
+      script: 'python/pwmhat.py',
       restart_delay: 1000,
       merge_logs: true,
       log_date_format: 'YYYY-MM-DD HH:mm',
-      watch: ["python/synapse.py","python/pwmservo.py"],
+      watch: ["python/pwmhat.py"],
       watch_options: {
         "followSymlinks": true
       },
       max_restarts:20,
       restart_delay:2000,
       env: {
-        IM_SYNAPSE_MOCK: 'True'
+        IM_PWMHAT_MOCK: 'True'
       },
       // Environment variables injected when starting with --env production
       env_production: {
-        IM_SYNAPSE_MOCK: 'False'
+        IM_PWMHAT_MOCK: 'False'
+      }
+    }
+    ,
+    // python hardware-gateway
+    {
+      name: 'neopixel',
+      //interpreter:'/usr/bin/python'
+      interpreter_args:'-u',
+      script: 'python/neopixel.py',
+      restart_delay: 1000,
+      merge_logs: true,
+      log_date_format: 'YYYY-MM-DD HH:mm',
+      watch: ["python/neopixel.py"],
+      watch_options: {
+        "followSymlinks": true
+      },
+      max_restarts:20,
+      restart_delay:2000,
+      env: {
+        IM_NEOPIXEL_MOCK: 'True'
+      },
+      // Environment variables injected when starting with --env production
+      env_production: {
+        IM_NEOPIXEL_MOCK: 'False'
       }
     }
   ]

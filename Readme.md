@@ -70,9 +70,9 @@ Playload en json qui contient au moins un attribut origin
 
 Event path|playload|comment
 --- | --- | ---
-im/event/rpiheart/pwmbreakout/2 | { pulse: \< int pulse value > }
+im/event/rpiheart/pwmhat/2 | { pulse: \< int pulse value > }
 im/event/rpiheart/status|{server:/<json serverInfo>, brokerClients:[\< array broker client name>]}      
-im/event/rpiheart/ledring|off/on/beat/chase| {speed:\<ms>, repeat:\<nb>, rgb:FFFFFF}
+im/event/rpiheart/neopixel|off/on/beat/chase| {speed:\<ms>, repeat:\<nb>, rgb:FFFFFF}
 im/event/ia/chat/message|TO_DEFINE
 
 ---

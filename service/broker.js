@@ -3,6 +3,7 @@ let mosca = require('mosca');
 let mqtt = require('mqtt');
 let ip = require("ip");
 let os = require("os");
+let mdns = require('mdns');
 
 /**
  * Démare un broker mqtt sur le port standard 1883
@@ -43,10 +44,31 @@ let server = new mosca.Server(moscaSettings);
 let db = new mosca.persistence.Memory();
 db.wire(server);
 
-
-
 server.on('ready', function () {
     console.log('\x1b[35m%s\x1b[0m', "brocker is up on " + ip.address());
+
+    var txt_record = {name: 'im-broker'};
+    let serviceType = mdns.makeServiceType({name: 'mqtt', protocol: 'tcp', subtypes: ['im-broker']});
+    let ad = mdns.createAdvertisement(serviceType, 1883,{txtRecord: txt_record});
+    ad.start();
+
+/*
+    var sequence = [
+        mdns.rst.DNSServiceResolve(),
+        'DNSServiceGetAddrInfo' in mdns.dns_sd ? mdns.rst.DNSServiceGetAddrInfo() : mdns.rst.getaddrinfo({families:[4]}),
+        mdns.rst.makeAddressesUnique()
+    ];
+
+    var browser = mdns.createBrowser(mdns.tcp('mqtt'), {resolverSequence: sequence});
+    browser.on('serviceUp', function(service) {
+      console.log("service up: ", service);
+    });
+    browser.on('serviceDown', function(service) {
+      console.log("service down: ", service);
+    });
+    browser.start();
+*/
+
     publishServerInfo();
 });
 

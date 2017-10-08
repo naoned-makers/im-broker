@@ -34,7 +34,7 @@
 </head>
 
 <body>
-    <div id="container">
+    <div id="container" style="width:400px;display: inline-block;">
         <im-broker id="imBroker" status="help"></im-broker>
         <hr/>
         <im-command topic="eyes/on" payload="" label="eyesOn"></im-command>
@@ -54,14 +54,14 @@
         <hr/>
         <im-command topic="im/reset" payload="" label="reset"></im-command>
         <hr/>
-        Last Command: <im-subscribe filter="im/command/#" height=""></im-subscribe>
-        Status: <im-subscribe filter="im/event/rpiheart/status" height="100px"></im-subscribe>
+        Last Command: <im-subscribe filter="im/command/#" height="" width="400px"></im-subscribe>
+        Status: <im-subscribe filter="im/event/rpiheart/status" height="100px" width="400px"></im-subscribe>
         <hr/>
-        <a href="../" target="command">Local web command</a><hr/>
-        <a href="../simulator" target="simulator">Local web simulator</a><hr/>
-        <a href="https://app.keymetrics.io/#/r/8km0ccrcentc7o5" target="supervisor">Pm2 supervisor</a><hr/>
-        <a href="https://www.dataplicity.com" target="dataplicity">Dataplicity</a><hr/>
+        <a href="../" target="command">Local web command</a>&nbsp;&nbsp;<a href="../simulator" target="simulator">Local web simulator</a><hr/>
+        <a href="https://app.keymetrics.io/#/r/8km0ccrcentc7o5" target="supervisor">Pm2 supervisor</a>&nbsp;&nbsp;<a href="https://www.dataplicity.com" target="dataplicity">Dataplicity</a><hr/>
     </div>
+    <iframe src="../simulator" width="400px" height="450px" style="display: inline-block;vertical-align:top"></iframe>
+    <iframe src="../" width="400px" height="600px" style="display: inline-block;vertical-align:top"></iframe>
 </body>
 
 </html>

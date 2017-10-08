@@ -24,7 +24,7 @@ entities.leftarmEntity = function (client, entityCommand, playLoad) {
         var moves = Rx.Observable.from([SERVO_MIN_LEFT_ARM, SERVO_MIDDLE_LEFT_ARM, SERVO_MAX_LEFT_ARM, SERVO_MIN_LEFT_ARM]);
         Rx.Observable.zip(cadence, moves, (s1, s2) => s2).map((pulse) => JSON.stringify({ pulse: pulse }))
             .subscribe(function (pulseStrPlayload) {
-                client.publish("im/event/rpiheart/pwmbreakout/" + CHANNEL_LEFT_ARM, pulseStrPlayload);
+                client.publish("im/event/rpiheart/pwmhat/" + CHANNEL_LEFT_ARM, pulseStrPlayload);
             })
     }
 }
@@ -46,7 +46,7 @@ entities.rightarmEntity = function (client, entityCommand, playLoad) {
         var moves = Rx.Observable.from([SERVO_MIN_RIGHT_ARM, SERVO_MIDDLE_RIGHT_ARM, SERVO_MAX_RIGHT_ARM, SERVO_MIN_RIGHT_ARM]);
         Rx.Observable.zip(cadence, moves, (s1, s2) => s2).map((pulse) => JSON.stringify({ pulse: pulse }))
             .subscribe(function (pulseStrPlayload) {
-                client.publish("im/event/rpiheart/pwmbreakout/" + CHANNEL_RIGHT_ARM, pulseStrPlayload);
+                client.publish("im/event/rpiheart/pwmhat/" + CHANNEL_RIGHT_ARM, pulseStrPlayload);
             })
         /** 
         # TODO   pwm.setPWM(CHANNEL_RIGHT_ARM, 0, SERVO_MIN_RIGHT_ARM)
@@ -82,7 +82,7 @@ entities.headEntity = function (client, entityCommand, inPlayLoad) {
         var moves = Rx.Observable.from([SERVO_MIDDLE_HEAD, SERVO_MAX_HEAD, SERVO_MIN_HEAD, SERVO_MIDDLE_HEAD]);
         Rx.Observable.zip(cadence, moves, (s1, s2) => s2).map((pulse) => JSON.stringify({ pulse: pulse }))
             .subscribe(function (pulseStrPlayload) {
-                client.publish("im/event/rpiheart/pwmbreakout/" + CHANNEL_HEAD, pulseStrPlayload);
+                client.publish("im/event/rpiheart/pwmhat/" + CHANNEL_HEAD, pulseStrPlayload);
             })
     }
     if (entityCommand == 'facetrackmove') {
@@ -94,7 +94,7 @@ entities.headEntity = function (client, entityCommand, inPlayLoad) {
         //          {origin:'camera'}
         let currentPulse = SERVO_MIN_HEAD + inPlayLoad.absPosition*(SERVO_MAX_HEAD-SERVO_MIN_HEAD)/100;
         let pulseStrPlayload = JSON.stringify({ pulse: currentPulse });
-        client.publish("im/event/rpiheart/pwmbreakout/" + CHANNEL_HEAD, pulseStrPlayload);
+        client.publish("im/event/rpiheart/pwmhat/" + CHANNEL_HEAD, pulseStrPlayload);
     }
 }
 /**
@@ -114,7 +114,7 @@ entities.lefthandEntity = function (client, entityCommand, playLoad) {
         var moves = Rx.Observable.from([SERVO_MIDDLE_LEFT_HAND, SERVO_MAX_LEFT_HAND, SERVO_MIN_LEFT_HAND, SERVO_MIDDLE_LEFT_HAND]);
         Rx.Observable.zip(cadence, moves, (s1, s2) => s2).map((pulse) => JSON.stringify({ pulse: pulse }))
             .subscribe(function (pulseStrPlayload) {
-                client.publish("im/event/rpiheart/pwmbreakout/" + CHANNEL_LEFT_HAND, pulseStrPlayload);
+                client.publish("im/event/rpiheart/pwmhat/" + CHANNEL_LEFT_HAND, pulseStrPlayload);
             })
         /*
         # TODO   pwm.setPWM(CHANNEL_LEFT_HAND, 0, SERVO_MIDDLE_LEFT_HAND)
@@ -146,22 +146,22 @@ entities.eyesEntity = function (client, entityCommand, inPlayLoad) {
     const PWM_MAX = 4096;  // Max pulse length out of 4096 POSITION HAUTE
     if (entityCommand == 'on') {
         let pulse=PWM_MAX;
-        client.publish("im/event/rpiheart/pwmbreakout/" + LED_RED_CHANNEL, JSON.stringify({ pulse: 300 }));
-        client.publish("im/event/rpiheart/pwmbreakout/" + LED_GREEN_CHANNEL, JSON.stringify({ pulse: 300 }));
-        client.publish("im/event/rpiheart/pwmbreakout/" + LED_BLUE_CHANNEL, JSON.stringify({ pulse: 3000 }));
+        client.publish("im/event/rpiheart/pwmhat/" + LED_RED_CHANNEL, JSON.stringify({ pulse: 300 }));
+        client.publish("im/event/rpiheart/pwmhat/" + LED_GREEN_CHANNEL, JSON.stringify({ pulse: 300 }));
+        client.publish("im/event/rpiheart/pwmhat/" + LED_BLUE_CHANNEL, JSON.stringify({ pulse: 3000 }));
     }else if (entityCommand == 'off') {
         let pulse=PWM_MIN;
-        client.publish("im/event/rpiheart/pwmbreakout/" + LED_RED_CHANNEL, JSON.stringify({ pulse: pulse }));
-        client.publish("im/event/rpiheart/pwmbreakout/" + LED_GREEN_CHANNEL, JSON.stringify({ pulse: pulse }));
-        client.publish("im/event/rpiheart/pwmbreakout/" + LED_BLUE_CHANNEL, JSON.stringify({ pulse: pulse }));
+        client.publish("im/event/rpiheart/pwmhat/" + LED_RED_CHANNEL, JSON.stringify({ pulse: pulse }));
+        client.publish("im/event/rpiheart/pwmhat/" + LED_GREEN_CHANNEL, JSON.stringify({ pulse: pulse }));
+        client.publish("im/event/rpiheart/pwmhat/" + LED_BLUE_CHANNEL, JSON.stringify({ pulse: pulse }));
     }else if (entityCommand == 'color') {
         let a = parseInt(inPlayLoad.rgba.substr(6,2), 16)/256;
         let r = Math.round(parseInt(inPlayLoad.rgba.substr(0,2), 16)/256*4096*a);
         let g = Math.round(parseInt(inPlayLoad.rgba.substr(2,2), 16)/256*4096*a);
         let b = Math.round(parseInt(inPlayLoad.rgba.substr(4,2), 16)/256*4096*a);
-        client.publish("im/event/rpiheart/pwmbreakout/" + LED_RED_CHANNEL, JSON.stringify({ pulse: r }));
-        client.publish("im/event/rpiheart/pwmbreakout/" + LED_GREEN_CHANNEL, JSON.stringify({ pulse: g }));
-        client.publish("im/event/rpiheart/pwmbreakout/" + LED_BLUE_CHANNEL, JSON.stringify({ pulse: b }));
+        client.publish("im/event/rpiheart/pwmhat/" + LED_RED_CHANNEL, JSON.stringify({ pulse: r }));
+        client.publish("im/event/rpiheart/pwmhat/" + LED_GREEN_CHANNEL, JSON.stringify({ pulse: g }));
+        client.publish("im/event/rpiheart/pwmhat/" + LED_BLUE_CHANNEL, JSON.stringify({ pulse: b }));
     }
 }
 /**
@@ -181,7 +181,7 @@ entities.righthandEntity = function (client, entityCommand, playLoad) {
         var moves = Rx.Observable.from([SERVO_MIDDLE_RIGHT_HAND, SERVO_MAX_RIGHT_HAND, SERVO_MIN_RIGHT_HAND, SERVO_MIDDLE_RIGHT_HAND]);
         Rx.Observable.zip(cadence, moves, (s1, s2) => s2).map((pulse) => JSON.stringify({ pulse: pulse }))
             .subscribe(function (pulseStrPlayload) {
-                client.publish("im/event/rpiheart/pwmbreakout/" + CHANNEL_RIGHT_HAND, pulseStrPlayload);
+                client.publish("im/event/rpiheart/pwmhat/" + CHANNEL_RIGHT_HAND, pulseStrPlayload);
             })
         /*
         # TODO REMOVE pwm.setPWM(CHANNEL_RIGHT_HAND, 0, SERVO_MIDDLE_RIGHT_HAND)
@@ -219,7 +219,7 @@ entities.imEntity = function (client, entityCommand, inPlayLoad) {
         client.publish("im/event/rpiheart/status",JSON.stringify(entities.imState),{retain:true});
     }
     if (entityCommand == 'reset') {
-        client.publish("im/event/rpiheart/pwmbreakout/reset","");
+        client.publish("im/event/rpiheart/pwmhat/reset","");
         //client.publish("im/event/rpiheart/ring/off","");
     }
 
@@ -239,13 +239,13 @@ entities.energyEntity = function (client, entityCommand, inPlayLoad) {
         delete evtPayLoad.rgb;
 
         if (entityCommand == 'on') {
-            client.publish("im/event/rpiheart/ledring/on",JSON.stringify(evtPayLoad));
+            client.publish("im/event/rpiheart/neopixel/on",JSON.stringify(evtPayLoad));
         }else if (entityCommand == 'off') {
-            client.publish("im/event/rpiheart/ledring/off",JSON.stringify(evtPayLoad));
+            client.publish("im/event/rpiheart/neopixel/off",JSON.stringify(evtPayLoad));
         }else if (entityCommand == 'beat') {
-            client.publish("im/event/rpiheart/ledring/beat",JSON.stringify(evtPayLoad));
+            client.publish("im/event/rpiheart/neopixel/beat",JSON.stringify(evtPayLoad));
         }else if (entityCommand == 'chase') {
-            client.publish("im/event/rpiheart/ledring/chase",JSON.stringify(evtPayLoad));
+            client.publish("im/event/rpiheart/neopixel/chase",JSON.stringify(evtPayLoad));
         }
     }
 module.exports = entities;

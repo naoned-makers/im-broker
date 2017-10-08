@@ -74,7 +74,7 @@ def parseParameters(argv):
         global repeat
 
         try:
-                opts, args = getopt.getopt(argv,"s:r:g:b:n:",["animation=","speed=","red=","green=","blue=","ntimes="])
+                opts, args = getopt.getopt(argv,"h:a:s:r:g:b:n:",["animation=","speed=","red=","green=","blue=","ntimes="])
         except getopt.GetoptError:
                 print 'test.py -a <animation> -s <speed> -r <red> -g <green> -b <blue> -n <n times exe>'
                 sys.exit(2)
