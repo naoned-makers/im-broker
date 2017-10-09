@@ -22,6 +22,10 @@ export im_cloud_databaseName=XXX
 ```
 Copy firebase service account file on root dir  xxx-firebase-adminsdk.json
 
+[Install and test neopixel ring](./python/plastron/Readme.md)
+
+For neopixel ring see ./python/plastron
+
 ---
 
 **Start all applications**
