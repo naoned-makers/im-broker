@@ -1,4 +1,5 @@
 "use strict";
+
 let Rx = require('rxjs/Rx');
 
 var entities = {};
@@ -17,16 +18,16 @@ entities.leftarmEntity = function (client, entityCommand, playLoad) {
     const SERVO_MIDDLE_LEFT_ARM = 280;  // Middle pulse length out of 4096
     const SERVO_MAX_LEFT_ARM = 350;  // Max pulse length out of 4096 POSITION HAUTE 
     const SLEEP = 1000; // milliseconds between instructions   
-    if (entityCommand == 'move') {
 
-        //the instructions is ended afer 1 secondes
-        var cadence = Rx.Observable.timer(0, SLEEP);
-        var moves = Rx.Observable.from([SERVO_MIN_LEFT_ARM, SERVO_MIDDLE_LEFT_ARM, SERVO_MAX_LEFT_ARM, SERVO_MIN_LEFT_ARM]);
-        Rx.Observable.zip(cadence, moves, (s1, s2) => s2).map((pulse) => JSON.stringify({ pulse: pulse }))
-            .subscribe(function (pulseStrPlayload) {
-                client.publish("im/event/rpiheart/pwmhat/" + CHANNEL_LEFT_ARM, pulseStrPlayload);
-            })
-    }
+    //##DEFAULT move
+    //the instructions is ended afer 1 secondes
+    var cadence = Rx.Observable.timer(0, SLEEP);
+    var moves = Rx.Observable.from([SERVO_MIN_LEFT_ARM, SERVO_MIDDLE_LEFT_ARM, SERVO_MAX_LEFT_ARM, SERVO_MIN_LEFT_ARM]);
+    Rx.Observable.zip(cadence, moves, (s1, s2) => s2).map((pulse) => JSON.stringify({ pulse: pulse }))
+        .subscribe(function (pulseStrPlayload) {
+            client.publish("im/event/rpiheart/pwmhat/" + CHANNEL_LEFT_ARM, pulseStrPlayload);
+        })
+
 }
 /**
  * rightarm entity domain
@@ -39,63 +40,16 @@ entities.rightarmEntity = function (client, entityCommand, playLoad) {
     const SERVO_MIDDLE_RIGHT_ARM = 350;  // Middle pulse length out of 4096
     const SERVO_MAX_RIGHT_ARM = 290;  // Max pulse length out of 4096 POSITION HAUTE
     const SLEEP = 1000; // milliseconds between instructions   
-    if (entityCommand == 'move') {
 
-        //the instructions is ended afer 1 secondes
-        var cadence = Rx.Observable.timer(0, SLEEP);
-        var moves = Rx.Observable.from([SERVO_MIN_RIGHT_ARM, SERVO_MIDDLE_RIGHT_ARM, SERVO_MAX_RIGHT_ARM, SERVO_MIN_RIGHT_ARM]);
-        Rx.Observable.zip(cadence, moves, (s1, s2) => s2).map((pulse) => JSON.stringify({ pulse: pulse }))
-            .subscribe(function (pulseStrPlayload) {
-                client.publish("im/event/rpiheart/pwmhat/" + CHANNEL_RIGHT_ARM, pulseStrPlayload);
-            })
-        /** 
-        # TODO   pwm.setPWM(CHANNEL_RIGHT_ARM, 0, SERVO_MIN_RIGHT_ARM)
-        print "Bras droit à moitié levé"
-        time.sleep(sleep)
-        # TODO   pwm.setPWM(CHANNEL_RIGHT_ARM, 0, SERVO_MIDDLE_RIGHT_ARM)
-        print "Bras droit à complétement levé"
-        time.sleep(sleep)
-        # TODO   pwm.setPWM(CHANNEL_RIGHT_ARM, 0, SERVO_MAX_RIGHT_ARM)
-        print "Bras droit à moitié levé"
-        time.sleep(sleep)
-        # TODO   pwm.setPWM(CHANNEL_RIGHT_ARM, 0, SERVO_MIN_RIGHT_ARM)
-        print "Bras droit à complétement baissé"
-        time.sleep(sleep)
-        */
-    }
-}
-/**
- * head entity domain
- * execute validation and consequential logic
- */
-entities.headEntity = function (client, entityCommand, inPlayLoad) {
-    //HITEC HS-5645MG 50Hz LEFT ARM
-    const CHANNEL_HEAD = 2;
-    const SERVO_MIN_HEAD = 165;//Min pulse length out of 4096 POSITION BASSE
-    const SERVO_MIDDLE_HEAD = 305;// Middle pulse length out of 4096
-    const SERVO_MAX_HEAD = 450;// Max pulse length out of 4096 POSITION HAUTE
-    const SLEEP = 1000; // milliseconds between instructions   
+    //##DEFAULT move
+    //the instructions is ended afer 1 secondes
+    var cadence = Rx.Observable.timer(0, SLEEP);
+    var moves = Rx.Observable.from([SERVO_MIN_RIGHT_ARM, SERVO_MIDDLE_RIGHT_ARM, SERVO_MAX_RIGHT_ARM, SERVO_MIN_RIGHT_ARM]);
+    Rx.Observable.zip(cadence, moves, (s1, s2) => s2).map((pulse) => JSON.stringify({ pulse: pulse }))
+        .subscribe(function (pulseStrPlayload) {
+            client.publish("im/event/rpiheart/pwmhat/" + CHANNEL_RIGHT_ARM, pulseStrPlayload);
+        })
 
-    if (entityCommand == 'move') {
-        //the instructions is ended afer 1 secondes
-        var cadence = Rx.Observable.timer(0, SLEEP);
-        var moves = Rx.Observable.from([SERVO_MIDDLE_HEAD, SERVO_MAX_HEAD, SERVO_MIN_HEAD, SERVO_MIDDLE_HEAD]);
-        Rx.Observable.zip(cadence, moves, (s1, s2) => s2).map((pulse) => JSON.stringify({ pulse: pulse }))
-            .subscribe(function (pulseStrPlayload) {
-                client.publish("im/event/rpiheart/pwmhat/" + CHANNEL_HEAD, pulseStrPlayload);
-            })
-    }
-    if (entityCommand == 'facetrackmove') {
-        //    /im/command/head/facetrackstart
-        //          {origin:'camera',face:'base64faceimage',absPosition:%}
-        //     /im/command/head/facetrackmove
-        //          {origin:'camera',absPosition:%}
-        //      /im/command/head/facetrackend
-        //          {origin:'camera'}
-        let currentPulse = SERVO_MIN_HEAD + inPlayLoad.absPosition*(SERVO_MAX_HEAD-SERVO_MIN_HEAD)/100;
-        let pulseStrPlayload = JSON.stringify({ pulse: currentPulse });
-        client.publish("im/event/rpiheart/pwmhat/" + CHANNEL_HEAD, pulseStrPlayload);
-    }
 }
 /**
 * lefthand entity domain
@@ -108,28 +62,79 @@ entities.lefthandEntity = function (client, entityCommand, playLoad) {
     const SERVO_MIDDLE_LEFT_HAND = 240  // Middle pulse length out of 4096
     const SERVO_MAX_LEFT_HAND = 350  // Max pulse length out of 4096 POSITION HAUTE
     const SLEEP = 1000; // milliseconds between instructions   
-    if (entityCommand == 'move') {
+
+    //##DEFAULT move
+    //the instructions is ended afer 1 secondes
+    var cadence = Rx.Observable.timer(0, SLEEP);
+    var moves = Rx.Observable.from([SERVO_MIDDLE_LEFT_HAND, SERVO_MAX_LEFT_HAND, SERVO_MIN_LEFT_HAND, SERVO_MIDDLE_LEFT_HAND]);
+    Rx.Observable.zip(cadence, moves, (s1, s2) => s2).map((pulse) => JSON.stringify({ pulse: pulse }))
+        .subscribe(function (pulseStrPlayload) {
+            client.publish("im/event/rpiheart/pwmhat/" + CHANNEL_LEFT_HAND, pulseStrPlayload);
+        })
+
+}
+
+/**
+* righthand entity domain
+* execute validation and consequential logic
+*/
+entities.righthandEntity = function (client, entityCommand, playLoad) {
+    // HITEC HS-5645MG 50Hz LEFT ARM
+    const CHANNEL_RIGHT_HAND = 4
+    const SERVO_MIN_RIGHT_HAND = 240  // Min pulse length out of 4096 POSITION BASSE
+    const SERVO_MIDDLE_RIGHT_HAND = 360  // Middle pulse length out of 4096
+    const SERVO_MAX_RIGHT_HAND = 440  // Max pulse length out of 4096 POSITION HAUTE
+    const SLEEP = 1000; // milliseconds between instructions   
+
+    //##DEFAULT move
+    //the instructions is ended afer 1 secondes
+    var cadence = Rx.Observable.timer(0, SLEEP);
+    var moves = Rx.Observable.from([SERVO_MIDDLE_RIGHT_HAND, SERVO_MAX_RIGHT_HAND, SERVO_MIN_RIGHT_HAND, SERVO_MIDDLE_RIGHT_HAND]);
+    Rx.Observable.zip(cadence, moves, (s1, s2) => s2).map((pulse) => JSON.stringify({ pulse: pulse }))
+        .subscribe(function (pulseStrPlayload) {
+            client.publish("im/event/rpiheart/pwmhat/" + CHANNEL_RIGHT_HAND, pulseStrPlayload);
+        })
+
+}
+
+/**
+ * head entity domain
+ * execute validation and consequential logic
+ */
+entities.headEntity = function (client, entityCommand, inPlayLoad) {
+    //HITEC HS-5645MG 50Hz LEFT ARM
+    const CHANNEL_HEAD = 9;
+    const SERVO_MIN_HEAD = 165;//Min pulse length out of 4096 POSITION BASSE
+    const SERVO_MIDDLE_HEAD = 305;// Middle pulse length out of 4096
+    const SERVO_MAX_HEAD = 450;// Max pulse length out of 4096 POSITION HAUTE
+    const SLEEP = 1000; // milliseconds between instructions   
+
+    if (entityCommand == 'facetrackmove') {
+        //    /im/command/head/facetrackstart
+        //          {origin:'camera',face:'base64faceimage',absPosition:%}
+        //     /im/command/head/facetrackmove
+        //          {origin:'camera',absPosition:%}
+        //      /im/command/head/facetrackend
+        //          {origin:'camera'}
+        const range = 2.0;
+        const angle = (inPlayLoad.absPosition/100*range)-(range/2); 
+        const headPosition = (Math.tanh(angle)/2 + 0.5);
+        //Math.tanh(1);   0.761
+        let currentPulse = SERVO_MIN_HEAD + headPosition * (SERVO_MAX_HEAD - SERVO_MIN_HEAD);
+        //let currentPulse = SERVO_MIN_HEAD + inPlayLoad.absPosition * (SERVO_MAX_HEAD - SERVO_MIN_HEAD) / 100;
+        let pulseStrPlayload = JSON.stringify({ pulse: currentPulse });
+        client.publish("im/event/rpiheart/pwmhat/" + CHANNEL_HEAD, pulseStrPlayload);
+    } else  if (entityCommand == 'reset') {
+        client.publish("im/event/rpiheart/pwmhat/" + CHANNEL_HEAD, JSON.stringify({ pulse: SERVO_MIDDLE_HEAD }));
+    } else {
+        //##DEFAULT move
         //the instructions is ended afer 1 secondes
         var cadence = Rx.Observable.timer(0, SLEEP);
-        var moves = Rx.Observable.from([SERVO_MIDDLE_LEFT_HAND, SERVO_MAX_LEFT_HAND, SERVO_MIN_LEFT_HAND, SERVO_MIDDLE_LEFT_HAND]);
+        var moves = Rx.Observable.from([SERVO_MIDDLE_HEAD, SERVO_MAX_HEAD, SERVO_MIN_HEAD, SERVO_MIDDLE_HEAD]);
         Rx.Observable.zip(cadence, moves, (s1, s2) => s2).map((pulse) => JSON.stringify({ pulse: pulse }))
             .subscribe(function (pulseStrPlayload) {
-                client.publish("im/event/rpiheart/pwmhat/" + CHANNEL_LEFT_HAND, pulseStrPlayload);
+                client.publish("im/event/rpiheart/pwmhat/" + CHANNEL_HEAD, pulseStrPlayload);
             })
-        /*
-        # TODO   pwm.setPWM(CHANNEL_LEFT_HAND, 0, SERVO_MIDDLE_LEFT_HAND)
-          print "Main gauche à moitié tournée"
-          time.sleep(sleep)
-        # TODO   pwm.setPWM(CHANNEL_LEFT_HAND, 0, SERVO_MAX_LEFT_HAND)
-          print "Main gauche à complétement tournée"
-          time.sleep(sleep)
-        # TODO   pwm.setPWM(CHANNEL_LEFT_HAND, 0, SERVO_MIN_LEFT_HAND)
-          print "Main gauche à moitié tournée"
-          time.sleep(sleep)
-        # TODO   pwm.setPWM(CHANNEL_LEFT_HAND, 0, SERVO_MIDDLE_LEFT_HAND)
-          print "Main gauche à complétement tourné"
-          time.sleep(sleep)
-        */
     }
 }
 
@@ -145,107 +150,133 @@ entities.eyesEntity = function (client, entityCommand, inPlayLoad) {
     const PWM_MIN = 0;  // Min pulse length out of 4096 POSITION BASSE
     const PWM_MAX = 4096;  // Max pulse length out of 4096 POSITION HAUTE
     if (entityCommand == 'on') {
-        let pulse=PWM_MAX;
+        let pulse = PWM_MAX;
         client.publish("im/event/rpiheart/pwmhat/" + LED_RED_CHANNEL, JSON.stringify({ pulse: 300 }));
         client.publish("im/event/rpiheart/pwmhat/" + LED_GREEN_CHANNEL, JSON.stringify({ pulse: 300 }));
         client.publish("im/event/rpiheart/pwmhat/" + LED_BLUE_CHANNEL, JSON.stringify({ pulse: 3000 }));
-    }else if (entityCommand == 'off') {
-        let pulse=PWM_MIN;
+    } else if (entityCommand == 'off') {
+        let pulse = PWM_MIN;
         client.publish("im/event/rpiheart/pwmhat/" + LED_RED_CHANNEL, JSON.stringify({ pulse: pulse }));
         client.publish("im/event/rpiheart/pwmhat/" + LED_GREEN_CHANNEL, JSON.stringify({ pulse: pulse }));
         client.publish("im/event/rpiheart/pwmhat/" + LED_BLUE_CHANNEL, JSON.stringify({ pulse: pulse }));
-    }else if (entityCommand == 'color') {
-        let a = parseInt(inPlayLoad.rgba.substr(6,2), 16)/256;
-        let r = Math.round(parseInt(inPlayLoad.rgba.substr(0,2), 16)/256*4096*a);
-        let g = Math.round(parseInt(inPlayLoad.rgba.substr(2,2), 16)/256*4096*a);
-        let b = Math.round(parseInt(inPlayLoad.rgba.substr(4,2), 16)/256*4096*a);
+    } else if (entityCommand == 'color') {
+        let a = parseInt(inPlayLoad.rgba.substr(6, 2), 16) / 256;
+        let r = Math.round(parseInt(inPlayLoad.rgba.substr(0, 2), 16) / 256 * 4096 * a);
+        let g = Math.round(parseInt(inPlayLoad.rgba.substr(2, 2), 16) / 256 * 4096 * a);
+        let b = Math.round(parseInt(inPlayLoad.rgba.substr(4, 2), 16) / 256 * 4096 * a);
         client.publish("im/event/rpiheart/pwmhat/" + LED_RED_CHANNEL, JSON.stringify({ pulse: r }));
         client.publish("im/event/rpiheart/pwmhat/" + LED_GREEN_CHANNEL, JSON.stringify({ pulse: g }));
         client.publish("im/event/rpiheart/pwmhat/" + LED_BLUE_CHANNEL, JSON.stringify({ pulse: b }));
+    } else {
+        //default on - sleep 300  - off
+        client.publish("im/command/eyes/on", JSON.stringify({ origin: 'im-brain' }));
+        setTimeout(function () {
+            client.publish("im/command/eyes/off", JSON.stringify({ origin: 'im-brain' }));
+          }, 200)
     }
 }
+
 /**
-* righthand entity domain
-* execute validation and consequential logic
-*/
-entities.righthandEntity = function (client, entityCommand, playLoad) {
-    // HITEC HS-5645MG 50Hz LEFT ARM
-    const CHANNEL_RIGHT_HAND = 4
-    const SERVO_MIN_RIGHT_HAND = 240  // Min pulse length out of 4096 POSITION BASSE
-    const SERVO_MIDDLE_RIGHT_HAND = 360  // Middle pulse length out of 4096
-    const SERVO_MAX_RIGHT_HAND = 440  // Max pulse length out of 4096 POSITION HAUTE
-    const SLEEP = 1000; // milliseconds between instructions   
-    if (entityCommand == 'move') {
+ * helemt entity domain
+ * execute validation and consequential logic
+ */
+entities.helmetEntity = function (client, entityCommand, inPlayLoad) {
+    //HITEC HS-5645MG 50Hz LEFT ARM
+    const CHANNEL_HELMET = 2;
+    const SERVO_MIN_HELMT = 170;//Min pulse length out of 4096 POSITION BASSE
+    const SERVO_MAX_HELMET = 325;// Max pulse length out of 4096 POSITION HAUTE
+    const SLEEP = 4000; // milliseconds between instructions   
+
+    if (entityCommand == 'open') {
+        client.publish("im/event/rpiheart/pwmhat/" + CHANNEL_HELMET, JSON.stringify({ pulse: SERVO_MAX_HELMET }));
+    } else if (entityCommand == 'close') {
+        client.publish("im/event/rpiheart/pwmhat/" + CHANNEL_HELMET, JSON.stringify({ pulse: SERVO_MIN_HELMT }));
+    } else {
+        //##DEFAULT move
         //the instructions is ended afer 1 secondes
         var cadence = Rx.Observable.timer(0, SLEEP);
-        var moves = Rx.Observable.from([SERVO_MIDDLE_RIGHT_HAND, SERVO_MAX_RIGHT_HAND, SERVO_MIN_RIGHT_HAND, SERVO_MIDDLE_RIGHT_HAND]);
+        var moves = Rx.Observable.from([SERVO_MAX_HELMET, SERVO_MIN_HELMT]);
         Rx.Observable.zip(cadence, moves, (s1, s2) => s2).map((pulse) => JSON.stringify({ pulse: pulse }))
             .subscribe(function (pulseStrPlayload) {
-                client.publish("im/event/rpiheart/pwmhat/" + CHANNEL_RIGHT_HAND, pulseStrPlayload);
+                client.publish("im/event/rpiheart/pwmhat/" + CHANNEL_HELMET, pulseStrPlayload);
             })
-        /*
-        # TODO REMOVE pwm.setPWM(CHANNEL_RIGHT_HAND, 0, SERVO_MIDDLE_RIGHT_HAND)
-        print "Main droite à moitié tournée"
-        time.sleep(sleep)
-        # TODO REMOVE pwm.setPWM(CHANNEL_RIGHT_HAND, 0, SERVO_MAX_RIGHT_HAND)
-        print "Main droite à complétement tournée"50
-PWM CHANNEL:2 setPWM:450
-        time.sleep(sleep)
-        # TODO REMOVE pwm.setPWM(CHANNEL_RIGHT_HAND, 0, SERVO_MIDDLE_RIGHT_HAND)
-        print "Main droite à moitié tournée"
-        time.sleep(sleep)
-        # TODO REMOVE pwm.setPWM(CHANNEL_RIGHT_HAND, 0, SERVO_MIN_RIGHT_HAND)
-        print "Main droite à complétement tourné"
-        time.sleep(sleep)
-        */
     }
 }
+
+/**
+* im aggregate domain
+* execute validation and consequential logic
+*/
+entities.energyEntity = function (client, entityCommand, inPlayLoad) {
+    const DEFAULT_SPEED = 0.02;
+    const DEFAULT_REPEAT = 20;
+    const DEFAULT_RED = 34;
+    const DEFAULT_GREEN = 34;
+    const DEFAULT_BLUE = 255;
+
+    let evtPayLoad = inPlayLoad;
+    if (inPlayLoad.rgb) {
+        evtPayLoad.red = parseInt(inPlayLoad.rgb.substr(0, 2), 16)
+        evtPayLoad.green = parseInt(inPlayLoad.rgb.substr(2, 2), 16)
+        evtPayLoad.blue = parseInt(inPlayLoad.rgb.substr(4, 2), 16)
+    } else {
+        evtPayLoad.red = DEFAULT_RED;
+        evtPayLoad.green = DEFAULT_GREEN;
+        evtPayLoad.blue = DEFAULT_BLUE;
+    }
+    if (inPlayLoad.speed) {
+        evtPayLoad.speed = inPlayLoad.speed / 1000.0;
+    } else {
+        evtPayLoad.speed = DEFAULT_SPEED;
+    }
+    if (!evtPayLoad.repeat) {
+        evtPayLoad.repeat = DEFAULT_REPEAT;
+    }
+    delete evtPayLoad.origin;
+    delete evtPayLoad.rgb;
+
+    if (entityCommand == 'on') {
+        client.publish("im/event/rpiheart/neopixel/on", JSON.stringify(evtPayLoad));
+    } else if (entityCommand == 'off') {
+        client.publish("im/event/rpiheart/neopixel/off", JSON.stringify(evtPayLoad));
+    } else if (entityCommand == 'beat') {
+        client.publish("im/event/rpiheart/neopixel/beat", JSON.stringify(evtPayLoad));
+    } else if (entityCommand == 'chase') {
+        client.publish("im/event/rpiheart/neopixel/chase", JSON.stringify(evtPayLoad));
+    } else {
+        client.publish("im/event/rpiheart/neopixel/beat", JSON.stringify(evtPayLoad));
+    }
+}
+
 
 /**
 * im aggregate domain
 * execute validation and consequential logic
 */
 entities.imEntity = function (client, entityCommand, inPlayLoad) {
-
-    if (entityCommand == 'server') {
-        //update internal state
-        entities.imState.server=inPlayLoad;
-        client.publish("im/event/rpiheart/status",JSON.stringify(entities.imState),{retain:true});
-    }
-
-    if (entityCommand == 'clients') {
-        //update internal state
-        entities.imState.brokerClients=inPlayLoad.clients;
-        client.publish("im/event/rpiheart/status",JSON.stringify(entities.imState),{retain:true});
-    }
-    if (entityCommand == 'reset') {
-        client.publish("im/event/rpiheart/pwmhat/reset","");
-        //client.publish("im/event/rpiheart/ring/off","");
-    }
-
-}
-/**
-* im aggregate domain
-* execute validation and consequential logic
-*/
-entities.energyEntity = function (client, entityCommand, inPlayLoad) {
-
-        let evtPayLoad = inPlayLoad;
-        evtPayLoad.red=parseInt(inPlayLoad.rgb.substr(0,2), 16)
-        evtPayLoad.green=parseInt(inPlayLoad.rgb.substr(2,2), 16)
-        evtPayLoad.blue=parseInt(inPlayLoad.rgb.substr(4,2), 16)
-        evtPayLoad.speed = inPlayLoad.speed/1000.0;
-        delete evtPayLoad.origin;
-        delete evtPayLoad.rgb;
-
-        if (entityCommand == 'on') {
-            client.publish("im/event/rpiheart/neopixel/on",JSON.stringify(evtPayLoad));
-        }else if (entityCommand == 'off') {
-            client.publish("im/event/rpiheart/neopixel/off",JSON.stringify(evtPayLoad));
-        }else if (entityCommand == 'beat') {
-            client.publish("im/event/rpiheart/neopixel/beat",JSON.stringify(evtPayLoad));
-        }else if (entityCommand == 'chase') {
-            client.publish("im/event/rpiheart/neopixel/chase",JSON.stringify(evtPayLoad));
+    
+        if (entityCommand == 'server') {
+            //update internal state
+            entities.imState.server = inPlayLoad;
+            client.publish("im/event/rpiheart/status", JSON.stringify(entities.imState), { retain: true });
         }
+    
+        if (entityCommand == 'clients') {
+            //update internal state
+            entities.imState.brokerClients = inPlayLoad.clients;
+            client.publish("im/event/rpiheart/status", JSON.stringify(entities.imState), { retain: true });
+        }
+        if (entityCommand == 'reset') {
+            client.publish("im/event/rpiheart/pwmhat/reset", JSON.stringify({ origin: 'im-brain' }));
+            client.publish("im/command/energy/off", JSON.stringify({ origin: 'im-brain' }));
+            client.publish("im/command/eyes/off", JSON.stringify({ origin: 'im-brain' }));
+            client.publish("im/command/helmet/close", JSON.stringify({ origin: 'im-brain' }));
+            client.publish("im/command/head/reset", JSON.stringify({ origin: 'im-brain' }));
+        }
+        if (entityCommand == 'color') {
+            client.publish("im/command/eyes/color", JSON.stringify({ origin: 'im-brain',rgba:inPlayLoad.rgba }));
+            client.publish("im/command/energy/on", JSON.stringify({ origin: 'im-brain',rgb: inPlayLoad.rgba.substr(0, 6) }));
+        }
+    
     }
 module.exports = entities;

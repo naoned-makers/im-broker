@@ -7,7 +7,7 @@ let MOVE_LEFT_HAND = "lefthand/move";
 let MOVE_RIGHT_HAND = "righthand/move";
 let MOVE_HEAD = "head/move";
 let LIGHT_EYES = "eyes/light";
-let LIGHT_ENERGY = "energy/light";
+let LIGHT_ENERGY = "energy/beat";
 
 let move;
 

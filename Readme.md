@@ -3,6 +3,7 @@
 ```
 
 sudo apt-get install python-pip python-dev build-essential python-smbus libzmq-dev i2c-tools  git scons swig
+sudo apt-get install libavahi-compat-libdnssd-dev
 
 curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
 sudo apt-get install npm nodejs
@@ -14,36 +15,46 @@ sudo pip install rpi_ws281x
 git clone   ... cd ...
 npm install
 ```
-Set auth envrionnement variables in user .bashrc
+Set auth envrionnement variables in  root and user .bashrc
 ```
 export im_cloud_apiKey=XXX
 export im_cloud_projectId=XXX
 export im_cloud_databaseName=XXX
+
+and keep it in visudo
+
+Defaults  env_keep += "im_cloud_apiKey"
+Defaults  env_keep += "im_cloud_projectId"
+Defaults  env_keep += "im_cloud_databaseName"
+
+
 ```
 Copy firebase service account file on root dir  xxx-firebase-adminsdk.json
 
 [Install and test neopixel ring](./python/plastron/Readme.md)
 
-For neopixel ring see ./python/plastron
+NeoPixel driver needs to be run as root
+
+
 
 ---
 
 **Start all applications**
 ```
-npm run prod
+sudo npm run prod
 ```
 **Boot script**
 ```
-pm2 startup
+sudo pm2 startup
 ```
 **Monitoring**
 ```
-pm2 dash
+sudo pm2 dash
 ```
 **LOGS**
 ```
-pm2 logs
-pm2 flush
+sudo pm2 logs
+sudo pm2 flush
 ```
 
 
@@ -51,15 +62,18 @@ pm2 flush
 ##  im/command/\<entity\>/\<command>
 entity path|command|playload|comment
 --- | --- | --- | ---
-im/command/energy/|off/on/beat/chase| {origin:'im-*', speed:\<ms>, repeat:\<nb>, rgb:FFFFFF}|
+im/command/energy/|off/on/beat*/chase| {origin:'im-*', speed:\<ms>, repeat:\<nb>, rgb:FFFFFF}|
 im/command/eyes/|on/off| {origin:'im-*'}|
 im/command/eyes/|color| {origin:'im-*',rgba:'FFFFFFFF'}|
-im/command/head/|move| {origin:'im-*'}
+im/command/helmet/|move*| {origin:'im-*'}
+im/command/helmet/|open*| {origin:'im-*'}
+im/command/helmet/|close*| {origin:'im-*'}
+im/command/head/|move*| {origin:'im-*'}
 im/command/head/|facetrackmove| {origin:'im-*', absPosition: \<int absolute percent Position>}
-im/command/leftarm/|move| {origin:'im-*'}
-im/command/rightarm/|move| {origin:'im-*'}
-im/command/lefthand/|move| {origin:'im-*'}
-im/command/righthand/|move| {origin:'im-*'}
+im/command/leftarm/|move*| {origin:'im-*'}
+im/command/rightarm/|move*| {origin:'im-*'}
+im/command/lefthand/|move*| {origin:'im-*'}
+im/command/righthand/|move*| {origin:'im-*'}
 im/command/im/|server| {origin:'im-*',ip:\<ip> ,hostname:\<hostname>, mqttPort:\<mqttPort>, wsPort:\<wsPort>,httpPort:\<httpPort>}
 im/command/im/|clients| {origin:'im-*', clients:[\< array broker client name>]}
 im/command/im/|reset|{'origin':'im-*'}|

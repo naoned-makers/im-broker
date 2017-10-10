@@ -25,6 +25,8 @@ class PwmHat:
     if self.pwmhatmock =='False':
       self.pwmdevice.set_pwm(int(channel), 0, int(servopulse))
 
+  def reset(self):
+    print "RESET NOT IMPLEMENT"
 
 
 #mock if they are almost one paramter
@@ -41,8 +43,11 @@ def on_connect(client, userdata, flags_dict, resultcode):
 def on_message(client, userdata, msg):
     payload_json = json.loads(str(msg.payload))
     # useless check as we only suscribe to one topice for now
-    channel = int(msg.topic.split("/")[-1])
-    pwmhat.setPWM(channel,payload_json['pulse']);
+    command = msg.topic.split("/")[-1]
+    if command =='reset':
+      pwmhat.reset();
+    else:
+      pwmhat.setPWM(int(command),payload_json['pulse']);
 
 client = mqtt.Client(client_id="pwmhat_"+socket.gethostname())
 client.on_connect = on_connect 

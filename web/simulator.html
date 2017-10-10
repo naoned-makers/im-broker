@@ -44,11 +44,20 @@
             let evtPlayload = JSON.parse(strPlayload);
             //call the matching entity domain
             console.log(pwmChannel + "  " + evtPlayload.pulse);
-            document.getElementById(pwmChannel).value = +evtPlayload.pulse;
-            document.getElementById(pwmChannel).className = 'newmessage';
-            window.setTimeout(function () {
-                document.getElementById(pwmChannel).className = '';
-            }, 30);
+            if (pwmChannel != 'reset') {
+                document.getElementById(pwmChannel).value = +evtPlayload.pulse;
+                document.getElementById(pwmChannel).className = 'newmessage';
+                window.setTimeout(function () {
+                    document.getElementById(pwmChannel).className = '';
+                }, 30);
+            } else {
+                for (var index = 0; index < 12; index++) {
+                    if (document.getElementById(index)) {
+                        document.getElementById(index).value = document.getElementById(index).defaultValue;
+                    }
+                }
+
+            }
         })
     </script>
     <script type="text/javascript">
@@ -182,11 +191,13 @@
 
 <body>
     <div id="mqtton">MQTT Brocker</div>
+    <hr/> helmet
+    <input id="2" name="helmet" type="range" min="170" max="325" />
     <hr/> eyes RGB
-    <input id="6" name="eyesR" type="range" orient="vertical" style="height:50px" min="0" max="4096" value="0" />
-    <input id="7" name="eyesG" type="range" orient="vertical" style="height:50px" min="0" max="4096" value="0" />
-    <input id="8" name="eyesB" type="range" orient="vertical" style="height:50px" min="0" max="4096" value="0" /><br/> head&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <input id="2" name="head" type="range" min="165" max="450" />
+    <input id="5" name="eyesR" type="range" orient="vertical" style="height:50px" min="0" max="4096" value="0" />
+    <input id="6" name="eyesG" type="range" orient="vertical" style="height:50px" min="0" max="4096" value="0" />
+    <input id="7" name="eyesB" type="range" orient="vertical" style="height:50px" min="0" max="4096" value="0" /><br/> head&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <input id="9" name="head" type="range" min="165" max="450" />
     <div id="neoring">
         <div class="led">&#x25FC; &#x25FC; &#x25FC; &#x25FC; &#x25FC; &#x25FC; &#x25FC; &#x25FC; &#x25FC; &#x25FC; &#x25FC; &#x25FC; &#x25FC;</div>
     </div>
