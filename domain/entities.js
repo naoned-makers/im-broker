@@ -117,9 +117,8 @@ entities.headEntity = function (client, entityCommand, inPlayLoad) {
         //      /im/command/head/facetrackend
         //          {origin:'camera'}
         const range = 2.0;
-        const angle = (inPlayLoad.absPosition/100*range)-(range/2); 
-        const headPosition = (Math.tanh(angle)/2 + 0.5);
-        //Math.tanh(1);   0.761
+        const angle = (inPlayLoad.absPosition/100*range)-(range/2); //0-2 -> -1 - 1 or  //0-3 -> 1,5 -> 0,9
+        const headPosition = (Math.tanh(angle)+1)/2; // +-0,76  -> 0,12 to 0,87
         let currentPulse = SERVO_MIN_HEAD + headPosition * (SERVO_MAX_HEAD - SERVO_MIN_HEAD);
         //let currentPulse = SERVO_MIN_HEAD + inPlayLoad.absPosition * (SERVO_MAX_HEAD - SERVO_MIN_HEAD) / 100;
         let pulseStrPlayload = JSON.stringify({ pulse: currentPulse });

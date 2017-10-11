@@ -66,8 +66,8 @@ im/command/energy/|off/on/beat*/chase| {origin:'im-*', speed:\<ms>, repeat:\<nb>
 im/command/eyes/|on/off| {origin:'im-*'}|
 im/command/eyes/|color| {origin:'im-*',rgba:'FFFFFFFF'}|
 im/command/helmet/|move*| {origin:'im-*'}
-im/command/helmet/|open*| {origin:'im-*'}
-im/command/helmet/|close*| {origin:'im-*'}
+im/command/helmet/|open| {origin:'im-*'}
+im/command/helmet/|close| {origin:'im-*'}
 im/command/head/|move*| {origin:'im-*'}
 im/command/head/|facetrackmove| {origin:'im-*', absPosition: \<int absolute percent Position>}
 im/command/leftarm/|move*| {origin:'im-*'}
