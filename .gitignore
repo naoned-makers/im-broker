@@ -63,3 +63,4 @@ typings/
 
 *.pyc
 .vscode/launch.json
+package-lock.json
