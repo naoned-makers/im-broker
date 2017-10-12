@@ -14,7 +14,7 @@ entities.imState = {};
 entities.leftarmEntity = function (client, entityCommand, playLoad) {
     //HITEC HS-5645MG 50Hz LEFT ARM
     const CHANNEL_LEFT_ARM = 0;
-    const SERVO_MIN_LEFT_ARM = 170;  // Min pulse length out of 4096 POSITION BASSE
+    const SERVO_MIN_LEFT_ARM = 165;  // Min pulse length out of 4096 POSITION BASSE
     const SERVO_MIDDLE_LEFT_ARM = 280;  // Middle pulse length out of 4096
     const SERVO_MAX_LEFT_ARM = 350;  // Max pulse length out of 4096 POSITION HAUTE 
     const SLEEP = 1000; // milliseconds between instructions   

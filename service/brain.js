@@ -28,7 +28,7 @@ client.on('message', function (topic, strPlayload) {
     var payLoad = JSON.parse(strPlayload);
     //for vui (local or api.ai) put parameter direclty in the payload
     if(payLoad.parameter){
-        Object.assign(payLoad, parameter);
+        Object.assign(payLoad, payLoad.parameter);
     }
     //call the matching entity domain
     if (entities[entityCode + 'Entity']) {

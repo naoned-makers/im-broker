@@ -7,12 +7,15 @@ import sys
 import os
 import socket
 import time
+import sys
 
 #mock if they are almost one paramter
 mock = os.getenv('IM_NEOPIXEL_MOCK', 'False')
 
+sys.path.append('/home/pi/dev/im-broker/python/plastron')  
+
 if mock =='False':
-    import plastron.neo as neo  
+    import neo
 
 # The callback for when the client receives a CONNACK response from the server.
 def on_connect(client, userdata, flags_dict, resultcode):
