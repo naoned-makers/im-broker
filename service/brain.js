@@ -14,6 +14,7 @@ var client = mqtt.connect('mqtt://localhost', { clientId: 'brain_'+os.hostname()
 client.on('connect', function () {
     //commnad topics look like  im/command/<entity>/<command>
     client.subscribe('im/command/#');
+    entities.init(client);
     //Internal info look like  
     //      $SYS/rkM6tx45W/new/clients websimulator_9289e62f
     //      $SYS/B1PPagEqZ/disconnect/clients

@@ -1,8 +1,36 @@
 "use strict";
 
 let Rx = require('rxjs/Rx');
+let stat = require('./stat.js');
+let disk = require('diskusage');
 
-var entities = {};
+var entities = {
+    init: function (client) {
+        const SLEEP = 1000; // milliseconds between instruction
+
+        Rx.Observable.timer(0, 5000
+        ).switchMap(() => Rx.Observable.fromPromise(new Promise((resolve, reject) => {
+                    stat.cpuUsage(function (err, cpuUsageVal) {
+                        if (!err) {
+                            disk.check(".", function(err, info) {
+                                if (err) {
+                                    reject(err);
+                                } else {
+                                    // System states.
+                                    resolve({ memory: stat.memory, cpuUsage: cpuUsageVal,disk:info });
+                                }
+                            });
+                        } else {
+                            reject(err);
+                        }
+                    })
+                }))
+            , (outerValue, innerValue) => innerValue
+            ).subscribe((payload) => {
+                client.publish("im/event/rpiheart/usage", JSON.stringify(payload));
+            });
+    }
+};
 
 //Entity internal volatile current state
 entities.imState = {};
@@ -265,12 +293,6 @@ entities.energyEntity = function (client, entityCommand, inPlayLoad) {
 */
 entities.imEntity = function (client, entityCommand, inPlayLoad) {
 
-    if (entityCommand == 'server') {
-        //update internal state
-        entities.imState.server = inPlayLoad;
-        client.publish("im/event/rpiheart/status", JSON.stringify(entities.imState), { retain: true });
-    }
-
     if (entityCommand == 'clients') {
         //update internal state
         entities.imState.brokerClients = inPlayLoad.clients;
@@ -287,6 +309,5 @@ entities.imEntity = function (client, entityCommand, inPlayLoad) {
         client.publish("im/command/eyes/color", JSON.stringify({ origin: 'im-brain', rgba: inPlayLoad.rgba }));
         client.publish("im/command/energy/on", JSON.stringify({ origin: 'im-brain', rgb: inPlayLoad.rgba.substr(0, 6) }));
     }
-
 }
 module.exports = entities;

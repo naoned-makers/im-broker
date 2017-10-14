@@ -93,8 +93,11 @@ Playload en json qui contient au moins un attribut origin
 Event path|playload|comment
 --- | --- | ---
 im/event/rpiheart/pwmhat/2 | { pulse: \< int pulse value > }
-im/event/rpiheart/status|{server:/<json serverInfo>, brokerClients:[\< array broker client name>]}      
+im/event/rpiheart/status|{brokerClients:[\< array broker client name>]}      
 im/event/rpiheart/neopixel|off/on/beat/chase| {speed:\<ms>, repeat:\<nb>, rgb:FFFFFF}
+im/event/rpiheart/usage| { memory: { free: 12831096832, total: 16477089792, percentage: 22 },  cpuUsage: '25.12', disk:{ free: 255911464960,total: 420273078272 } }
+
+
 im/event/ia/chat/message|TO_DEFINE
 
 ---

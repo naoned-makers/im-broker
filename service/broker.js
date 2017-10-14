@@ -51,7 +51,6 @@ server.on('ready', function () {
     let serviceType = mdns.makeServiceType({ name: 'im-broker', protocol: 'tcp' });
     let ad = mdns.createAdvertisement(serviceType, MQTT_PORT,{txtRecord: txt_record});
     ad.start();
-    //REPLACE by mdns   publishServerInfo();
 });
 
 server.on('clientConnected', function (client) {
@@ -67,18 +66,6 @@ server.on('clientDisconnected', function (client) {
 server.on('published', function (packet, client) {
     //console.log('Published', packet.topic + " " +packet.payload);
 });
-
-
-function publishServerInfo() {
-    let mqttMessage = {
-        topic: "im/command/im/server",
-        payload: JSON.stringify({ origin: "broker", ip: ip.address(), hostname: os.hostname(), mqttPort: moscaSettings.port, wsPort: moscaSettings.http.port}),
-        qos: 0,
-        retain: true
-    };
-    server.publish(mqttMessage);
-}
-
 
 function publishUpdatedClientList() {
     //console.log(Object.keys(server.clients));

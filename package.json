@@ -15,6 +15,7 @@
   "author": "dbatiot",
   "license": "MIT",
   "dependencies": {
+    "diskusage": "^0.2.4",
     "express": "^4.15.3",
     "firebase": "^4.3.0",
     "firebase-admin": "^5.2.1",
