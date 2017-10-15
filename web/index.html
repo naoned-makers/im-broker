@@ -6,14 +6,24 @@
     <title>Welcome to DevFest Nantes 2017</title>
     <link rel="stylesheet" type="text/css" href="styles/styles.css">
     <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function(){
+            let svg = document.getElementById('legosvg');
+            if(window.innerWidth< 650){
+                svg.width=window.innerWidth;
+                console.log("###########width"+window.innerWidth);
+            }else{
+                svg.height=window.innerHeight;
+                console.log("###########height"+window.innerHeight);
+            }
+            svg.style.visibility='visible';
+        });
+    </script>
 </head>
-
 <body>
     <object id="legosvg" type="image/svg+xml" data="../img/ironman.svg" class="lego"></object>
-
     <script src="scripts/mqtt.min.js"></script>
     <script src="scripts/touch.js"></script>
-    <script src="scripts/ws.js"></script>
+    <script src="scripts/ws.js"></script>    
 </body>
-
 </html>

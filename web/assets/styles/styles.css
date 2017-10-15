@@ -1,18 +1,12 @@
-body {
-    background-color: #202020;
-    /*width: 100%;
-	height: 100%;*/
+html,body {
+    background-color: #212121;
 	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	height:100%;
 }
-#touchzone {
-    display: block;
-	width: 20%;
-	height: 20%;
+#legosvg{
 	margin: auto;
-}
-#coords {
-    color: white;
-}
-.head {
-	opacity: 0.4;
+	visibility: hidden;
 }
