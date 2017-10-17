@@ -1,20 +1,22 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="utf-8" />
     <title>Welcome to DevFest Nantes 2017</title>
     <link rel="stylesheet" type="text/css" href="styles/styles.css">
     <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
     <script type="text/javascript">
+        var urlParams = new URLSearchParams(window.location.search);
+        var mqttServer = 'ws://'+window.location.hostname+':3000';
+        if (urlParams.get('mqttServer')){
+            mqttServer = 'ws://'+urlParams.get('mqttServer')+':3000';
+        }
         document.addEventListener('DOMContentLoaded', function(){
             let svg = document.getElementById('legosvg');
             if(window.innerWidth< 650){
                 svg.width=window.innerWidth;
-                console.log("###########width"+window.innerWidth);
             }else{
                 svg.height=window.innerHeight;
-                console.log("###########height"+window.innerHeight);
             }
             svg.style.visibility='visible';
         });

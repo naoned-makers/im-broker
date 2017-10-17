@@ -4,6 +4,7 @@ let mqtt = require('mqtt');
 let os = require("os");
 let entities = require('../domain/entities.js'); //Domains Entity
 
+//console.log(im);
 /**
  * command handler who listen to mqtt commande message topics
  * Logic based on CQRS E/S architecture
@@ -33,7 +34,10 @@ client.on('message', function (topic, strPlayload) {
     }
     //call the matching entity domain
     if (entities[entityCode + 'Entity']) {
+
+
         entities[entityCode + 'Entity'](client, entityCommand, payLoad);
+
     } else {
         console.log('\x1b[34m%s\x1b[0m', "Entity domain not found");
     }

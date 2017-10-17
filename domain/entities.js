@@ -3,6 +3,88 @@
 let Rx = require('rxjs/Rx');
 let stat = require('./stat.js');
 let disk = require('diskusage');
+let { types, onSnapshot, onPatch }= require("mobx-state-tree");
+
+
+/**********************************
+ ****** MODEL *********************
+***********************************/
+const ImAction = types.model("ImAction", {
+    key: types.identifier(),
+    label: types.string,
+}).actions(self => ({
+    use() {
+        //self.busy = true;
+    }
+}))
+
+const ImPart = types.model("ImPart", {
+    key: types.identifier(),
+    label: types.string,
+    parts : types.maybe(types.map(types.late(() =>ImPart))),
+    command : types.maybe(types.string)
+}).actions(self => ({
+    do(command) {
+        self.command = command;
+    },
+    free() {
+        self.command = undefined;
+    },
+    isFree(){
+        return self.command == undefined;
+    },
+    childDo(partKey, command) {
+       self.parts.get(partKey).do(command);
+    },
+    childFree(partKey, command) {
+       self.parts.get(partKey).free();
+    },
+    addChild(part){
+        if(!self.parts){
+            self.parts = {};
+        }
+        self.parts.put(part);
+    }
+}))
+
+
+/**********************************
+ ****** MODEL *********************
+***********************************/
+var im = ImPart.create({ key:'im',label:'Im aggregate'});
+let head = ImPart.create({ key:'head',label:'Im head'});
+let helmet = ImPart.create({ key:'helmet',label:'Im helmet'});
+let leftarm = ImPart.create({ key:'leftarm',label:'Im leftarm'});
+let rightarm = ImPart.create({ key:'rightarm',label:'Im rightarm'});
+let lefthand = ImPart.create({ key:'lefthand',label:'Im lefthand'})
+let righhand = ImPart.create({ key:'righhand',label:'Im righhand'})
+
+im.addChild(head);
+im.addChild(helmet);
+im.addChild(leftarm);
+im.addChild(rightarm);
+im.addChild(lefthand);
+im.addChild(righhand);
+
+// listen to new snapshots
+onSnapshot(im, (snapshot) => {
+    console.dir(snapshot)
+})
+onPatch(im, patch => {
+    console.dir("Got change: "+ JSON.stringify(patch));
+})
+
+
+//im.childDo('head','move');
+//head.free();
+
+
+
+
+
+
+
+
 
 var entities = {
     init: function (client) {
@@ -207,9 +289,15 @@ entities.eyesEntity = function (client, entityCommand, inPlayLoad) {
         client.publish("im/event/rpiheart/pwmhat/" + LED_BLUE_CHANNEL, JSON.stringify({ pulse: b }));
     } else {
         //default on - sleep 300  - off
-        client.publish("im/command/eyes/on", JSON.stringify({ origin: 'im-brain' }));
+        let pulse = PWM_MAX;
+        client.publish("im/event/rpiheart/pwmhat/" + LED_RED_CHANNEL, JSON.stringify({ pulse: 300 }));
+        client.publish("im/event/rpiheart/pwmhat/" + LED_GREEN_CHANNEL, JSON.stringify({ pulse: 300 }));
+        client.publish("im/event/rpiheart/pwmhat/" + LED_BLUE_CHANNEL, JSON.stringify({ pulse: 3000 }));
         setTimeout(function () {
-            client.publish("im/command/eyes/off", JSON.stringify({ origin: 'im-brain' }));
+            let pulse = PWM_MIN;
+            client.publish("im/event/rpiheart/pwmhat/" + LED_RED_CHANNEL, JSON.stringify({ pulse: pulse }));
+            client.publish("im/event/rpiheart/pwmhat/" + LED_GREEN_CHANNEL, JSON.stringify({ pulse: pulse }));
+            client.publish("im/event/rpiheart/pwmhat/" + LED_BLUE_CHANNEL, JSON.stringify({ pulse: pulse }));
         }, 200)
     }
 }

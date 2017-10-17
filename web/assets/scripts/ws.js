@@ -1,7 +1,7 @@
 /**
     PARTIE MQTT sur WEBSOCKET
 */
-var client = mqtt.connect('ws://'+window.location.hostname+':3000',{clientId:'webcommand_'+ Math.random().toString(16).substr(2, 8)});
+var client = mqtt.connect(mqttServer,{clientId:'webcommand_'+ Math.random().toString(16).substr(2, 8)});
 
 //Emitted on successful (re)connection 
 client.on('connect', function () { 
