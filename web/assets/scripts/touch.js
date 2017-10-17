@@ -1,11 +1,11 @@
 let cpt = 0;
 let upWay = true;
 
-let MOVE_LEFT_ARM = "leftarm/move";
-let MOVE_RIGHT_ARM = "rightarm/move";
-let MOVE_LEFT_HAND = "lefthand/move";
-let MOVE_RIGHT_HAND = "righthand/move";
-let MOVE_HEAD = "head/move";
+let MOVE_LEFT_ARM = "leftarm/next";
+let MOVE_RIGHT_ARM = "rightarm/next";
+let MOVE_LEFT_HAND = "lefthand/next";
+let MOVE_RIGHT_HAND = "righthand/next";
+let MOVE_HEAD = "head/next";
 let LIGHT_EYES = "eyes/light";
 let LIGHT_ENERGY = "energy/beat";
 

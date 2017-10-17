@@ -9,7 +9,6 @@ let {
     onPatch
 } = require("mobx-state-tree");
 
-
 /**********************************
  ****** MODEL *********************
  ***********************************/
@@ -26,11 +25,34 @@ const ImPart = types.model("ImPart", {
     key: types.identifier(),
     label: types.string,
     parts: types.maybe(types.map(types.late(() => ImPart))),
-    command: types.maybe(types.string)
+    command: types.maybe(types.string),
+    lastActivity: types.optional(types.Date, () => new Date()),
+
+    pwmChannel: types.maybe(types.number), //TODO extract in inheritance model ImpPmwPart
+    pwmCurrent: types.maybe(types.number), //TODO extract in inheritance model ImpPmwPart
+    pwmSteps: types.maybe(types.array(types.number))//TODO extract in inheritance model ImpPmwPart
 }).actions(self => ({
-    do(command) {
-        console.debug(self.key +" do command"+command);
+    init(pClient){
+        entities.startPeriodic(pClient);
+    },
+    do(pClient,command, payLoad) {
         self.command = command;
+        self.lastActivity = new Date();
+        entities[self.key + 'Entity'](pClient, command, payLoad);
+    },
+    changePwmTo(pClient,currentPulse) {
+        self.pwmCurrent = currentPulse;
+        pClient.publish("im/event/rpiheart/pwmhat/" + self.pwmChannel, JSON.stringify({
+            pulse: currentPulse
+        }));
+    },
+    nextPwmStep(pClient){
+        let curIndex = self.pwmSteps.findIndex((pulse)=>(pulse==self.pwmCurrent));
+        let currentPulse = self.pwmSteps[0];
+        if(curIndex+1 < self.pwmSteps.length){
+            currentPulse = self.pwmSteps[curIndex+1];
+        }
+        self.changePwmTo(pClient,currentPulse) ;
     },
     free() {
         self.command = 'none';
@@ -38,8 +60,8 @@ const ImPart = types.model("ImPart", {
     isFree() {
         return self.command == 'none';
     },
-    childDo(partKey, command) {
-        self.parts.get(partKey).do(command);
+    maybeInactive() {
+        return (self.key.indexOf('arm') > -1 || self.key.indexOf('hand') > -1);
     },
     childFree(partKey, command) {
         self.parts.get(partKey).free();
@@ -50,7 +72,17 @@ const ImPart = types.model("ImPart", {
         }
         self.parts.put(part);
     }
-}))
+})).views(self => {
+    return {
+        get lastBodyActivity() {
+            //Last arm or hand activity
+            return self.parts.values().filter(p => p.maybeInactive()).map(p => p.lastActivity).reduce(function (reduced, currentVal) {
+                //take the oldest
+                return (reduced > currentVal) ? currentVal : reduced;
+            }, new Date());
+        }
+    };
+})
 
 let cancelPromise = new Promise((resolve, reject) => {
     // réaliser une tâche asynchrone et appeler : 
@@ -67,29 +99,71 @@ var im = ImPart.create({
     key: 'im',
     label: 'Im aggregate'
 });
+const CHANNEL_HEAD = 2;
+const SERVO_MIN_HEAD = 165; //Min pulse length out of 4096 POSITION BASSE
+const SERVO_MIDDLE_HEAD = 305; // Middle pulse length out of 4096
+const SERVO_MAX_HEAD = 450; // Max pulse length out of 4096 POSITION HAUTE
+
 let head = ImPart.create({
     key: 'head',
-    label: 'Im head'
+    label: 'Im head',
+    pwmChannel: CHANNEL_HEAD,
+    pwmSteps:[SERVO_MIN_HEAD,SERVO_MIDDLE_HEAD,SERVO_MAX_HEAD],
+    pwmCurrent:SERVO_MIDDLE_HEAD//assume we start as this
 });
+const CHANNEL_HELMET = 7;
+const SERVO_MIN_HELMET = 170; //Min pulse length out of 4096 POSITION BASSE
+const SERVO_MAX_HELMET = 325; // Max pulse length out of 4096 POSITION HAUTE
 let helmet = ImPart.create({
     key: 'helmet',
-    label: 'Im helmet'
+    label: 'Im helmet',
+    pwmChannel: CHANNEL_HELMET,
+    pwmSteps:[SERVO_MIN_HELMET,SERVO_MAX_HELMET],
+    pwmCurrent:SERVO_MIN_HELMET//assume we start as this
 });
+const CHANNEL_LEFT_ARM = 0;
+const SERVO_MIN_LEFT_ARM = 165; // Min pulse length out of 4096 POSITION BASSE
+const SERVO_MIDDLE_LEFT_ARM = 280; // Middle pulse length out of 4096
+const SERVO_MAX_LEFT_ARM = 350; // Max pulse length out of 4096 POSITION HAUTE 
 let leftarm = ImPart.create({
     key: 'leftarm',
-    label: 'Im leftarm'
+    label: 'Im leftarm',
+    pwmChannel: CHANNEL_LEFT_ARM,
+    pwmSteps:[SERVO_MIN_LEFT_ARM,SERVO_MIDDLE_LEFT_ARM,SERVO_MAX_LEFT_ARM],
+    pwmCurrent:SERVO_MIN_LEFT_ARM//assume we start as this
 });
+const CHANNEL_RIGHT_ARM = 1
+const SERVO_MIN_RIGHT_ARM = 480; // Min pulse length out of 4096 POSITION BASSE
+const SERVO_MIDDLE_RIGHT_ARM = 350; // Middle pulse length out of 4096
+const SERVO_MAX_RIGHT_ARM = 290; // Max pulse length out of 4096 POSITION HAUTE
 let rightarm = ImPart.create({
     key: 'rightarm',
-    label: 'Im rightarm'
+    label: 'Im rightarm',
+    pwmChannel: CHANNEL_RIGHT_ARM,
+    pwmSteps:[SERVO_MIN_RIGHT_ARM,SERVO_MIDDLE_RIGHT_ARM,SERVO_MAX_RIGHT_ARM],
+    pwmCurrent:SERVO_MIN_RIGHT_ARM//assume we start as this
 });
+const CHANNEL_LEFT_HAND = 5
+const SERVO_MIN_LEFT_HAND = 160 // Min pulse length out of 4096 POSITION BASSE
+const SERVO_MIDDLE_LEFT_HAND = 240 // Middle pulse length out of 4096
+const SERVO_MAX_LEFT_HAND = 350 // Max pulse length out of 4096 POSITION HAUTE
 let lefthand = ImPart.create({
     key: 'lefthand',
-    label: 'Im lefthand'
+    label: 'Im lefthand',
+    pwmChannel: CHANNEL_LEFT_HAND,
+    pwmSteps:[SERVO_MIN_LEFT_HAND,SERVO_MIDDLE_LEFT_HAND,SERVO_MAX_LEFT_HAND],
+    pwmCurrent:SERVO_MIDDLE_LEFT_HAND//assume we start as this
 })
-let righhand = ImPart.create({
+const CHANNEL_RIGHT_HAND = 4
+const SERVO_MIN_RIGHT_HAND = 240 // Min pulse length out of 4096 POSITION BASSE
+const SERVO_MIDDLE_RIGHT_HAND = 360 // Middle pulse length out of 4096
+const SERVO_MAX_RIGHT_HAND = 440 // Max pulse length out of 4096 POSITION HAUTE
+let righthand = ImPart.create({
     key: 'righthand',
-    label: 'Im righhand'
+    label: 'Im righthand',
+    pwmChannel: CHANNEL_RIGHT_HAND,
+    pwmSteps:[SERVO_MIN_RIGHT_HAND,SERVO_MIDDLE_RIGHT_HAND,SERVO_MAX_RIGHT_HAND],
+    pwmCurrent:SERVO_MIDDLE_RIGHT_HAND//assume we start as this
 })
 let eyes = ImPart.create({
     key: 'eyes',
@@ -106,7 +180,7 @@ im.addChild(helmet);
 im.addChild(leftarm);
 im.addChild(rightarm);
 im.addChild(lefthand);
-im.addChild(righhand);
+im.addChild(righthand);
 im.addChild(eyes);
 im.addChild(energy);
 
@@ -115,20 +189,13 @@ onSnapshot(im, (snapshot) => {
     //console.dir(snapshot)
 })
 onPatch(im, patch => {
-    console.dir("Got change: " + JSON.stringify(patch));
+    //console.dir("Got change: " + JSON.stringify(patch));
 })
 
-
-
-
-
-
-
-
-var entities = {
-    init: function (client) {
+let entities = {
+    startPeriodic: function (client) {
         const SLEEP = 1000; // milliseconds between instruction
-
+        //cpu,mem,disk periodic trigger
         Rx.Observable.timer(0, 5000).switchMap(() => Rx.Observable.fromPromise(new Promise((resolve, reject) => {
             stat.cpuUsage(function (err, cpuUsageVal) {
                 if (!err) {
@@ -151,51 +218,52 @@ var entities = {
         })), (outerValue, innerValue) => innerValue).subscribe((payload) => {
             client.publish("im/event/rpiheart/usage", JSON.stringify(payload));
         });
+        //INACTIVITY_PERIOD trigger
+        const INACTIVITY_PERIOD = 1000 * 60 * 2; //Do nothing more than 2 minutes
+        const INACTIVITY_SLEEP = 2000; // milliseconds between part move
+        Rx.Observable.timer(5000).map(t => im.lastBodyActivity).filter(last => (new Date() - last) > INACTIVITY_PERIOD).subscribe((payload) => {
+            var cadence = Rx.Observable.timer(0, INACTIVITY_SLEEP);
+            var moves = Rx.Observable.from([leftarm, rightarm, righthand, lefthand]);
+            Rx.Observable.zip(cadence, moves, (s1, s2) => s2).subscribe(function (imPart) {
+                client.publish("im/command/" + imPart.key + "/move", JSON.stringify({
+                    origin: 'im-inactivity'
+                }));
+            });
+
+        });
+        console.log("Periodic task started");
     }
 };
-
-//Entity internal volatile current state
-entities.imState = {};
 
 /**
  * leftarm entity domain
  * execute validation and consequential logic
  */
 entities.leftarmEntity = function (client, entityCommand, playLoad) {
-    //HITEC HS-5645MG 50Hz LEFT ARM
-    const CHANNEL_LEFT_ARM = 0;
-    const SERVO_MIN_LEFT_ARM = 165; // Min pulse length out of 4096 POSITION BASSE
-    const SERVO_MIDDLE_LEFT_ARM = 280; // Middle pulse length out of 4096
-    const SERVO_MAX_LEFT_ARM = 350; // Max pulse length out of 4096 POSITION HAUTE 
-    const SLEEP = 1000; // milliseconds between instructions   
-
     if (entityCommand == 'up' && helmet.isFree()) {
-        client.publish("im/event/rpiheart/pwmhat/" + CHANNEL_LEFT_ARM, JSON.stringify({
-            pulse: SERVO_MAX_LEFT_ARM
-        }));
+        leftarm.changePwmTo(client,SERVO_MAX_LEFT_ARM);
+        leftarm.free();
     } else if (entityCommand == 'down') {
-        client.publish("im/event/rpiheart/pwmhat/" + CHANNEL_LEFT_ARM, JSON.stringify({
-            pulse: SERVO_MIN_LEFT_ARM
-        }));
+        leftarm.changePwmTo(client,SERVO_MIN_LEFT_ARM);
+        leftarm.free();
+    } else if (entityCommand == 'next' && helmet.isFree()) {
+        leftarm.nextPwmStep(client)
         leftarm.free();
     } else if (helmet.isFree()) {
         //##DEFAULT move
         //the instructions is ended afer 1 secondes
-        var cadence = Rx.Observable.timer(0, SLEEP).takeUntil(Rx.Observable.timer(SLEEP * 5));
-        var moves = Rx.Observable.from([SERVO_MIN_LEFT_ARM, SERVO_MIDDLE_LEFT_ARM, SERVO_MAX_LEFT_ARM, SERVO_MIN_LEFT_ARM]);
-        Rx.Observable.zip(cadence, moves, (s1, s2) => s2).map((pulse) => JSON.stringify({
-                pulse: pulse
-            }))
-            .subscribe(function (pulseStrPlayload) {
-                    if (helmet.isFree()) {
-                        client.publish("im/event/rpiheart/pwmhat/" + CHANNEL_LEFT_ARM, pulseStrPlayload);
-                    }
-                },
-                function (err) {},
-                function () {
-                    console.log("leftarm free" + leftarm.command);
-                    leftarm.free();
-                })
+        const SLEEP = 1000; // milliseconds between instructions  
+        let cadence = Rx.Observable.timer(0, SLEEP).takeUntil(Rx.Observable.timer(SLEEP * 5));
+        let moves = Rx.Observable.from([SERVO_MIN_LEFT_ARM, SERVO_MIDDLE_LEFT_ARM, SERVO_MAX_LEFT_ARM, SERVO_MIN_LEFT_ARM]);
+        Rx.Observable.zip(cadence, moves, (s1, s2) => s2).subscribe(function (pulse) {
+                if (helmet.isFree()) {
+                    leftarm.changePwmTo(client,pulse);
+                }
+            }, (err) => {},
+            function () {
+                console.log("leftarm free" + leftarm.command);
+                leftarm.free();
+            })
     }
 }
 /**
@@ -203,41 +271,31 @@ entities.leftarmEntity = function (client, entityCommand, playLoad) {
  * execute validation and consequential logic
  */
 entities.rightarmEntity = function (client, entityCommand, playLoad) {
-    //HITEC HS-5645MG 50Hz LEFT ARM
-    const CHANNEL_RIGHT_ARM = 1;
-    const SERVO_MIN_RIGHT_ARM = 480; // Min pulse length out of 4096 POSITION BASSE
-    const SERVO_MIDDLE_RIGHT_ARM = 350; // Middle pulse length out of 4096
-    const SERVO_MAX_RIGHT_ARM = 290; // Max pulse length out of 4096 POSITION HAUTE
-    const SLEEP = 1000; // milliseconds between instructions
-
-
     if (entityCommand == 'up' && helmet.isFree()) {
-        client.publish("im/event/rpiheart/pwmhat/" + CHANNEL_RIGHT_ARM, JSON.stringify({
-            pulse: SERVO_MAX_RIGHT_ARM
-        }));
+        rightarm.changePwmTo(client,CHANNEL_RIGHT_ARM);
+        rightarm.free();
     } else if (entityCommand == 'down') {
-        client.publish("im/event/rpiheart/pwmhat/" + CHANNEL_RIGHT_ARM, JSON.stringify({
-            pulse: SERVO_MIN_RIGHT_ARM
-        }));
+        rightarm.changePwmTo(client,SERVO_MIN_RIGHT_ARM);
+        rightarm.free();
+    } else if (entityCommand == 'next' && helmet.isFree()) {
+        rightarm.nextPwmStep(client);
         rightarm.free();
     } else if (helmet.isFree()) {
         //##DEFAULT move
         //the instructions is ended afer 1 secondes
+        const SLEEP = 1000; // milliseconds between instructions  
         const stop$ = Rx.Observable.merge(Rx.Observable.fromPromise(cancelPromise), Rx.Observable.timer(SLEEP * 5))
-        var cadence = Rx.Observable.timer(0, SLEEP).takeUntil(stop$);
-        var moves = Rx.Observable.from([SERVO_MIN_RIGHT_ARM, SERVO_MIDDLE_RIGHT_ARM, SERVO_MAX_RIGHT_ARM, SERVO_MIN_RIGHT_ARM]);
-        Rx.Observable.zip(cadence, moves, (s1, s2) => s2).map((pulse) => JSON.stringify({
-                pulse: pulse
-            }))
-            .subscribe(function (pulseStrPlayload) {
-                    if (helmet.isFree()) {
-                        client.publish("im/event/rpiheart/pwmhat/" + CHANNEL_RIGHT_ARM, pulseStrPlayload);
-                    }
-                },
-                function (err) {},
-                function () {
-                    rightarm.free();
-                })
+        let cadence = Rx.Observable.timer(0, SLEEP).takeUntil(stop$);
+        let moves = Rx.Observable.from([SERVO_MIN_RIGHT_ARM, SERVO_MIDDLE_RIGHT_ARM, SERVO_MAX_RIGHT_ARM, SERVO_MIN_RIGHT_ARM]);
+        Rx.Observable.zip(cadence, moves, (s1, s2) => s2).subscribe(function (pulse) {
+                if (helmet.isFree()) {
+                    rightarm.changePwmTo(client,pulse);
+                }
+            }, (err) => {},
+            function () {
+                console.log("right arm free" + rightarm.command);
+                rightarm.free();
+            })
     }
 
 }
@@ -246,23 +304,24 @@ entities.rightarmEntity = function (client, entityCommand, playLoad) {
  * execute validation and consequential logic
  */
 entities.lefthandEntity = function (client, entityCommand, playLoad) {
-    // HITEC HS-5645MG 50Hz LEFT ARM
-    const CHANNEL_LEFT_HAND = 5
-    const SERVO_MIN_LEFT_HAND = 160 // Min pulse length out of 4096 POSITION BASSE
-    const SERVO_MIDDLE_LEFT_HAND = 240 // Middle pulse length out of 4096
-    const SERVO_MAX_LEFT_HAND = 350 // Max pulse length out of 4096 POSITION HAUTE
-    const SLEEP = 1000; // milliseconds between instructions   
 
-    //##DEFAULT move
-    //the instructions is ended afer 1 secondes
-    var cadence = Rx.Observable.timer(0, SLEEP);
-    var moves = Rx.Observable.from([SERVO_MIDDLE_LEFT_HAND, SERVO_MAX_LEFT_HAND, SERVO_MIN_LEFT_HAND, SERVO_MIDDLE_LEFT_HAND]);
-    Rx.Observable.zip(cadence, moves, (s1, s2) => s2).map((pulse) => JSON.stringify({
-            pulse: pulse
-        }))
-        .subscribe(function (pulseStrPlayload) {
-            client.publish("im/event/rpiheart/pwmhat/" + CHANNEL_LEFT_HAND, pulseStrPlayload);
-        })
+    if (entityCommand == 'next') {
+        lefthand.nextPwmStep(client);
+        lefthand.free();
+    } else {
+        //##DEFAULT move
+        //the instructions is ended afer 1 secondes
+        const SLEEP = 1000; // milliseconds between instructions   
+        let cadence = Rx.Observable.timer(0, SLEEP).takeUntil(Rx.Observable.timer(SLEEP * 5));
+        let moves = Rx.Observable.from([SERVO_MIDDLE_LEFT_HAND, SERVO_MAX_LEFT_HAND, SERVO_MIN_LEFT_HAND, SERVO_MIDDLE_LEFT_HAND]);
+        Rx.Observable.zip(cadence, moves, (s1, s2) => s2).subscribe(function (pulse) {
+                lefthand.changePwmTo(client,pulse);
+            }, (err) => {},
+            function () {
+                console.log("left hand free" + lefthand.command);
+                lefthand.free();
+            })
+    }
 
 }
 
@@ -271,24 +330,24 @@ entities.lefthandEntity = function (client, entityCommand, playLoad) {
  * execute validation and consequential logic
  */
 entities.righthandEntity = function (client, entityCommand, playLoad) {
-    // HITEC HS-5645MG 50Hz LEFT ARM
-    const CHANNEL_RIGHT_HAND = 4
-    const SERVO_MIN_RIGHT_HAND = 240 // Min pulse length out of 4096 POSITION BASSE
-    const SERVO_MIDDLE_RIGHT_HAND = 360 // Middle pulse length out of 4096
-    const SERVO_MAX_RIGHT_HAND = 440 // Max pulse length out of 4096 POSITION HAUTE
-    const SLEEP = 1000; // milliseconds between instructions   
 
-    //##DEFAULT move
-    //the instructions is ended afer 1 secondes
-    var cadence = Rx.Observable.timer(0, SLEEP);
-    var moves = Rx.Observable.from([SERVO_MIDDLE_RIGHT_HAND, SERVO_MAX_RIGHT_HAND, SERVO_MIN_RIGHT_HAND, SERVO_MIDDLE_RIGHT_HAND]);
-    Rx.Observable.zip(cadence, moves, (s1, s2) => s2).map((pulse) => JSON.stringify({
-            pulse: pulse
-        }))
-        .subscribe(function (pulseStrPlayload) {
-            client.publish("im/event/rpiheart/pwmhat/" + CHANNEL_RIGHT_HAND, pulseStrPlayload);
-        })
-
+    if (entityCommand == 'next') {
+        righthand.nextPwmStep(client);
+        righthand.free();
+    } else {
+        //##DEFAULT move
+        //the instructions is ended afer 1 secondes
+        const SLEEP = 1000; // milliseconds between instructions 
+        let cadence = Rx.Observable.timer(0, SLEEP).takeUntil(Rx.Observable.timer(SLEEP * 5));
+        let moves = Rx.Observable.from([SERVO_MIDDLE_RIGHT_HAND, SERVO_MAX_RIGHT_HAND, SERVO_MIN_RIGHT_HAND, SERVO_MIDDLE_RIGHT_HAND]);
+        Rx.Observable.zip(cadence, moves, (s1, s2) => s2).subscribe(function (pulse) {
+                righthand.changePwmTo(client,pulse);
+            }, (err) => {},
+            function () {
+                console.log("left hand free" + righthand.command);
+                righthand.free();
+            })
+    }
 }
 
 /**
@@ -296,13 +355,6 @@ entities.righthandEntity = function (client, entityCommand, playLoad) {
  * execute validation and consequential logic
  */
 entities.headEntity = function (client, entityCommand, inPlayLoad) {
-    //HITEC HS-5645MG 50Hz LEFT ARM
-    const CHANNEL_HEAD = 2;
-    const SERVO_MIN_HEAD = 165; //Min pulse length out of 4096 POSITION BASSE
-    const SERVO_MIDDLE_HEAD = 305; // Middle pulse length out of 4096
-    const SERVO_MAX_HEAD = 450; // Max pulse length out of 4096 POSITION HAUTE
-    const SLEEP = 1000; // milliseconds between instructions   
-
     if (entityCommand == 'facetrackmove') {
         //    /im/command/head/facetrackstart
         //          {origin:'camera',face:'base64faceimage',absPosition:%}
@@ -314,32 +366,81 @@ entities.headEntity = function (client, entityCommand, inPlayLoad) {
         const angle = (inPlayLoad.absPosition / 100 * range) - (range / 2); //0-2 -> -1 - 1 or  //0-3 -> 1,5 -> 0,9
         const headPosition = (Math.tanh(angle) + 1) / 2; // +-0,76  -> 0,12 to 0,87
         let currentPulse = SERVO_MIN_HEAD + headPosition * (SERVO_MAX_HEAD - SERVO_MIN_HEAD);
-        //let currentPulse = SERVO_MIN_HEAD + inPlayLoad.absPosition * (SERVO_MAX_HEAD - SERVO_MIN_HEAD) / 100;
-        let pulseStrPlayload = JSON.stringify({
-            pulse: currentPulse
-        });
-        client.publish("im/event/rpiheart/pwmhat/" + CHANNEL_HEAD, pulseStrPlayload);
+        head.changePwmTo(client,Math.round(currentPulse));
+        head.free();
+    } else if (entityCommand == 'next') {
+        head.nextPwmStep(client);
+        head.free();
     } else if (entityCommand == 'reset') {
-        client.publish("im/event/rpiheart/pwmhat/" + CHANNEL_HEAD, JSON.stringify({
-            pulse: SERVO_MIDDLE_HEAD
-        }));
+        head.changePwmTo(client,SERVO_MIDDLE_HEAD);
+        head.free();
     } else {
         //##DEFAULT move
         //the instructions is ended afer 1 secondes
-        var cadence = Rx.Observable.timer(0, SLEEP).takeUntil(Rx.Observable.timer(SLEEP * 5));
-        var moves = Rx.Observable.from([SERVO_MIDDLE_HEAD, SERVO_MAX_HEAD, SERVO_MIN_HEAD, SERVO_MIDDLE_HEAD]);
-        Rx.Observable.zip(cadence, moves, (s1, s2) => s2).map((pulse) => JSON.stringify({
-                pulse: pulse
-            }))
-            .subscribe(function (pulseStrPlayload) {
-                    client.publish("im/event/rpiheart/pwmhat/" + CHANNEL_HEAD, pulseStrPlayload);
-                },
-                function (err) {},
-                function () {
-                    head.free();
-                })
+        const SLEEP = 1000; // milliseconds between instructions   
+        let cadence = Rx.Observable.timer(0, SLEEP).takeUntil(Rx.Observable.timer(SLEEP * 5));
+        let moves = Rx.Observable.from([SERVO_MIDDLE_HEAD, SERVO_MAX_HEAD, SERVO_MIN_HEAD, SERVO_MIDDLE_HEAD]);
+        Rx.Observable.zip(cadence, moves, (s1, s2) => s2).subscribe(function (pulse) {
+                head.changePwmTo(client,pulse);
+            }, (err) => {},
+            function () {
+                console.log("head free" + head.command);
+                head.free();
+            })
+
+
     }
 }
+
+
+/**
+ * helemt entity domain
+ * execute validation and consequential logic
+ */
+entities.helmetEntity = function (client, entityCommand, inPlayLoad) {
+    if (leftarm.pwmCurrent == SERVO_MAX_LEFT_ARM || rightarm.pwmCurrent == SERVO_MAX_RIGHT_ARM) {
+        client.publish("im/command/leftarm/down", JSON.stringify({
+            origin: 'im-safe'
+        }));
+        client.publish("im/command/rightarm/down", JSON.stringify({
+            origin: 'im-safe'
+        }));
+        console.info("down arm before")
+        setTimeout(function () {
+            client.publish("im/command/helmet" + (entityCommand ? '/' + entityCommand : ''), JSON.stringify({
+                origin: 'im-brain'
+            }));
+        }, 500);
+        //wait to down arm before opening the helmet
+        return;
+    }
+
+    if (entityCommand == 'open') {
+        helmet.changePwmTo(client,SERVO_MAX_HELMET);
+    } else if (entityCommand == 'close') {
+        helmet.changePwmTo(client,SERVO_MIN_HELMET);
+        helmet.free();
+    } else if (entityCommand == 'next') {
+        helmet.nextPwmStep(client);
+        if(helmet.pwmCurrent==SERVO_MIN_HELMET){
+            helmet.free();
+        }
+    } else {
+        //##DEFAULT move
+        //the instructions is ended afer 4 secondes
+        const SLEEP = 4000; // milliseconds between instructions
+        var cadence = Rx.Observable.timer(0, SLEEP).takeUntil(Rx.Observable.timer(SLEEP * 2 + 1000));
+        var moves = Rx.Observable.from([SERVO_MAX_HELMET, SERVO_MIN_HELMET]);
+        Rx.Observable.zip(cadence, moves, (s1, s2) => s2).subscribe(function (pulse) {
+                helmet.changePwmTo(client,pulse);
+            }, (err) => {},
+            function () {
+                console.log("helmet free" + helmet.command);
+                helmet.free();
+            })
+    }
+}
+
 
 /**
  * eyes entity domain
@@ -416,61 +517,6 @@ entities.eyesEntity = function (client, entityCommand, inPlayLoad) {
 }
 
 /**
- * helemt entity domain
- * execute validation and consequential logic
- */
-entities.helmetEntity = function (client, entityCommand, inPlayLoad) {
-    //HITEC HS-5645MG 50Hz LEFT ARM
-    const CHANNEL_HELMET = 7;
-    const SERVO_MIN_HELMET = 170; //Min pulse length out of 4096 POSITION BASSE
-    const SERVO_MAX_HELMET = 325; // Max pulse length out of 4096 POSITION HAUTE
-    const SLEEP = 4000; // milliseconds between instructions
-
-    if (!leftarm.isFree()||!rightarm.isFree()) {
-        client.publish("im/command/leftarm/down", JSON.stringify({
-            origin: 'im-brain'
-        }));
-        client.publish("im/command/rightarm/down", JSON.stringify({
-            origin: 'im-brain'
-        })); 
-        setTimeout(function () {
-            client.publish("im/command/helmet"+(entityCommand ? '/'+entityCommand:''), JSON.stringify({
-                origin: 'im-brain'
-            }));
-        },500);
-        //wait to down arm before opening the helmet
-        return;
-    }
-
-    if (entityCommand == 'open') {
-        client.publish("im/event/rpiheart/pwmhat/" + CHANNEL_HELMET, JSON.stringify({
-            pulse: SERVO_MAX_HELMET
-        }));
-    } else if (entityCommand == 'close') {
-        client.publish("im/event/rpiheart/pwmhat/" + CHANNEL_HELMET, JSON.stringify({
-            pulse: SERVO_MIN_HELMET
-        }));
-        helmet.free();
-    } else {
-        //##DEFAULT move
-        //the instructions is ended afer 1 secondes
-        var cadence = Rx.Observable.timer(0, SLEEP).takeUntil(Rx.Observable.timer(SLEEP * 2 + 1000));
-        var moves = Rx.Observable.from([SERVO_MAX_HELMET, SERVO_MIN_HELMET]);
-        Rx.Observable.zip(cadence, moves, (s1, s2) => s2).map((pulse) => JSON.stringify({
-                pulse: pulse
-            }))
-            .subscribe(function (pulseStrPlayload) {
-                    client.publish("im/event/rpiheart/pwmhat/" + CHANNEL_HELMET, pulseStrPlayload);
-                },
-                function (err) {},
-                function () {
-                    console.log('helmet complete'+helmet.command);
-                    helmet.free();
-                })
-    }
-}
-
-/**
  * im aggregate domain
  * execute validation and consequential logic
  */
@@ -521,14 +567,6 @@ entities.energyEntity = function (client, entityCommand, inPlayLoad) {
  * execute validation and consequential logic
  */
 entities.imEntity = function (client, entityCommand, inPlayLoad) {
-
-    if (entityCommand == 'clients') {
-        //update internal state
-        entities.imState.brokerClients = inPlayLoad.clients;
-        client.publish("im/event/rpiheart/status", JSON.stringify(entities.imState), {
-            retain: true
-        });
-    }
     if (entityCommand == 'reset') {
         client.publish("im/event/rpiheart/pwmhat/reset", JSON.stringify({
             origin: 'im-brain'
@@ -557,7 +595,4 @@ entities.imEntity = function (client, entityCommand, inPlayLoad) {
         }));
     }
 }
-module.exports = {
-    entities,
-    im
-};
+module.exports = im;

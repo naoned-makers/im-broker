@@ -70,8 +70,8 @@ server.on('published', function (packet, client) {
 function publishUpdatedClientList() {
     //console.log(Object.keys(server.clients));
     let mqttMessage = {
-        topic: "im/command/im/clients",
-        payload: JSON.stringify({ origin: "broker", clients: Object.keys(server.clients) }),
+        topic: "im/event/rpiheart/status",
+        payload: JSON.stringify({brokerClients:Object.keys(server.clients)}),
         qos: 0,
         retain: true
     };

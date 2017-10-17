@@ -68,18 +68,17 @@ im/command/eyes/|color| {origin:'im-*',rgba:'FFFFFFFF'}|
 im/command/helmet/|move*| {origin:'im-*'}
 im/command/helmet/|open| {origin:'im-*'}
 im/command/helmet/|close| {origin:'im-*'}
+im/command/helmet/|next| {origin:'im-*'}
 im/command/head/|move*| {origin:'im-*'}
+im/command/head/|next| {origin:'im-*'}
 im/command/head/|facetrackmove| {origin:'im-*', absPosition: \<int absolute percent Position>}
-im/command/leftarm/|move*| {origin:'im-*'}
 im/command/rightarm/|move*| {origin:'im-*'}
 im/command/rightarm/|up| {origin:'im-*'}
 im/command/rightarm/|down| {origin:'im-*'}
+im/command/rightarm/|next| {origin:'im-*'}
 im/command/lefthand/|move*| {origin:'im-*'}
-im/command/lefthand/|up| {origin:'im-*'}
-im/command/lefthand/|down| {origin:'im-*'}
-im/command/righthand/|move*| {origin:'im-*'}
+im/command/lefthand/|next| {origin:'im-*'}
 im/command/im/|server| {origin:'im-*',ip:\<ip> ,hostname:\<hostname>, mqttPort:\<mqttPort>, wsPort:\<wsPort>,httpPort:\<httpPort>}
-im/command/im/|clients| {origin:'im-*', clients:[\< array broker client name>]}
 im/command/im/|reset|{'origin':'im-*'}|
 im/command/chat/|listenstart|{'origin':'im-*'}
 im/command/chat/|request|{'origin':'im-*','text':'la question'}
