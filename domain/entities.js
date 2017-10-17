@@ -308,7 +308,7 @@ entities.eyesEntity = function (client, entityCommand, inPlayLoad) {
  */
 entities.helmetEntity = function (client, entityCommand, inPlayLoad) {
     //HITEC HS-5645MG 50Hz LEFT ARM
-    const CHANNEL_HELMET = 6;
+    const CHANNEL_HELMET = 7;
     const SERVO_MIN_HELMT = 170;//Min pulse length out of 4096 POSITION BASSE
     const SERVO_MAX_HELMET = 325;// Max pulse length out of 4096 POSITION HAUTE
     const SLEEP = 4000; // milliseconds between instructions   
