@@ -2,7 +2,7 @@
 
 let mqtt = require('mqtt');
 let os = require("os");
-let entities = require('../domain/entities.js'); //Domains Entity
+let {entities,im} = require('../domain/entities.js'); //Domains Entity
 
 //console.log(im);
 /**
@@ -34,8 +34,11 @@ client.on('message', function (topic, strPlayload) {
     }
     //call the matching entity domain
     if (entities[entityCode + 'Entity']) {
-
-
+        if(entityCode == 'im'){
+            im.do(entityCode,entityCommand);
+        }else{
+            im.childDo(entityCode,entityCommand);
+        }
         entities[entityCode + 'Entity'](client, entityCommand, payLoad);
 
     } else {
