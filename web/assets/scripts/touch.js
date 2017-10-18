@@ -30,46 +30,60 @@ legosvg.addEventListener("load",function(){
     var energy = svgDoc.getElementById("energy");
 
     // Ajout du comportement
+
+    left_arm.addEventListener("touchstart", leftArmStartHandler, false);
     left_arm.addEventListener("mousedown", leftArmStartHandler, false);
 
+
+    right_arm.addEventListener("touchstart", rightArmStartHandler, false);
     right_arm.addEventListener("mousedown", rightArmStartHandler, false);
 
+    left_hand.addEventListener("touchstart", leftHandStartHandler, false);
     left_hand.addEventListener("mousedown", leftHandStartHandler, false);
 
+    right_hand.addEventListener("touchstart", rightHandStartHandler, false);
     right_hand.addEventListener("mousedown", rightHandStartHandler, false);
 
+    head.addEventListener("touchstart", headStartHandler, false);
     head.addEventListener("mousedown", headStartHandler, false);
 
+    energy.addEventListener("touchstart", energyStartHandler, false);
     energy.addEventListener("mousedown", energyStartHandler, false);
 }, false);
 
 
 function leftArmStartHandler(event) {
+    event.preventDefault();
     console.log('je suis dans leftArmStartHandler');
     doEmitSocket(MOVE_LEFT_ARM, 'iron man lève le bras gauche');
 }
 
 function rightArmStartHandler(event) {
+    event.preventDefault();
     console.log('je suis dans rightArmStartHandler');
     doEmitSocket(MOVE_RIGHT_ARM, 'iron man lève le bras droit');
 }
 
 function leftHandStartHandler(event) {
+    event.preventDefault();
     console.log('je suis dans leftHandStartHandler');
     doEmitSocket(MOVE_LEFT_HAND, 'iron man tourne la main gauche');
 }
 
 function rightHandStartHandler(event) {
+    event.preventDefault();
     console.log('je suis dans rightHandStartHandler');
     doEmitSocket(MOVE_RIGHT_HAND, 'iron man tourne la main droite');
 }
 
 function headStartHandler(event) {
+    event.preventDefault();
     console.log('je suis dans headStartHandler');
     doEmitSocket(MOVE_HEAD, 'iron man tourne la tête');
 }
 
 function energyStartHandler(event) {
+    event.preventDefault();
     console.log('je suis dans energyStartHandler');
     doEmitSocket(LIGHT_ENERGY, 'iron man allume les LED de son torse');
 }

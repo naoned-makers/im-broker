@@ -117,6 +117,7 @@ const SERVO_MAX_HELMET = 325; // Max pulse length out of 4096 POSITION HAUTE
 let helmet = ImPart.create({
     key: 'helmet',
     label: 'Im helmet',
+    command:'none',
     pwmChannel: CHANNEL_HELMET,
     pwmSteps:[SERVO_MIN_HELMET,SERVO_MAX_HELMET],
     pwmCurrent:SERVO_MIN_HELMET//assume we start as this
