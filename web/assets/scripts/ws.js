@@ -17,12 +17,12 @@ client.on('connect', function () {
 //Emitted after a disconnection.
  client.on('close', function () { 
     console.log('close');
-    document.getElementById("legosvg").getSVGDocument().getElementById("energy").querySelector("circle").setAttribute("fill", "red"); 
+    document.getElementById("legosvg").getSVGDocument().getElementById("energy").querySelector("circle").setAttribute("fill", "#B71C1C"); 
  })
  //Emitted when a reconnect starts.
  client.on('reconnect', function () { 
     console.log('reconnect');
-   document.getElementById("legosvg").getSVGDocument().getElementById("energy").querySelector("circle").setAttribute("fill", "orange"); 
+   document.getElementById("legosvg").getSVGDocument().getElementById("energy").querySelector("circle").setAttribute("fill", "#FFD600"); 
 })
 //Emitted when the client cannot connect (i.e. connack rc != 0) or when a parsing error occurs.
  client.on('error', function () { 
@@ -30,9 +30,8 @@ client.on('connect', function () {
     document.getElementById("legosvg").getSVGDocument().getElementById("energy").querySelector("circle").setAttribute("fill", "gray"); 
  })
 
-function doEmitSocket(entityMove, status) {
-    let playload = {'status':status,'origin':'im-web'}
-    client.publish("im/command/"+entityMove,JSON.stringify(playload),console.info);
+function mqttPublish(entityMove) {
+    client.publish("im/command/"+entityMove,JSON.stringify({'origin':'im-web'}),console.info);
 }
 
 

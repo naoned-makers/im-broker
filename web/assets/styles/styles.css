@@ -5,6 +5,7 @@ html,body {
 	flex-direction: column;
 	justify-content: center;
 	height:100%;
+	touch-action: none ;
 }
 #legosvg{
 	margin: auto;
