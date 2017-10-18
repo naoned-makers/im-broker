@@ -6,6 +6,7 @@ let MOVE_RIGHT_ARM = "rightarm/next";
 let MOVE_LEFT_HAND = "lefthand/next";
 let MOVE_RIGHT_HAND = "righthand/next";
 let MOVE_HEAD = "head/next";
+let NEXT_HELMET ="helmet/next"
 let LIGHT_EYES = "eyes/light";
 let LIGHT_ENERGY = "energy/beat";
 
@@ -27,7 +28,8 @@ legosvg.addEventListener("load",function(){
     var left_hand = svgDoc.getElementById("left_hand");
     var right_hand = svgDoc.getElementById("right_hand");
     var head = svgDoc.getElementById("head");
-    var energy = svgDoc.getElementById("energy");
+    var helmet = svgDoc.getElementById("helmet");
+
 
     // Ajout du comportement
 
@@ -47,8 +49,8 @@ legosvg.addEventListener("load",function(){
     head.addEventListener("touchstart", headStartHandler, false);
     head.addEventListener("mousedown", headStartHandler, false);
 
-    energy.addEventListener("touchstart", energyStartHandler, false);
-    energy.addEventListener("mousedown", energyStartHandler, false);
+    helmet.addEventListener("touchstart", helmetStartHandler, false);
+    helmet.addEventListener("mousedown", helmetStartHandler, false);
 }, false);
 
 
@@ -82,8 +84,8 @@ function headStartHandler(event) {
     doEmitSocket(MOVE_HEAD, 'iron man tourne la tête');
 }
 
-function energyStartHandler(event) {
+function helmetStartHandler(event) {
     event.preventDefault();
-    console.log('je suis dans energyStartHandler');
-    doEmitSocket(LIGHT_ENERGY, 'iron man allume les LED de son torse');
+    console.log('je suis dans helmetStartHandler');
+    doEmitSocket(NEXT_HELMET, 'iron man ta visière');
 }
