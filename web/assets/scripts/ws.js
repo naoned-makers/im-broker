@@ -30,8 +30,8 @@ client.on('connect', function () {
     document.getElementById("legosvg").getSVGDocument().getElementById("energy").querySelector("circle").setAttribute("fill", "gray"); 
  })
 
-function mqttPublish(entityMove) {
-    client.publish("im/command/"+entityMove,JSON.stringify({'origin':'im-web'}),console.info);
+function mqttPublish(entityMove,payload) {
+    client.publish("im/command/"+entityMove,JSON.stringify(payload),console.info);
 }
 
 
