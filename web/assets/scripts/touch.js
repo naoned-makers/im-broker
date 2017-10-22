@@ -29,7 +29,6 @@ legosvg.addEventListener("load", function () {
     var left_hand = svgDoc.getElementById("left_hand");
     var right_hand = svgDoc.getElementById("right_hand");
     var head = svgDoc.getElementById("head");
-    var helmet = svgDoc.getElementById("helmet");
 
 
     // Ajout du comportement
@@ -50,13 +49,13 @@ legosvg.addEventListener("load", function () {
     right_hand.addEventListener("touchstart", doMove, {capture: true,passive:false});
     right_hand.addEventListener("mousedown", doMove, {capture: true,passive:false});
 
-    head.imtopic = MOVE_HEAD;
+    //head.imtopic = MOVE_HEAD;
+    //head.addEventListener("touchstart", doMove, {capture: true,passive:false});
+    //head.addEventListener("mousedown", doMove, {capture: true,passive:false});
+
+    head.imtopic = NEXT_HELMET;
     head.addEventListener("touchstart", doMove, {capture: true,passive:false});
     head.addEventListener("mousedown", doMove, {capture: true,passive:false});
-
-    helmet.imtopic = NEXT_HELMET;
-    helmet.addEventListener("touchstart", doMove, {capture: true,passive:false});
-    helmet.addEventListener("mousedown", doMove, {capture: true,passive:false});
 }, false);
 
 var lastEvent = 0;
