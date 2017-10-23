@@ -72,6 +72,7 @@ im/command/helmet/|next| {origin:'im-*'}
 im/command/head/|move*| {origin:'im-*'}
 im/command/head/|next| {origin:'im-*'}
 im/command/head/|facetrackmove| {origin:'im-*', absPosition: \<int absolute percent Position>}
+im/command/head/|facetrackstart| {origin:'im-*', face: \<base64 png face img>}
 im/command/rightarm/|move*| {origin:'im-*'}
 im/command/rightarm/|up| {origin:'im-*'}
 im/command/rightarm/|down| {origin:'im-*'}

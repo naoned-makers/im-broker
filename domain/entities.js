@@ -389,6 +389,10 @@ entities.headEntity = function (client, entityCommand, inPayLoad) {
         let currentPulse = SERVO_MIN_HEAD + headPosition * (SERVO_MAX_HEAD - SERVO_MIN_HEAD);
         head.changePwmTo(client,Math.round(currentPulse));
         head.free();
+    } else if (entityCommand == 'facetrackstart') {
+        console.log("Start face track \n" +inPayLoad.face);
+        //head.nextPwmStep(client);
+        head.free();
     } else if (entityCommand == 'next') {
         head.nextPwmStep(client);
         head.free();
