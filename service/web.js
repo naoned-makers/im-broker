@@ -5,7 +5,7 @@ let app = express();
 let server = http.createServer(app);
 let ip = require("ip");
 let path = require('path');
-let mdns = require('mdns');
+var bonjour = require('bonjour')();
 
 const HTTP_PORT = 8080;
 
@@ -23,6 +23,4 @@ app.get('/move', function (req, res, next) {
 });
 server.listen(HTTP_PORT);
 console.log('\x1b[35m%s\x1b[0m',"web server is up on "+ip.address()+":"+HTTP_PORT);
-let serviceType = mdns.makeServiceType({name: 'im-web', protocol: 'tcp'});
-let ad = mdns.createAdvertisement(serviceType, HTTP_PORT);
-ad.start();
+bonjour.publish({ name: 'imweb', type: 'http',subtypes:["im","web"], port: HTTP_PORT, txt:{subtypes: ["im","web"]} });

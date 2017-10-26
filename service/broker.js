@@ -3,7 +3,7 @@ let mosca = require('mosca');
 let mqtt = require('mqtt');
 let ip = require("ip");
 let os = require("os");
-let mdns = require('mdns');
+var bonjour = require('bonjour')();
 
 
 const MQTT_PORT = 1883;
@@ -47,10 +47,7 @@ db.wire(server);
 
 server.on('ready', function () {
     console.log('\x1b[35m%s\x1b[0m', "brocker is up on " + ip.address());
-    var txt_record = {wsport: WS_PORT};    
-    let serviceType = mdns.makeServiceType({ name: 'im-broker', protocol: 'tcp' });
-    let ad = mdns.createAdvertisement(serviceType, MQTT_PORT,{txtRecord: txt_record});
-    ad.start();
+    bonjour.publish({ name: 'imbroker', type: 'mqtt',subtypes:["im","broker"], port: MQTT_PORT, txt:{wsport: WS_PORT, subtypes: ["im","broker"]} });
 });
 
 server.on('clientConnected', function (client) {
