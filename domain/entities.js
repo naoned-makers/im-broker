@@ -254,6 +254,15 @@ entities.leftarmEntity = function (client, entityCommand, inPayLoad) {
     } else if (entityCommand == 'next' && helmet.isFree()) {
         leftarm.nextPwmStep(client)
         leftarm.free();
+    } else if (entityCommand == 'next' && !helmet.isFree()) {
+        client.publish("im/command/helmet/close", JSON.stringify({
+            origin: 'im-safe'
+        }));
+        setTimeout(function () {
+            client.publish("im/command/leftarm/next" , JSON.stringify({
+                origin: 'im-brain'
+            }));
+        }, 500);
     } else if (entityCommand == 'set' && helmet.isFree()) {
         let currentPulse = SERVO_MIN_LEFT_ARM + inPayLoad.absPosition/100 * (SERVO_MAX_LEFT_ARM - SERVO_MIN_LEFT_ARM);
         leftarm.changePwmTo(client,currentPulse)
@@ -289,6 +298,15 @@ entities.rightarmEntity = function (client, entityCommand, inPayLoad) {
     } else if (entityCommand == 'next' && helmet.isFree()) {
         rightarm.nextPwmStep(client);
         rightarm.free();
+    } else if (entityCommand == 'next' && !helmet.isFree()) {
+        client.publish("im/command/helmet/close", JSON.stringify({
+            origin: 'im-safe'
+        }));
+        setTimeout(function () {
+            client.publish("im/command/rightarm/next" , JSON.stringify({
+                origin: 'im-brain'
+            }));
+        }, 500);        
     } else if (entityCommand == 'set' && helmet.isFree()) {
         let currentPulse = SERVO_MIN_RIGHT_ARM + inPayLoad.absPosition/100 * (SERVO_MAX_RIGHT_ARM - SERVO_MIN_RIGHT_ARM);
         rightarm.changePwmTo(client,currentPulse)
