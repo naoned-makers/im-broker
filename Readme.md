@@ -1,5 +1,20 @@
+**What's inside**
+* An express web server [service/web.js](service/web.js) who serve the static touch web interface of im [web/touchstart.html](web/touchstart.html)
+* An mqtt broker [service/broker.js](service/broker.js) who is accessible on MQTT standard port 1883 (for nodejs and python client) and also on MQTT over websocket on port 3000 (for browser mqtt client)
+* A firebase cloud gateway [service/cloud.js](service/cloud.js) that watch new command on firebase realtime database to publish coresponding mqtt message.
+* A logic processing module [service/brain.js](service/brain.js) who subscribe to mqtt command topic and dispatch workout to [domain/entities.js](domain/entities.js). Entities are the nodejs statefull representation (using mobx-state-tree) of im part(head,helmet,leftarm,rightarm,lefthand,righthand,eyes,energy). Each entity is responsible to generate mqtt event response for his im-part based on im-current state and incomming solicitation.
 
-**Install**
+
+**What is not inside** but that must be on the same root directory as im-broker to work
+* [im-admin](https://github.com/naoned-makers/im-admin) who take care to boot all im module via pm2 and also provide an web interface for im administration and im simulatiom
+* [im-camera](https://github.com/naoned-makers/im-camera) a python module who interpret camera input to generate mqtt command
+
+**Other im module**
+* [im-firebase](https://github.com/naoned-makers/im-firebase) A firbase function (faas) and realtime database project that handle the cloud (dialogflow) to local communication
+* [im-vui]( https://github.com/naoned-makers/im-vui) An android studio project for building the android voice and touch interface available on the [play store](https://play.google.com/store/apps/details?id=io.naonedmakers.imvui)
+
+
+**Project Install**
 ```
 
 sudo apt-get install python-pip python-dev build-essential python-smbus libzmq-dev i2c-tools  git scons swig
@@ -7,33 +22,24 @@ sudo apt-get install libavahi-compat-libdnssd-dev
 
 curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
 sudo apt-get install npm nodejs
-sudo npm install -g npm
-sudo npm install -g pm2
+npm install -g npm
+npm install -g pm2
 sudo pip install paho-mqtt
 sudo pip install adafruit-pca9685
 sudo pip install rpi_ws281x
 git clone   ... cd ...
 npm install
 ```
-Set auth envrionnement variables in  root and user .bashrc
+Set auth envrionnement variables in  user .bashrc
 ```
 export im_cloud_apiKey=XXX
 export im_cloud_projectId=XXX
 export im_cloud_databaseName=XXX
 
-and keep it in visudo
-
-Defaults  env_keep += "im_cloud_apiKey"
-Defaults  env_keep += "im_cloud_projectId"
-Defaults  env_keep += "im_cloud_databaseName"
 
 
 ```
-Copy firebase service account file on root dir  xxx-firebase-adminsdk.json
-
-[Install and test neopixel ring](./python/plastron/Readme.md)
-
-NeoPixel driver needs to be run as root
+Copy firebase service account file on user dir  xxx-firebase-adminsdk.json
 
 
 
@@ -41,20 +47,20 @@ NeoPixel driver needs to be run as root
 
 **Start all applications**
 ```
-sudo npm run prod
+npm run prod
 ```
 **Boot script**
 ```
-sudo pm2 startup
+pm2 startup
 ```
 **Monitoring**
 ```
-sudo pm2 dash
+pm2 dash
 ```
 **LOGS**
 ```
-sudo pm2 logs
-sudo pm2 flush
+pm2 logs
+pm2 flush
 ```
 
 
@@ -96,10 +102,6 @@ im/event/rpiheart/pwmhat/2 | { pulse: \< int pulse value > }
 im/event/rpiheart/status|{brokerClients:[\< array broker client name>]}      
 im/event/rpiheart/neopixel|off/on/beat/chase| {speed:\<ms>, repeat:\<nb>, rgb:FFFFFF}
 im/event/rpiheart/usage| { memory: { free: 12831096832, total: 16477089792, percentage: 22 },  cpuUsage: '25.12', disk:{ free: 255911464960,total: 420273078272 } }
-
-
-im/event/ia/chat/message|TO_DEFINE
-
 ---
 ---
 ---
@@ -107,20 +109,13 @@ im/event/ia/chat/message|TO_DEFINE
 # DDD Model
 Execute validation and consequential logic
 ## Aggregate:
-
     im
 ## Entity
 Objects that have a distinct identity that runs through time and different representations:
 
-    * eyes
-    * energy
+    * helmet
     * head
     * leftarm
     * rightarm
     * lefthand
     * righthand
-## ValueObject:
-
-    TODO
-
-
