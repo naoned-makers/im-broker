@@ -41,6 +41,11 @@ const ImPart = types.model("ImPart", {
         self.lastActivity = new Date();
         entities[self.key + 'Entity'](pClient, command, payLoad);
     },
+    audio(pClient){
+        pClient.publish("im/event/rpiheart/audio", JSON.stringify({
+            filename: self.key+'.mp3'
+        }));
+    },
     changePwmTo(pClient,currentPulse) {
         self.pwmCurrent = currentPulse;
         pClient.publish("im/event/rpiheart/pwmhat/" + self.pwmChannel, JSON.stringify({
@@ -252,6 +257,7 @@ entities.leftarmEntity = function (client, entityCommand, inPayLoad) {
         leftarm.changePwmTo(client,SERVO_MIN_LEFT_ARM);
         leftarm.free();
     } else if (entityCommand == 'next' && helmet.isFree()) {
+        leftarm.audio(client);
         leftarm.nextPwmStep(client)
         leftarm.free();
     } else if (entityCommand == 'next' && !helmet.isFree()) {
@@ -296,6 +302,7 @@ entities.rightarmEntity = function (client, entityCommand, inPayLoad) {
         rightarm.changePwmTo(client,SERVO_MIN_RIGHT_ARM);
         rightarm.free();
     } else if (entityCommand == 'next' && helmet.isFree()) {
+        rightarm.audio(client);
         rightarm.nextPwmStep(client);
         rightarm.free();
     } else if (entityCommand == 'next' && !helmet.isFree()) {

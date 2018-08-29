@@ -4,7 +4,7 @@
 * A firebase cloud gateway [service/cloud.js](service/cloud.js) that watch new command on firebase realtime database to publish coresponding mqtt message.
 * A logic processing module [service/brain.js](service/brain.js) who subscribe to mqtt command topic and dispatch workout to [domain/entities.js](domain/entities.js). Entities are the nodejs statefull representation (using mobx-state-tree) of im part(head,helmet,leftarm,rightarm,lefthand,righthand,eyes,energy). Each entity is responsible to generate mqtt event response for his im-part based on im-current state and incomming solicitation.
 * A pwmhat python controller [python/pwmhat.py](python/pwmhat.py) that set the HAT pusleWithModulation value from the mqtt topic im/event/rpiheart/pwmhat/{channel} value.
-* A pwmhat python 
+* A sound 
 
 **What is not inside** but that must be on the same root directory as im-broker to work
 * [im-admin](https://github.com/naoned-makers/im-admin) who take care to boot all im module via pm2 and also provide an web interface for im administration and im simulatiom
@@ -103,7 +103,7 @@ im/event/rpiheart/pwmhat/2 | { pulse: \< int pulse value > }
 im/event/rpiheart/status|{brokerClients:[\< array broker client name>]}      
 im/event/rpiheart/neopixel|off/on/beat/chase| {speed:\<ms>, repeat:\<nb>, rgb:FFFFFF}
 im/event/rpiheart/usage| { memory: { free: 12831096832, total: 16477089792, percentage: 22 },  cpuUsage: '25.12', disk:{ free: 255911464960,total: 420273078272 } }
-im/event/jack/play | { filename: \< string local filename value > }
+im/event/rpiheart/audio | { filename: \< string local filename value > }
 ---
 ---
 ---
