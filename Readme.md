@@ -20,7 +20,7 @@
 ```
 
 sudo apt-get install python-pip python-dev build-essential python-smbus libzmq-dev i2c-tools  git scons swig
-sudo apt-get install libavahi-compat-libdnssd-dev
+sudo apt-get install libavahi-compat-libdnssd-dev libsox-fmt-mp3
 
 curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
 sudo apt-get install npm nodejs

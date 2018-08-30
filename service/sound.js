@@ -6,6 +6,7 @@ let player = require("play-sound")({players: [
     'omxplayer',
     'mpg123',
     'mpg321',
+    'play',
     'cmdmp3'
    ]});
 
