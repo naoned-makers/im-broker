@@ -344,6 +344,7 @@ entities.rightarmEntity = function (client, entityCommand, inPayLoad) {
 entities.lefthandEntity = function (client, entityCommand, inPayLoad) {
 
     if (entityCommand == 'next') {
+        lefthand.audio(client);
         lefthand.nextPwmStep(client);
         lefthand.free();
     } else if (entityCommand == 'set') {
@@ -374,6 +375,7 @@ entities.lefthandEntity = function (client, entityCommand, inPayLoad) {
 entities.righthandEntity = function (client, entityCommand, inPayLoad) {
 
     if (entityCommand == 'next') {
+        righthand.audio(client);
         righthand.nextPwmStep(client);
         righthand.free();
     } else if (entityCommand == 'set') {
@@ -475,6 +477,7 @@ entities.helmetEntity = function (client, entityCommand, inPayLoad) {
         helmet.changePwmTo(client,SERVO_MIN_HELMET);
         helmet.free();
     } else if (entityCommand == 'next') {
+        helmet.audio(client);
         helmet.nextPwmStep(client);
         if(helmet.pwmCurrent==SERVO_MIN_HELMET){
             helmet.free();

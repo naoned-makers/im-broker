@@ -1,5 +1,5 @@
 **What's inside**
-* An express web server [service/web.js](service/web.js) who serve the static touch web interface of im [web/touchstart.html](web/touchstart.html)
+* An express web server [service/web.js](service/web.js) who serve [on port 8080](http://ironman:8080/) the static touch web interface of im [web/touchstart.html](web/touchstart.html)
 * An mqtt broker [service/broker.js](service/broker.js) who is accessible on MQTT standard port 1883 (for nodejs and python client) and also on MQTT over websocket on port 3000 (for browser mqtt client)
 * A firebase cloud gateway [service/cloud.js](service/cloud.js) that watch new command on firebase realtime database to publish coresponding mqtt message.
 * A logic processing module [service/brain.js](service/brain.js) who subscribe to mqtt command topic and dispatch workout to [domain/entities.js](domain/entities.js). Entities are the nodejs statefull representation (using mobx-state-tree) of im part(head,helmet,leftarm,rightarm,lefthand,righthand,eyes,energy). Each entity is responsible to generate mqtt event response for his im-part based on im-current state and incomming solicitation.
@@ -20,7 +20,7 @@
 ```
 
 sudo apt-get install python-pip python-dev build-essential python-smbus libzmq-dev i2c-tools  git scons swig
-sudo apt-get install libavahi-compat-libdnssd-dev libsox-fmt-mp3
+sudo apt-get install libavahi-compat-libdnssd-dev libsox-fmt-mp3 mpg123
 
 curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
 sudo apt-get install npm nodejs
