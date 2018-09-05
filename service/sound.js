@@ -3,7 +3,6 @@
 let mqtt = require('mqtt');
 let os = require("os");
 let player = require("play-sound")({players: [
-    'omxplayer',
     'mpg123',
     'mpg321',
     'play',
