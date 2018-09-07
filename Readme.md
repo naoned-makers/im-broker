@@ -71,9 +71,8 @@ pm2 flush
 ##  im/command/\<entity\>/\<command>
 entity path|command|playload|comment
 --- | --- | --- | ---
-im/command/energy/|off/on/beat/chase| {origin:'im-*', speed:\<int ms>, rgb:'FFFFFF'}|
-im/command/eyes/|off/on/beat/chase| {origin:'im-*', speed:\<int ms>, rgb:'FFFFFF'}}|
-im/command/eyes/|color| {origin:'im-*',rgba:'FFFFFFFF'}|
+im/command/energy/|off/on/beat/chase| {origin:'im-*', speed:\<int animation duration in ms>, rgb:'FFFFFF'}|
+im/command/eyes/|off/on/beat/chase| {origin:'im-*', speed:\<int animation duration in ms>, rgb:'FFFFFF'}}|
 im/command/helmet/|move*| {origin:'im-*'}
 im/command/helmet/|open| {origin:'im-*'}
 im/command/helmet/|close| {origin:'im-*'}
@@ -82,14 +81,24 @@ im/command/head/|move*| {origin:'im-*'}
 im/command/head/|next| {origin:'im-*'}
 im/command/head/|facetrackmove| {origin:'im-*', absPosition: \<int absolute percent Position>}
 im/command/head/|facetrackstart| {origin:'im-*', face: \<base64 png face img>}
-im/command/rightarm/|move*| {origin:'im-*'}
+im/command/rightarm/|set| {origin:'im-*', absPosition: \<int absolute percent Position>}
 im/command/rightarm/|up| {origin:'im-*'}
 im/command/rightarm/|down| {origin:'im-*'}
 im/command/rightarm/|next| {origin:'im-*'}
-im/command/lefthand/|move*| {origin:'im-*'}
+im/command/rightarm/|move| {origin:'im-*'}
+im/command/lefttarm/|set*| {origin:'im-*', absPosition: \<int absolute percent Position>}
+im/command/lefttarm/|up| {origin:'im-*'}
+im/command/lefttarm/|down| {origin:'im-*'}
+im/command/lefttarm/|next| {origin:'im-*'}
+im/command/lefttarm/|move| {origin:'im-*'}
+im/command/lefthand/|set| {origin:'im-*', absPosition: \<int absolute percent Position>}
 im/command/lefthand/|next| {origin:'im-*'}
-im/command/im/|server| {origin:'im-*',ip:\<ip> ,hostname:\<hostname>, mqttPort:\<mqttPort>, wsPort:\<wsPort>,httpPort:\<httpPort>}
-im/command/im/|reset|{'origin':'im-*'}|
+im/command/lefthand/|move| {origin:'im-*'}
+im/command/righthand/|set| {origin:'im-*', absPosition: \<int absolute percent Position>}
+im/command/righthand/|next| {origin:'im-*'}
+im/command/righthand/|move| {origin:'im-*'}
+im/command/im/|color|{'origin':'im-*'}
+im/command/im/|reset|{'origin':'im-*'}
 im/command/chat/|listenstart|{'origin':'im-*'}
 im/command/chat/|request|{'origin':'im-*','text':'la question'}
 im/command/chat/|response|{'origin':'im-*','text':'la reponse du bot'}
@@ -101,11 +110,11 @@ Playload en json qui contient au moins un attribut origin
 
 Event path|playload|comment
 --- | --- | ---
-im/event/rpiheart/pwmhat/2 | { pulse: \< int pulse value > }
+im/event/rpiheart/pwmhat/<pin number> | { pulse: \< int pulse value > }
 im/event/rpiheart/status|{brokerClients:[\< array broker client name>]}      
 im/event/rpiheart/usage| { memory: { free: 12831096832, total: 16477089792, percentage: 22 },  cpuUsage: '25.12', disk:{ free: 255911464960,total: 420273078272 } }
 im/event/rpiheart/audio | { filename: \< string local filename value > }
-im/event/esp8266/neopixel/<pin> |off/on/beat/chase| {speed:\<ms>, rgb:FFFFFF}
+im/event/esp8266/neopixel/<pin number>/ |off/on/beat/chase| {wait:\<in wait time in ms>, red:<int red value>, green:<int green value>, blue:<int blue value>}
 ---
 ---
 ---
