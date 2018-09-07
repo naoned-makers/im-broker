@@ -71,8 +71,8 @@ pm2 flush
 ##  im/command/\<entity\>/\<command>
 entity path|command|playload|comment
 --- | --- | --- | ---
-im/command/energy/|off/on/beat/chase| {origin:'im-*', speed:\<ms>, rgb:FFFFFF}|
-im/command/eyes/|off/on/beat/chase| {origin:'im-*', speed:\<ms>, rgb:FFFFFF}}|
+im/command/energy/|off/on/beat/chase| {origin:'im-*', speed:\<int ms>, rgb:'FFFFFF'}|
+im/command/eyes/|off/on/beat/chase| {origin:'im-*', speed:\<int ms>, rgb:'FFFFFF'}}|
 im/command/eyes/|color| {origin:'im-*',rgba:'FFFFFFFF'}|
 im/command/helmet/|move*| {origin:'im-*'}
 im/command/helmet/|open| {origin:'im-*'}
