@@ -14,13 +14,14 @@
 **Other im module**
 * [im-firebase](https://github.com/naoned-makers/im-firebase) A firbase function (faas) and realtime database project that handle the cloud (dialogflow) to local communication
 * [im-vui]( https://github.com/naoned-makers/im-vui) An android studio project for building the android voice and touch interface available on the [play store](https://play.google.com/store/apps/details?id=io.naonedmakers.imvui)
+* [im-neopixel]( https://github.com/naoned-makers/im-neopixel) An ESP8266 script that subscribe to im/event/esp8266/neopixel mqtt topic and drive neopixel led strip.
 
 
 **Project Install**
 ```
 
 sudo apt-get install python-pip python-dev build-essential python-smbus libzmq-dev i2c-tools  git scons swig
-sudo apt-get install libavahi-compat-libdnssd-dev libsox-fmt-mp3 mpg123
+sudo apt-get install libavahi-compat-libdnssd-dev avahi-daemon libsox-fmt-mp3 mpg123
 
 curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
 sudo apt-get install npm nodejs
@@ -70,8 +71,8 @@ pm2 flush
 ##  im/command/\<entity\>/\<command>
 entity path|command|playload|comment
 --- | --- | --- | ---
-im/command/energy/|off/on/beat*/chase| {origin:'im-*', speed:\<ms>, repeat:\<nb>, rgb:FFFFFF}|
-im/command/eyes/|on/off| {origin:'im-*'}|
+im/command/energy/|off/on/beat/chase| {origin:'im-*', speed:\<ms>, rgb:FFFFFF}|
+im/command/eyes/|off/on/beat/chase| {origin:'im-*', speed:\<ms>, rgb:FFFFFF}}|
 im/command/eyes/|color| {origin:'im-*',rgba:'FFFFFFFF'}|
 im/command/helmet/|move*| {origin:'im-*'}
 im/command/helmet/|open| {origin:'im-*'}
@@ -102,9 +103,9 @@ Event path|playload|comment
 --- | --- | ---
 im/event/rpiheart/pwmhat/2 | { pulse: \< int pulse value > }
 im/event/rpiheart/status|{brokerClients:[\< array broker client name>]}      
-im/event/rpiheart/neopixel|off/on/beat/chase| {speed:\<ms>, repeat:\<nb>, rgb:FFFFFF}
 im/event/rpiheart/usage| { memory: { free: 12831096832, total: 16477089792, percentage: 22 },  cpuUsage: '25.12', disk:{ free: 255911464960,total: 420273078272 } }
 im/event/rpiheart/audio | { filename: \< string local filename value > }
+im/event/esp8266/neopixel/<pin> |off/on/beat/chase| {speed:\<ms>, rgb:FFFFFF}
 ---
 ---
 ---
@@ -122,3 +123,5 @@ Objects that have a distinct identity that runs through time and different repre
     * rightarm
     * lefthand
     * righthand
+    * eyes
+    * energy
