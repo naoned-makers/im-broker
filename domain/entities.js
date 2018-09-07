@@ -537,7 +537,7 @@ entities.eyesEntity = function (client, entityCommand, inPlayLoad) {
     if(entityCommand){
         animation = entityCommand
     }
-    energy.changeNeopixelTo(client,animation,red,green,blue,wait);
+    eyes.changeNeopixelTo(client,animation,red,green,blue,wait);
 }
 
 /**
