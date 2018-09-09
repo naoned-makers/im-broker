@@ -110,11 +110,12 @@ Playload en json qui contient au moins un attribut origin
 
 Event path|playload|comment
 --- | --- | ---
-im/event/rpiheart/pwmhat/<pin number> | { pulse: \< int pulse value > }
+im/event/rpiheart/pwmhat/\<pwm channel> | { pulse: \< int pulse value > }
 im/event/rpiheart/status|{brokerClients:[\< array broker client name>]}      
 im/event/rpiheart/usage| { memory: { free: 12831096832, total: 16477089792, percentage: 22 },  cpuUsage: '25.12', disk:{ free: 255911464960,total: 420273078272 } }
 im/event/rpiheart/audio | { filename: \< string local filename value > }
-im/event/esp8266/neopixel/<pin number>/ |off/on/beat/chase| {wait:\<in wait time in ms>, red:<int red value>, green:<int green value>, blue:<int blue value>}
+im/event/esp8266/neopixel/\<gpio number>/ |off/on/beat/chase| {wait:\<in wait time in ms>, red:\<int red value>, green:\<int green value>, blue:\<int blue value>}
+OR SYNTETIQUE VERSION FRO ARDUINO im/event/esp8266/neopixel/A ou B| char 0[0 ou 1 ou c ou b animation], char 1 à 3[wait time in ms], char 4 à 10[RGB hexa color]| exemple  1050FF00FF
 ---
 ---
 ---
