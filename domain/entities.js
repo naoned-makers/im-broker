@@ -596,10 +596,10 @@ entities.imEntity = function (client, entityCommand, inPlayLoad) {
     }
     if (entityCommand == 'color') {
         client.publish("im/command/eyes/on", JSON.stringify({
-            origin: 'im-brain'
+            origin: 'im-brain',rgb:inPlayLoad.rgb
         }));
         client.publish("im/command/energy/chase", JSON.stringify({
-            origin: 'im-brain'
+            origin: 'im-brain',rgb:inPlayLoad.rgb
         }));
     }
 }
