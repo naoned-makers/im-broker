@@ -71,8 +71,10 @@ pm2 flush
 ##  im/command/\<entity\>/\<command>
 entity path|command|playload|comment
 --- | --- | --- | ---
-im/command/energy/|off/on/beat/chase| {origin:'im-*', speed:\<int animation duration in ms>, rgb:'FFFFFF'}|
-im/command/eyes/|off/on/beat/chase| {origin:'im-*', speed:\<int animation duration in ms>, rgb:'FFFFFF'}}|
+im/command/energy/|off/on/beat/chase| {origin:'im-*', °speed:\<int animation duration in ms>, °rgb:'FFFFFF'}|
+im/command/eyes/|off/on/beat/chase| {origin:'im-*', °speed:\<int animation duration in ms>, °rgb:'FFFFFF'}}|
+im/command/energy/|colorize| {origin:'im-*', °speed:\<int animation duration in ms>, °rgb:'FFFFFF'}|
+im/command/eyes/|colorize| {origin:'im-*', °speed:\<int animation duration in ms>, °rgb:'FFFFFF'}}|
 im/command/helmet/|move*| {origin:'im-*'}
 im/command/helmet/|open| {origin:'im-*'}
 im/command/helmet/|close| {origin:'im-*'}
@@ -97,12 +99,13 @@ im/command/lefthand/|move| {origin:'im-*'}
 im/command/righthand/|set| {origin:'im-*', absPosition: \<int absolute percent Position>}
 im/command/righthand/|next| {origin:'im-*'}
 im/command/righthand/|move| {origin:'im-*'}
-im/command/im/|color|{'origin':'im-*'}
+im/command/im/|color|{'origin':'im-*',°rgb:'FFFFFF'}}
 im/command/im/|reset|{'origin':'im-*'}
 im/command/chat/|listenstart|{'origin':'im-*'}
 im/command/chat/|request|{'origin':'im-*','text':'la question'}
 im/command/chat/|response|{'origin':'im-*','text':'la reponse du bot'}
 
+° : Optional
 Playload en json qui contient au moins un attribut origin
 
 # MQTT and Firebase **Event** topics
@@ -114,8 +117,7 @@ im/event/rpiheart/pwmhat/\<pwm channel> | { pulse: \< int pulse value > }
 im/event/rpiheart/status|{brokerClients:[\< array broker client name>]}      
 im/event/rpiheart/usage| { memory: { free: 12831096832, total: 16477089792, percentage: 22 },  cpuUsage: '25.12', disk:{ free: 255911464960,total: 420273078272 } }
 im/event/rpiheart/audio | { filename: \< string local filename value > }
-im/event/esp8266/neopixel/\<gpio number>/ |off/on/beat/chase| {wait:\<in wait time in ms>, red:\<int red value>, green:\<int green value>, blue:\<int blue value>}
-OR SYNTETIQUE VERSION FRO ARDUINO im/event/esp8266/neopixel/A ou B| char 0[0 ou 1 ou c ou b animation], char 1 à 3[wait time in ms], char 4 à 10[RGB hexa color]| exemple  1050FF00FF
+im/event/esp8266/neopixel/\<A or B> | {°pattern:\<int NONE =0, RAINBOW_CYCLE=1, THEATER_CHASE=2, COLOR_WIPE=3, SCANNER=4, FADE=5>,°interval:\<in interval time in ms>, °color:\<int color value>}
 ---
 ---
 ---

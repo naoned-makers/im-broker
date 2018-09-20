@@ -28,7 +28,9 @@ let moscaSettings = {
     //  keyPath: SECURE_KEY,
     //  certPath: SECURE_CERT,
     //}
-
+    persistence: {
+        factory: mosca.persistence.Memory
+      },
     //stats: true, // publish stats in the $SYS/<id> topicspace
     //logger: {      level: 'debug'    },
     //publishNewClient: true,

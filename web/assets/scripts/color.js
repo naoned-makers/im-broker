@@ -99,8 +99,10 @@ function doColor(event) {
     this.querySelector("#border").fill="#FF0000";
     */
     if(globalColorMode){
-        mqttPublish("im/color",{'origin':'im-web','rgb':this.imcolor});
-        console.log(this.imcolor,event.type,event.timeStamp); 
+        mqttPublish("eyes/colorize",{'origin':'im-web','rgb':this.imcolor});
+        mqttPublish("energy/colorize",{'origin':'im-web','rgb':this.imcolor});
+        document.getElementById("legosvg").contentDocument.getElementById("energy").querySelector("circle").setAttribute("fill", "#"+this.imcolor); 
+        console.log(event.type, this.imcolor); 
     }else{
         console.log("moveMode so dont take in accout" + this.imtopic);  
     }

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>HTML5 Color Picker</title>
+</head>
+<body style="overflow: hidden;display: flex;flex-direction:column;height:100%">
+    <header style="position:absolute;display: flex;flex-direction:row;margin:0;justify-content: space-between;width:98%">
+        <span style="display: flex;flex-direction:column;border:thin solid black;">
+            <select name="patternA">
+                <option>chase</option>
+                <option>wipe</option>
+            </select>
+            <input name="speedA" type="range" />
+            <div class="preview" style="height: 30px;width: 30px;background-color:black;margin:0 auto 0 auto"></div>
+        </span>
+        <span style="display: flex;flex-direction:column;border:thin solid black;">
+            <select name="patternA">
+                <option>chase</option>
+                <option>wipe</option>
+            </select>
+            <input name="speedA" type="range" />
+            <div class="preview" style="height: 30px;width: 30px;background-color:black;margin:0 auto 0 auto"></div>
+        </span>
+    </header>
+    <canvas id="picker" style="display: inline;margin:0 auto 0 auto"></canvas>
+    <script type="text/javascript">
+       // create canvas and context objects
+        var canvas = document.getElementById('picker');
+        var ctx = canvas.getContext('2d');
+        let size = Math.min(window.innerWidth-20,window.innerHeight - 90)
+        canvas.width = size;
+        canvas.height = size;
+        // drawing active image
+        var image = new Image();
+        image.src = "./img/color_wheel.webp";//color_wheel.webp
+        image.onload = function () {
+            console.log(image.width, image.height);
+            ctx.drawImage(image, 0, 0, image.width, image.height, 0, 0, canvas.height, canvas.height); // draw the image on the canvas
+        }
+
+        canvas.onmousemove = function (e) { // mouse move handler
+            // get coordinates of current position
+            var canvasX = Math.floor(e.pageX - canvas.offsetLeft);
+            var canvasY = Math.floor(e.pageY - canvas.offsetTop);
+
+            // get current pixel
+            var imageData = ctx.getImageData(canvasX, canvasY, 1, 1);
+            var pixel = imageData.data;
+
+            // update preview color
+            var pixelColor = "rgb(" + pixel[0] + ", " + pixel[1] + ", " + pixel[2] + ")";
+            //document.getElementById('picker');
+            //$('.preview').css('backgroundColor', pixelColor);
+            Array.from(document.getElementsByClassName("preview")).map(el=> el.style.backgroundColor=pixelColor);
+
+            var hexaColor = pixel[2] + 256 * pixel[1] + 65536 * pixel[0];
+            var strColor = ('0000' + hexaColor.toString(16)).substr(-6);
+            console.log(strColor);
+        }
+   </script>
+</body>
+</html>

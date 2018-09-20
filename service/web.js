@@ -21,9 +21,13 @@ app.get('/move', function (req, res, next) {
     //console.log('arrivé sur la page...');
     res.sendFile(path.join(__dirname + '/../web/touchmove.html'));
 });
-app.get('/color', function (req, res, next) {
+app.get('/next', function (req, res, next) {
     //console.log('arrivé sur la page...');
     res.sendFile(path.join(__dirname + '/../web/touchcolor.html'));
+});
+app.get('/color', function (req, res, next) {
+    //console.log('arrivé sur la page...');
+    res.sendFile(path.join(__dirname + '/../web/color.html'));
 });
 server.listen(HTTP_PORT);
 console.log('\x1b[35m%s\x1b[0m',"web server is up on "+ip.address()+":"+HTTP_PORT);

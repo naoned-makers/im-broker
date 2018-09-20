@@ -27,7 +27,12 @@ const ImPart = types.model("ImPart", {
     parts: types.maybe(types.map(types.late(() => ImPart))),
     command: types.maybe(types.string),
     lastActivity: types.optional(types.Date, () => new Date()),
-    hardwarePin: types.maybe(types.number),
+    hardwarePin: types.maybe(types.union(types.number,types.string)),
+
+    pixelColor:types.maybe(types.number),
+    pixelInterval:types.maybe(types.number),
+    pixelPattern:types.maybe(types.number),
+    pixelNumber:types.maybe(types.number),
 
     pwmCurrent: types.maybe(types.number), //TODO extract in inheritance model ImpPmwPart
     pwmSteps: types.maybe(types.array(types.number)),//TODO extract in inheritance model ImpPmwPart
@@ -35,14 +40,39 @@ const ImPart = types.model("ImPart", {
 }).actions(self => ({
     init(pClient){
         entities.startPeriodic(pClient);
+        entities.startNeoPixel(pClient);
     },
     do(pClient,command, payLoad) {
         self.command = command;
         self.lastActivity = new Date();
         entities[self.key + 'Entity'](pClient, command, payLoad);
     },
-    changeNeopixelTo(pClient,pAnimation,pRed,pGreen,pBlue,pWait){
-        pClient.publish("im/event/esp8266/neopixel/"+self.hardwarePin+"/"+pAnimation, JSON.stringify({red:pRed,green:pGreen,blue:pBlue,wait:pWait}));
+    setNeopixelTo(pClient,pPattern,pColor,pInterval){
+        if(pColor && !Number.isNaN(pColor)){
+            self.pixelColor = pColor;    
+        }
+        if(pInterval && !Number.isNaN(pInterval)){
+            self.pixelInterval = pInterval;    
+        }
+        if(pPattern && !Number.isNaN(pPattern)){
+            self.pixelPattern = pPattern;    
+        }
+        pClient.publish("im/event/esp8266/neopixel/"+self.hardwarePin
+            ,JSON.stringify({pattern:self.pixelPattern,color:self.pixelColor,interval:self.pixelInterval})
+            ,{retain: true});
+    },
+    changeNeopixelTo(pClient,pColor,pInterval){
+        if(pColor && pInterval && !Number.isNaN(pColor) && !Number.isNaN(pInterval)){
+            self.pixelColor = pColor;
+            self.pixelInterval = pInterval;
+            pClient.publish("im/event/esp8266/neopixel/"+self.hardwarePin,JSON.stringify({color:self.pixelColor,interval:self.pixelInterval}));
+        }else if(pColor && !Number.isNaN(pColor)){
+            self.pixelColor = pColor;
+            pClient.publish("im/event/esp8266/neopixel/"+self.hardwarePin,JSON.stringify({color:self.pixelColor}));   
+        }else if(pInterval && !Number.isNaN(pInterval)){
+            self.pixelInterval = pInterval;
+            pClient.publish("im/event/esp8266/neopixel/"+self.hardwarePin,JSON.stringify({interval:self.pixelInterval}));   
+        }
     },
     audio(pClient){
         pClient.publish("im/event/rpiheart/audio", JSON.stringify({
@@ -178,17 +208,26 @@ let righthand = ImPart.create({
     pwmSteps:[SERVO_MIN_RIGHT_HAND,SERVO_MIDDLE_RIGHT_HAND,SERVO_MAX_RIGHT_HAND,SERVO_MIDDLE_RIGHT_HAND],
     pwmCurrent:SERVO_MIDDLE_RIGHT_HAND//assume we start as this
 })
-const ESP8266_PIN_EYES = 0
+var PatternEnum = Object.freeze({"NONE":0,"RAINBOW_CYCLE":1,"THEATER_CHASE":2,"COLOR_WIPE":3,"SCANNER":4,"FADE":5})
+const ESP8266_STRIP_EYES = 'A'
 let eyes = ImPart.create({
     key: 'eyes',
     label: 'Im eyes',
-    hardwarePin: ESP8266_PIN_EYES
+    hardwarePin: ESP8266_STRIP_EYES,
+    pixelColor:0x2222FF,
+    pixelInterval:50,
+    pixelNumber:16,
+    pixelPattern:PatternEnum.SCANNER
 })
-const ESP8266_PIN_ENERGY = 2
+const ESP8266_STRIP_ENERGY = 'B'
 let energy = ImPart.create({
     key: 'energy',
     label: 'Im energy ring',
-    hardwarePin: ESP8266_PIN_ENERGY
+    hardwarePin: ESP8266_STRIP_ENERGY,
+    pixelColor:0x2222FF,
+    pixelInterval:50,
+    pixelNumber:16,
+    pixelPattern:PatternEnum.THEATER_CHASE
 })
 
 im.addChild(head);
@@ -234,6 +273,7 @@ let entities = {
         })), (outerValue, innerValue) => innerValue).subscribe((payload) => {
             client.publish("im/event/rpiheart/usage", JSON.stringify(payload));
         });
+        console.log("startPeriodic task")
         /*INACTIVITY_PERIOD trigger
         const INACTIVITY_PERIOD = 1000 * 60 * 2; //Do nothing more than 2 minutes
         const INACTIVITY_SLEEP = 2000; // milliseconds between part move
@@ -247,7 +287,14 @@ let entities = {
             });
 
         });*/
-        console.log("Periodic task started");
+    },
+    startNeoPixel : function(pClient){
+        Rx.Observable.from([42]).delay(10000).subscribe(()=>{
+            pClient.publish("im/command/im/color",JSON.stringify({
+                origin: 'im-brain'
+            }));
+            console.log("Neopixel default animation started") 
+        })
     }
 };
 
@@ -514,30 +561,24 @@ entities.helmetEntity = function (client, entityCommand, inPayLoad) {
  * execute validation and consequential logic
  */
 entities.eyesEntity = function (client, entityCommand, inPlayLoad) {
-    const DEFAULT_WAIT = 50;
-    const DEFAULT_ANIMATION = "on";
-    const DEFAULT_RED = 34;
-    const DEFAULT_GREEN = 34;
-    const DEFAULT_BLUE = 255;
-
-    let animation = DEFAULT_ANIMATION;
-    let red = DEFAULT_RED;
-    let green = DEFAULT_GREEN;
-    let blue = DEFAULT_BLUE;
-    let wait = DEFAULT_WAIT;
-
-    if (inPlayLoad.rgb) {
-        red = parseInt(inPlayLoad.rgb.substr(0, 2), 16)
-        green = parseInt(inPlayLoad.rgb.substr(2, 2), 16)
-        blue = parseInt(inPlayLoad.rgb.substr(4, 2), 16)
-    }
-    if (inPlayLoad.speed) {
-        wait = inPlayLoad.speed / 16;//assume that they are 16 led int the eyes strip
-    }
-    if(entityCommand){
-        animation = entityCommand
-    }
-    eyes.changeNeopixelTo(client,animation,red,green,blue,wait);
+    const color = parseInt(inPlayLoad.rgb, 16);
+    const interval = parseInt(parseInt(inPlayLoad.speed) / eyes.pixelNumber);
+    if (entityCommand == 'colorize') {
+        eyes.changeNeopixelTo(client,color,interval);
+    }else{
+        switch(entityCommand){
+            case 'none':
+                eyes.setNeopixelTo(client,PatternEnum.NONE,color,interval)
+            case 'rainbow':
+                eyes.setNeopixelTo(client,PatternEnum.RAINBOW_CYCLE,color,interval)
+            case 'chase':
+                eyes.setNeopixelTo(client,PatternEnum.THEATER_CHASE,color,interval)
+            case 'wipe':
+                eyes.setNeopixelTo(client,PatternEnum.COLOR_WIPE,color,interval)
+            default:
+                eyes.setNeopixelTo(client,null,color,interval)
+        }
+    }    
 }
 
 /**
@@ -545,30 +586,24 @@ entities.eyesEntity = function (client, entityCommand, inPlayLoad) {
  * execute validation and consequential logic
  */
 entities.energyEntity = function (client, entityCommand, inPlayLoad) {
-    const DEFAULT_WAIT = 50;
-    const DEFAULT_ANIMATION = "chase";
-    const DEFAULT_RED = 34;
-    const DEFAULT_GREEN = 34;
-    const DEFAULT_BLUE = 255;
-
-    let animation = DEFAULT_ANIMATION;
-    let red = DEFAULT_RED;
-    let green = DEFAULT_GREEN;
-    let blue = DEFAULT_BLUE;
-    let wait = DEFAULT_WAIT;
-
-    if (inPlayLoad.rgb) {
-        red = parseInt(inPlayLoad.rgb.substr(0, 2), 16)
-        green = parseInt(inPlayLoad.rgb.substr(2, 2), 16)
-        blue = parseInt(inPlayLoad.rgb.substr(4, 2), 16)
-    }
-    if (inPlayLoad.speed) {
-        wait = inPlayLoad.speed / 16;//assume that they are 16 led in the ring
-    }
-    if(entityCommand){
-        animation = entityCommand
-    }
-    energy.changeNeopixelTo(client,animation, red,green,blue,wait);
+    const color = parseInt(inPlayLoad.rgb, 16);
+    const interval = parseInt(parseInt(inPlayLoad.speed) / energy.pixelNumber);
+    if (entityCommand == 'colorize') {
+        energy.changeNeopixelTo(client,color,interval);
+    }else{
+        switch(entityCommand){
+            case 'none':
+             energy.setNeopixelTo(client,PatternEnum.NONE,color,interval)
+            case 'rainbow':
+                energy.setNeopixelTo(client,PatternEnum.RAINBOW_CYCLE,color,interval)
+            case 'chase':
+                energy.setNeopixelTo(client,PatternEnum.THEATER_CHASE,color,interval)
+            case 'wipe':
+                energy.setNeopixelTo(client,PatternEnum.COLOR_WIPE,color,interval)
+            default:
+                energy.setNeopixelTo(client,null,color,interval)
+        }
+    }  
 }
 
 
@@ -595,11 +630,11 @@ entities.imEntity = function (client, entityCommand, inPlayLoad) {
         }));
     }
     if (entityCommand == 'color') {
-        client.publish("im/command/eyes/on", JSON.stringify({
-            origin: 'im-brain',rgb:inPlayLoad.rgb
+        client.publish("im/command/eyes/default", JSON.stringify({
+            origin: 'im-brain'
         }));
-        client.publish("im/command/energy/chase", JSON.stringify({
-            origin: 'im-brain',rgb:inPlayLoad.rgb
+        client.publish("im/command/energy/default", JSON.stringify({
+            origin: 'im-brain'
         }));
     }
 }
