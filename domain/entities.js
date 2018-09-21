@@ -58,17 +58,17 @@ const ImPart = types.model("ImPart", {
             self.pixelPattern = pPattern;    
         }
         pClient.publish("im/event/esp8266/neopixel/"+self.hardwarePin
-            ,JSON.stringify({pattern:self.pixelPattern,color:self.pixelColor,interval:self.pixelInterval})
+            ,JSON.stringify({pattern:self.pixelPattern,color1:self.pixelColor,interval:self.pixelInterval})
             ,{retain: true});
     },
     changeNeopixelTo(pClient,pColor,pInterval){
         if(pColor && pInterval && !Number.isNaN(pColor) && !Number.isNaN(pInterval)){
             self.pixelColor = pColor;
             self.pixelInterval = pInterval;
-            pClient.publish("im/event/esp8266/neopixel/"+self.hardwarePin,JSON.stringify({color:self.pixelColor,interval:self.pixelInterval}));
+            pClient.publish("im/event/esp8266/neopixel/"+self.hardwarePin,JSON.stringify({color1:self.pixelColor,interval:self.pixelInterval}));
         }else if(pColor && !Number.isNaN(pColor)){
             self.pixelColor = pColor;
-            pClient.publish("im/event/esp8266/neopixel/"+self.hardwarePin,JSON.stringify({color:self.pixelColor}));   
+            pClient.publish("im/event/esp8266/neopixel/"+self.hardwarePin,JSON.stringify({color1:self.pixelColor}));   
         }else if(pInterval && !Number.isNaN(pInterval)){
             self.pixelInterval = pInterval;
             pClient.publish("im/event/esp8266/neopixel/"+self.hardwarePin,JSON.stringify({interval:self.pixelInterval}));   
