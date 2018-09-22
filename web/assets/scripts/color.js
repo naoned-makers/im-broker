@@ -62,13 +62,12 @@ function switchColorMode(event){
     if(globalColorMode){
         legosvg.contentDocument.getElementById("colors").style.display="block";
         mqttPublish("eyes/fix",{'origin':'im-web','rgb':'2222ff','speed':1600});
-        mqttPublish("energy/fix",{'origin':'im-web','rgb':'2222ff','speed':1600});
+        mqttPublish("energy/chase",{'origin':'im-web','rgb':'2222ff','speed':800});
     }else{
         legosvg.contentDocument.getElementById("colors").style.display= "none";
         mqttPublish("eyes/fix",{'origin':'im-web','rgb':'2222ff','speed':1600});
-        mqttPublish("energy/fix",{'origin':'im-web','rgb':'2222ff','speed':1600});
+        mqttPublish("energy/chase",{'origin':'im-web','rgb':'2222ff','speed':800});
         mqttPublish("eyes/fix",{'origin':'im-web','rgb':'2222ff','speed':1600000});
-        mqttPublish("energy/fix",{'origin':'im-web','rgb':'2222ff','speed':1600000});
     }
 }
 

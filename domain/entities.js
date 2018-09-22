@@ -226,9 +226,9 @@ let energy = ImPart.create({
     label: 'Im energy ring',
     hardwarePin: ESP8266_STRIP_ENERGY,
     pixelColor:0x2222FF,
-    pixelInterval:100000,
+    pixelInterval:50,
     pixelNumber:16,
-    pixelPattern:PatternEnum.FIX
+    pixelPattern:PatternEnum.THEATER_CHASE
 })
 
 im.addChild(head);
