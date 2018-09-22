@@ -61,8 +61,14 @@ function switchColorMode(event){
     globalColorMode = !globalColorMode;
     if(globalColorMode){
         legosvg.contentDocument.getElementById("colors").style.display="block";
+        mqttPublish("eyes/fix",{'origin':'im-web','rgb':'2222ff','speed':1600});
+        mqttPublish("energy/fix",{'origin':'im-web','rgb':'2222ff','speed':1600});
     }else{
         legosvg.contentDocument.getElementById("colors").style.display= "none";
+        mqttPublish("eyes/fix",{'origin':'im-web','rgb':'2222ff','speed':1600});
+        mqttPublish("energy/fix",{'origin':'im-web','rgb':'2222ff','speed':1600});
+        mqttPublish("eyes/fix",{'origin':'im-web','rgb':'2222ff','speed':1600000});
+        mqttPublish("energy/fix",{'origin':'im-web','rgb':'2222ff','speed':1600000});
     }
 }
 
@@ -101,7 +107,7 @@ function doColor(event) {
     if(globalColorMode){
         mqttPublish("eyes/colorize",{'origin':'im-web','rgb':this.imcolor});
         mqttPublish("energy/colorize",{'origin':'im-web','rgb':this.imcolor});
-        document.getElementById("legosvg").contentDocument.getElementById("energy").querySelector("circle").setAttribute("fill", "#"+this.imcolor); 
+        //document.getElementById("legosvg").contentDocument.getElementById("energy").querySelector("circle").setAttribute("fill", "#"+this.imcolor); 
         console.log(event.type, this.imcolor); 
     }else{
         console.log("moveMode so dont take in accout" + this.imtopic);  

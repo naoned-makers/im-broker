@@ -216,7 +216,7 @@ let eyes = ImPart.create({
     label: 'Im eyes',
     hardwarePin: ESP8266_STRIP_EYES,
     pixelColor:0x2222FF,
-    pixelInterval:500,
+    pixelInterval:100000,
     pixelNumber:16,
     pixelPattern:PatternEnum.FIX
 })
@@ -226,7 +226,7 @@ let energy = ImPart.create({
     label: 'Im energy ring',
     hardwarePin: ESP8266_STRIP_ENERGY,
     pixelColor:0x2222FF,
-    pixelInterval:500,
+    pixelInterval:100000,
     pixelNumber:16,
     pixelPattern:PatternEnum.FIX
 })
