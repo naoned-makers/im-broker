@@ -71,8 +71,8 @@ pm2 flush
 ##  im/command/\<entity\>/\<command>
 entity path|command|playload|comment
 --- | --- | --- | ---
-im/command/energy/|off/on/beat/chase| {origin:'im-*', °speed:\<int animation duration in ms>, °rgb:'FFFFFF'}|
-im/command/eyes/|off/on/beat/chase| {origin:'im-*', °speed:\<int animation duration in ms>, °rgb:'FFFFFF'}}|
+im/command/energy/|chase/wipe/fix/rainbow/scan/fade| {origin:'im-*', °speed:\<int animation duration in ms>, °rgb:'FFFFFF'}|
+im/command/eyes/|chase/wipe/fix/rainbow/scan/fade| {origin:'im-*', °speed:\<int animation duration in ms>, °rgb:'FFFFFF'}}|
 im/command/energy/|colorize| {origin:'im-*', °speed:\<int animation duration in ms>, °rgb:'FFFFFF'}|
 im/command/eyes/|colorize| {origin:'im-*', °speed:\<int animation duration in ms>, °rgb:'FFFFFF'}}|
 im/command/helmet/|move*| {origin:'im-*'}
@@ -117,14 +117,15 @@ im/event/rpiheart/pwmhat/\<pwm channel> | { pulse: \< int pulse value > }
 im/event/rpiheart/status|{brokerClients:[\< array broker client name>]}      
 im/event/rpiheart/usage| { memory: { free: 12831096832, total: 16477089792, percentage: 22 },  cpuUsage: '25.12', disk:{ free: 255911464960,total: 420273078272 } }
 im/event/rpiheart/audio | { filename: \< string local filename value > }
-im/event/esp8266/neopixel/\<A or B> | {°pattern:\<int NONE =0, RAINBOW=1, CHASE=2, COLOR_WIPE=3, SCANNER=4, FADE=5>,°interval:\<in interval time in ms>, °color1:\<int primary color value>, °color2:\<int color value>}
+im/event/esp8266/neopixel/\<A or B> | {°pattern:\<int NONE =0, RAINBOW=1, CHASE=2, COLOR_WIPE=3, SCANNER=4, FADE=5, FIX=6>,°interval:\<in interval time in ms>, °color1:\<int primary color value>, °color2:\<int color value>}
 
 ## Pixel Pattern
- * scanner: The Scanner pattern consists of a single bright led scanning back and forth, leaving a trail of fading leds behind as it goes.
+ * scan: The Scanner pattern consists of a single bright led scanning back and forth, leaving a trail of fading leds behind as it goes.
  * chase:  pattern emulates the classic chase pattern from '50s era theater marquees (use color2).
  * wipe: The ColorWipe pattern paints a color, one pixel at a time, over the length of the strip. 
  * rainbow: The Rainbow Cycle uses the color wheel to create a rainbow effect that cycles over the length of the strip(use no color).
- * fader: This pattern produces a smooth linear fade from one color to another(use color2).
+ * fade: This pattern produces a smooth linear fade from one color to another(use color2).
+ * fix: Fixed color
 
 ---
 ---

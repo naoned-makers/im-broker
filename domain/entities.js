@@ -57,6 +57,7 @@ const ImPart = types.model("ImPart", {
         if(pPattern && !Number.isNaN(pPattern)){
             self.pixelPattern = pPattern;    
         }
+        console.log("setNeopixelTo",JSON.stringify({pattern:self.pixelPattern,color1:self.pixelColor,interval:self.pixelInterval}));
         pClient.publish("im/event/esp8266/neopixel/"+self.hardwarePin
             ,JSON.stringify({pattern:self.pixelPattern,color1:self.pixelColor,interval:self.pixelInterval})
             ,{retain: true});
@@ -208,16 +209,16 @@ let righthand = ImPart.create({
     pwmSteps:[SERVO_MIN_RIGHT_HAND,SERVO_MIDDLE_RIGHT_HAND,SERVO_MAX_RIGHT_HAND,SERVO_MIDDLE_RIGHT_HAND],
     pwmCurrent:SERVO_MIDDLE_RIGHT_HAND//assume we start as this
 })
-var PatternEnum = Object.freeze({"NONE":0,"RAINBOW_CYCLE":1,"THEATER_CHASE":2,"COLOR_WIPE":3,"SCANNER":4,"FADE":5})
+var PatternEnum = Object.freeze({"NONE":0,"RAINBOW_CYCLE":1,"THEATER_CHASE":2,"COLOR_WIPE":3,"SCANNER":4,"FADE":5,"FIX":6})
 const ESP8266_STRIP_EYES = 'A'
 let eyes = ImPart.create({
     key: 'eyes',
     label: 'Im eyes',
     hardwarePin: ESP8266_STRIP_EYES,
     pixelColor:0x2222FF,
-    pixelInterval:50,
+    pixelInterval:500,
     pixelNumber:16,
-    pixelPattern:PatternEnum.SCANNER
+    pixelPattern:PatternEnum.FIX
 })
 const ESP8266_STRIP_ENERGY = 'B'
 let energy = ImPart.create({
@@ -225,9 +226,9 @@ let energy = ImPart.create({
     label: 'Im energy ring',
     hardwarePin: ESP8266_STRIP_ENERGY,
     pixelColor:0x2222FF,
-    pixelInterval:50,
+    pixelInterval:500,
     pixelNumber:16,
-    pixelPattern:PatternEnum.THEATER_CHASE
+    pixelPattern:PatternEnum.FIX
 })
 
 im.addChild(head);
@@ -569,14 +570,28 @@ entities.eyesEntity = function (client, entityCommand, inPlayLoad) {
         switch(entityCommand){
             case 'none':
                 eyes.setNeopixelTo(client,PatternEnum.NONE,color,interval)
+                break;
             case 'rainbow':
                 eyes.setNeopixelTo(client,PatternEnum.RAINBOW_CYCLE,color,interval)
+                break;
             case 'chase':
                 eyes.setNeopixelTo(client,PatternEnum.THEATER_CHASE,color,interval)
+                break;
+            case 'fix':
+                eyes.setNeopixelTo(client,PatternEnum.FIX,color,interval)
+                break;
             case 'wipe':
                 eyes.setNeopixelTo(client,PatternEnum.COLOR_WIPE,color,interval)
+                break;
+            case 'scan':
+                eyes.setNeopixelTo(client,PatternEnum.SCANNER,color,interval)
+                break;
+            case 'fade':
+                eyes.setNeopixelTo(client,PatternEnum.FADE,color,interval)
+                break;
             default:
                 eyes.setNeopixelTo(client,null,color,interval)
+                break;
         }
     }    
 }
@@ -593,15 +608,29 @@ entities.energyEntity = function (client, entityCommand, inPlayLoad) {
     }else{
         switch(entityCommand){
             case 'none':
-             energy.setNeopixelTo(client,PatternEnum.NONE,color,interval)
+                energy.setNeopixelTo(client,PatternEnum.NONE,color,interval)
+                break;
             case 'rainbow':
                 energy.setNeopixelTo(client,PatternEnum.RAINBOW_CYCLE,color,interval)
+                break;
             case 'chase':
                 energy.setNeopixelTo(client,PatternEnum.THEATER_CHASE,color,interval)
+                break;
+            case 'fix':
+                energy.setNeopixelTo(client,PatternEnum.FIX,color,interval)
+                break;
             case 'wipe':
                 energy.setNeopixelTo(client,PatternEnum.COLOR_WIPE,color,interval)
+                break;
+            case 'scan':
+                energy.setNeopixelTo(client,PatternEnum.SCANNER,color,interval)
+                break;
+            case 'fade':
+                energy.setNeopixelTo(client,PatternEnum.FADE,color,interval)
+                break;
             default:
                 energy.setNeopixelTo(client,null,color,interval)
+                break;
         }
     }  
 }
