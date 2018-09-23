@@ -20,16 +20,14 @@
 **Project Install**
 ```
 
-sudo apt-get install python-pip python-dev build-essential python-smbus libzmq-dev i2c-tools  git scons swig
+sudo apt-get install python-pip python-dev build-essential python-smbus libzmq3-dev i2c-tools  git scons swig
 sudo apt-get install libavahi-compat-libdnssd-dev avahi-daemon libsox-fmt-mp3 mpg123
 
 curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
-sudo apt-get install npm nodejs
-npm install -g npm
+sudo apt-get install nodejs
 npm install -g pm2
 sudo pip install paho-mqtt
 sudo pip install adafruit-pca9685
-sudo pip install rpi_ws281x
 git clone   ... cd ...
 npm install
 ```

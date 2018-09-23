@@ -62,11 +62,11 @@ function switchColorMode(event){
     if(globalColorMode){
         legosvg.contentDocument.getElementById("colors").style.display="block";
         mqttPublish("eyes/fade",{'origin':'im-web','rgb':'2222ff','rgb2':'8080ff','interval':30,'totalSteps':80});
-        mqttPublish("energy/chase",{'origin':'im-web','rgb':'2222ff','interval':50});
+        mqttPublish("energy/chase",{'origin':'im-web','rgb':'2222ff','rgb2':'000000','interval':50});
     }else{
         legosvg.contentDocument.getElementById("colors").style.display= "none";
         mqttPublish("eyes/fade",{'origin':'im-web','rgb':'2222ff','rgb2':'8080ff','interval':30,'totalSteps':80});
-        mqttPublish("energy/chase",{'origin':'im-web','rgb':'2222ff','interval':50});
+        mqttPublish("energy/chase",{'origin':'im-web','rgb':'2222ff','rgb2':'000000','interval':50});
     }
 }
 

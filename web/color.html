@@ -32,7 +32,7 @@
                 <option>fade</option>
             </select>
             <input id="intervalA" name="intervalA" type="range" value="100" max="500" min="20" step="10"/>
-            <div id="previewA" class="preview" style="height: 30px;width: 30px;background-color:black;margin:0 auto 0 auto"></div>
+            <div id="previewA" class="preview" style="height: 20px;width: 60px;background-color:black;margin:0 auto 0 auto;margin:2px"></div>
         </span>
         <span style="display: flex;flex-direction:column;border:thin solid black;">
             <select name="patternB" id="patternB">
@@ -44,11 +44,13 @@
                 <option>fade</option>
             </select>
             <input id="intervalB" name="intervalB" type="range" value="150" max="500" min="20" step="10"/>
-            <div id="previewB" class="preview" style="height: 30px;width: 30px;background-color:black;margin:0 auto 0 auto"></div>
+            <div id="previewB" class="preview" style="height: 20px;width: 60px;background-color:black;margin:0 auto 0 auto;margin:2px"></div>
         </span>
     </header>
     <canvas id="picker" style="display: inline;margin:0 auto 0 auto"></canvas>
     <script type="text/javascript">
+        var lastChange = 0;
+
        // create canvas and context objects
         var canvas = document.getElementById('picker');
         var ctx = canvas.getContext('2d');
@@ -63,7 +65,13 @@
             ctx.drawImage(image, 0, 0, image.width, image.height, 0, 0, canvas.height, canvas.height); // draw the image on the canvas
         }
 
-        canvas.onmousemove = function (e) { // mouse move handler
+        canvas.onclick = function (e) { // mouse move handler
+            var curChange = Date.now();
+            //if(curChange < (lastChange+2000)){
+                //slow imput
+            //    return false;
+            //}
+            lastChange = curChange;
             // get coordinates of current position
             var canvasX = Math.floor(e.pageX - canvas.offsetLeft);
             var canvasY = Math.floor(e.pageY - canvas.offsetTop);
@@ -77,10 +85,11 @@
             //document.getElementById('picker');
             //$('.preview').css('backgroundColor', pixelColor);
             Array.from(document.getElementsByClassName("preview")).map(el=> el.style.backgroundColor=pixelColor);
-
             var hexaColor = pixel[2] + 256 * pixel[1] + 65536 * pixel[0];
             var strColor = ('0000' + hexaColor.toString(16)).substr(-6);
             console.log(strColor);
+            previewA.innerText=strColor;
+            previewB.innerText=strColor;
             client.publish("im/command/eyes/colorize",JSON.stringify({'origin':'im-webcolor','rgb':strColor}),console.info);
             client.publish("im/command/energy/colorize",JSON.stringify({'origin':'im-webcolor','rgb':strColor}),console.info);
         }
