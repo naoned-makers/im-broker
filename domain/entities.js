@@ -30,6 +30,8 @@ const ImPart = types.model("ImPart", {
     hardwarePin: types.maybe(types.union(types.number,types.string)),
 
     pixelColor:types.maybe(types.number),
+    pixelColor2:types.maybe(types.number),
+    pixelTotalSteps:types.maybe(types.number),
     pixelInterval:types.maybe(types.number),
     pixelPattern:types.maybe(types.number),
     pixelNumber:types.maybe(types.number),
@@ -47,19 +49,25 @@ const ImPart = types.model("ImPart", {
         self.lastActivity = new Date();
         entities[self.key + 'Entity'](pClient, command, payLoad);
     },
-    setNeopixelTo(pClient,pPattern,pColor,pInterval){
+    setNeopixelTo(pClient,pPattern,pColor,pColor2,pInterval,pTotalSteps){
         if(pColor && !Number.isNaN(pColor)){
             self.pixelColor = pColor;    
+        }
+        if(pColor2 && !Number.isNaN(pColor2)){
+            self.pixelColor2 = pColor2;    
         }
         if(pInterval && !Number.isNaN(pInterval)){
             self.pixelInterval = pInterval;    
         }
+        if(pTotalSteps && !Number.isNaN(pTotalSteps)){
+            self.pixelTotalSteps = pTotalSteps;    
+        }
         if(pPattern && !Number.isNaN(pPattern)){
             self.pixelPattern = pPattern;    
         }
-        console.log("setNeopixelTo",JSON.stringify({pattern:self.pixelPattern,color1:self.pixelColor,interval:self.pixelInterval}));
+        console.log("setNeopixelTo",JSON.stringify({pattern:self.pixelPattern,color1:self.pixelColor,color2:self.pixelColor2,interval:self.pixelInterval}));
         pClient.publish("im/event/esp8266/neopixel/"+self.hardwarePin
-            ,JSON.stringify({pattern:self.pixelPattern,color1:self.pixelColor,interval:self.pixelInterval})
+            ,JSON.stringify({pattern:self.pixelPattern,color1:self.pixelColor,color2:self.pixelColor2,interval:self.pixelInterval,totalSteps:self.pixelTotalSteps})
             ,{retain: true});
     },
     changeNeopixelTo(pClient,pColor,pInterval){
@@ -216,9 +224,11 @@ let eyes = ImPart.create({
     label: 'Im eyes',
     hardwarePin: ESP8266_STRIP_EYES,
     pixelColor:0x2222FF,
-    pixelInterval:100000,
+    pixelColor2:0x8080FF,
+    pixelTotalSteps:80,
+    pixelInterval:30,
     pixelNumber:16,
-    pixelPattern:PatternEnum.FIX
+    pixelPattern:PatternEnum.FADE
 })
 const ESP8266_STRIP_ENERGY = 'B'
 let energy = ImPart.create({
@@ -226,6 +236,7 @@ let energy = ImPart.create({
     label: 'Im energy ring',
     hardwarePin: ESP8266_STRIP_ENERGY,
     pixelColor:0x2222FF,
+    pixelColor2:0x8080FF,
     pixelInterval:50,
     pixelNumber:16,
     pixelPattern:PatternEnum.THEATER_CHASE
@@ -563,34 +574,36 @@ entities.helmetEntity = function (client, entityCommand, inPayLoad) {
  */
 entities.eyesEntity = function (client, entityCommand, inPlayLoad) {
     const color = parseInt(inPlayLoad.rgb, 16);
-    const interval = parseInt(parseInt(inPlayLoad.speed) / eyes.pixelNumber);
+    const color2 = parseInt(inPlayLoad.rgb2, 16);
+    const interval = parseInt(inPlayLoad.interval);
+    const totalSteps = parseInt(inPlayLoad.totalSteps);
     if (entityCommand == 'colorize') {
         eyes.changeNeopixelTo(client,color,interval);
     }else{
         switch(entityCommand){
             case 'none':
-                eyes.setNeopixelTo(client,PatternEnum.NONE,color,interval)
+                eyes.setNeopixelTo(client,PatternEnum.NONE,color,null,interval)
                 break;
             case 'rainbow':
-                eyes.setNeopixelTo(client,PatternEnum.RAINBOW_CYCLE,color,interval)
+                eyes.setNeopixelTo(client,PatternEnum.RAINBOW_CYCLE,null,null,interval)
                 break;
             case 'chase':
-                eyes.setNeopixelTo(client,PatternEnum.THEATER_CHASE,color,interval)
+                eyes.setNeopixelTo(client,PatternEnum.THEATER_CHASE,color,color2,interval)
                 break;
             case 'fix':
-                eyes.setNeopixelTo(client,PatternEnum.FIX,color,interval)
+                eyes.setNeopixelTo(client,PatternEnum.FIX,color,null,interval)
                 break;
             case 'wipe':
-                eyes.setNeopixelTo(client,PatternEnum.COLOR_WIPE,color,interval)
+                eyes.setNeopixelTo(client,PatternEnum.COLOR_WIPE,color,null,interval)
                 break;
             case 'scan':
-                eyes.setNeopixelTo(client,PatternEnum.SCANNER,color,interval)
+                eyes.setNeopixelTo(client,PatternEnum.SCANNER,color,null,interval)
                 break;
             case 'fade':
-                eyes.setNeopixelTo(client,PatternEnum.FADE,color,interval)
+                eyes.setNeopixelTo(client,PatternEnum.FADE,color,color2,interval,totalSteps)
                 break;
             default:
-                eyes.setNeopixelTo(client,null,color,interval)
+                eyes.setNeopixelTo(client,null,color,null,interval)
                 break;
         }
     }    
@@ -602,34 +615,36 @@ entities.eyesEntity = function (client, entityCommand, inPlayLoad) {
  */
 entities.energyEntity = function (client, entityCommand, inPlayLoad) {
     const color = parseInt(inPlayLoad.rgb, 16);
-    const interval = parseInt(parseInt(inPlayLoad.speed) / energy.pixelNumber);
+    const color2 = parseInt(inPlayLoad.rgb2, 16);
+    const interval = parseInt(inPlayLoad.interval);
+    const totalSteps = parseInt(inPlayLoad.totalSteps);
     if (entityCommand == 'colorize') {
         energy.changeNeopixelTo(client,color,interval);
     }else{
         switch(entityCommand){
             case 'none':
-                energy.setNeopixelTo(client,PatternEnum.NONE,color,interval)
+                energy.setNeopixelTo(client,PatternEnum.NONE,color,null,interval)
                 break;
             case 'rainbow':
-                energy.setNeopixelTo(client,PatternEnum.RAINBOW_CYCLE,color,interval)
+                energy.setNeopixelTo(client,PatternEnum.RAINBOW_CYCLE,null,null,interval)
                 break;
             case 'chase':
-                energy.setNeopixelTo(client,PatternEnum.THEATER_CHASE,color,interval)
+                energy.setNeopixelTo(client,PatternEnum.THEATER_CHASE,color,color2,interval)
                 break;
             case 'fix':
-                energy.setNeopixelTo(client,PatternEnum.FIX,color,interval)
+                energy.setNeopixelTo(client,PatternEnum.FIX,color,null,interval)
                 break;
             case 'wipe':
-                energy.setNeopixelTo(client,PatternEnum.COLOR_WIPE,color,interval)
+                energy.setNeopixelTo(client,PatternEnum.COLOR_WIPE,color,null,interval)
                 break;
             case 'scan':
-                energy.setNeopixelTo(client,PatternEnum.SCANNER,color,interval)
+                energy.setNeopixelTo(client,PatternEnum.SCANNER,color,null,interval)
                 break;
             case 'fade':
-                energy.setNeopixelTo(client,PatternEnum.FADE,color,interval)
+                energy.setNeopixelTo(client,PatternEnum.FADE,color,color2,interval,totalSteps)
                 break;
             default:
-                energy.setNeopixelTo(client,null,color,interval)
+                energy.setNeopixelTo(client,null,color,null,interval)
                 break;
         }
     }  

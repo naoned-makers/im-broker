@@ -71,10 +71,10 @@ pm2 flush
 ##  im/command/\<entity\>/\<command>
 entity path|command|playload|comment
 --- | --- | --- | ---
-im/command/energy/|chase/wipe/fix/rainbow/scan/fade| {origin:'im-*', °speed:\<int animation duration in ms>, °rgb:'FFFFFF'}|
-im/command/eyes/|chase/wipe/fix/rainbow/scan/fade| {origin:'im-*', °speed:\<int animation duration in ms>, °rgb:'FFFFFF'}}|
-im/command/energy/|colorize| {origin:'im-*', °speed:\<int animation duration in ms>, °rgb:'FFFFFF'}|
-im/command/eyes/|colorize| {origin:'im-*', °speed:\<int animation duration in ms>, °rgb:'FFFFFF'}}|
+im/command/energy/|chase/wipe/fix/rainbow/scan/fade| {origin:'im-*', °interval:\<int interval duration in ms>, °rgb:'FFFFFF, °rgb2:'FFFFFF''}|
+im/command/eyes/|chase/wipe/fix/rainbow/scan/fade| {origin:'im-*', °interval:\<int interval duration in ms>, °rgb:'FFFFFF', °rgb2:'FFFFFF'}}|
+im/command/energy/|colorize| {origin:'im-*', °interval:\<int interval duration in ms>, °rgb:'FFFFFF'}|
+im/command/eyes/|colorize| {origin:'im-*', °interval:\<int interval duration in ms>, °rgb:'FFFFFF'}}|
 im/command/helmet/|move*| {origin:'im-*'}
 im/command/helmet/|open| {origin:'im-*'}
 im/command/helmet/|close| {origin:'im-*'}

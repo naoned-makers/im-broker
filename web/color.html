@@ -3,24 +3,48 @@
 <head>
     <meta charset="utf-8" />
     <title>HTML5 Color Picker</title>
+    <script src="scripts/mqtt.min.js"></script>
+    <script type="text/javascript">
+        var urlParams = new URLSearchParams(window.location.search);
+        var mqttServer = 'ws://'+window.location.hostname+':3000';
+        if (urlParams.get('mqttServer')){
+            mqttServer = 'ws://'+urlParams.get('mqttServer')+':3000';
+        }
+        /**
+            PARTIE MQTT sur WEBSOCKET
+        */
+        var client = mqtt.connect(mqttServer,{clientId:'webcolor_'+ Math.random().toString(16).substr(2, 8)});
+        //Emitted on successful (re)connection 
+        client.on('connect', function () { 
+            console.log('connect');
+        })
+    </script>
 </head>
 <body style="overflow: hidden;display: flex;flex-direction:column;height:100%">
     <header style="position:absolute;display: flex;flex-direction:row;margin:0;justify-content: space-between;width:98%">
         <span style="display: flex;flex-direction:column;border:thin solid black;">
-            <select name="patternA">
+            <select name="patternA" id="patternA">
+                <option>rainbow</option>
                 <option>chase</option>
+                <option>fix</option>
                 <option>wipe</option>
+                <option>scan</option>
+                <option>fade</option>
             </select>
-            <input name="speedA" type="range" />
-            <div class="preview" style="height: 30px;width: 30px;background-color:black;margin:0 auto 0 auto"></div>
+            <input id="intervalA" name="intervalA" type="range" value="100" max="500" min="20" step="10"/>
+            <div id="previewA" class="preview" style="height: 30px;width: 30px;background-color:black;margin:0 auto 0 auto"></div>
         </span>
         <span style="display: flex;flex-direction:column;border:thin solid black;">
-            <select name="patternA">
+            <select name="patternB" id="patternB">
+                <option>rainbow</option>
                 <option>chase</option>
+                <option>fix</option>
                 <option>wipe</option>
+                <option>scan</option>
+                <option>fade</option>
             </select>
-            <input name="speedA" type="range" />
-            <div class="preview" style="height: 30px;width: 30px;background-color:black;margin:0 auto 0 auto"></div>
+            <input id="intervalB" name="intervalB" type="range" value="150" max="500" min="20" step="10"/>
+            <div id="previewB" class="preview" style="height: 30px;width: 30px;background-color:black;margin:0 auto 0 auto"></div>
         </span>
     </header>
     <canvas id="picker" style="display: inline;margin:0 auto 0 auto"></canvas>
@@ -57,6 +81,28 @@
             var hexaColor = pixel[2] + 256 * pixel[1] + 65536 * pixel[0];
             var strColor = ('0000' + hexaColor.toString(16)).substr(-6);
             console.log(strColor);
+            client.publish("im/command/eyes/colorize",JSON.stringify({'origin':'im-webcolor','rgb':strColor}),console.info);
+            client.publish("im/command/energy/colorize",JSON.stringify({'origin':'im-webcolor','rgb':strColor}),console.info);
+        }
+        var intervalA = document.getElementById('intervalA');
+        var previewA = document.getElementById('previewA');
+        intervalA.onchange = function(event){
+            previewA.innerText=event.target.value;
+            client.publish("im/command/eyes/colorize",JSON.stringify({'origin':'im-webcolor','interval':event.target.value}),console.info);
+        }
+        var intervalB = document.getElementById('intervalB');
+        var previewB = document.getElementById('previewB');
+        intervalB.onchange = function(event){
+            previewB.innerText=event.target.value;
+            client.publish("im/command/energy/colorize",JSON.stringify({'origin':'im-webcolor','interval':event.target.value}),console.info); 
+        }
+        var patternA = document.getElementById('patternA');
+        patternA.onchange = function(event){
+            client.publish("im/command/eyes/"+event.target.value,JSON.stringify({'origin':'im-webcolor'}),console.info);
+        }
+        var patternB = document.getElementById('patternB');
+        patternB.onchange = function(event){
+            client.publish("im/command/energy/"+event.target.value,JSON.stringify({'origin':'im-webcolor'}),console.info);
         }
    </script>
 </body>
