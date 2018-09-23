@@ -65,7 +65,7 @@ const ImPart = types.model("ImPart", {
         if(pPattern && !Number.isNaN(pPattern)){
             self.pixelPattern = pPattern;    
         }
-        console.log("setNeopixelTo",JSON.stringify({pattern:self.pixelPattern,color1:self.pixelColor,color2:self.pixelColor2,interval:self.pixelInterval}));
+        console.log("setNeopixelTo",JSON.stringify({pattern:self.pixelPattern,color1:self.pixelColor,color2:self.pixelColor2,interval:self.pixelInterval,totalSteps:self.pixelTotalSteps}));
         pClient.publish("im/event/esp8266/neopixel/"+self.hardwarePin
             ,JSON.stringify({pattern:self.pixelPattern,color1:self.pixelColor,color2:self.pixelColor2,interval:self.pixelInterval,totalSteps:self.pixelTotalSteps})
             ,{retain: true});

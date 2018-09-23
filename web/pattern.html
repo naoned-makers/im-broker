@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>HTML5 Color Picker</title>
+    <script src="scripts/mqtt.min.js"></script>
+    <script type="text/javascript">
+        var urlParams = new URLSearchParams(window.location.search);
+        var mqttServer = 'ws://'+window.location.hostname+':3000';
+        if (urlParams.get('mqttServer')){
+            mqttServer = 'ws://'+urlParams.get('mqttServer')+':3000';
+        }
+        /**
+            PARTIE MQTT sur WEBSOCKET
+        */
+        var client = mqtt.connect(mqttServer,{clientId:'webpattern_'+ Math.random().toString(16).substr(2, 8)});
+        //Emitted on successful (re)connection 
+        client.on('connect', function () { 
+            console.log('connect');
+        })
+    </script>
+</head>
+<body style="overflow: hidden;display: block;">
+            NeoPixel: <select id="strip" name="strip">
+                <option value="A" selected="selected">Yeux</option>
+                <option value="B">Plastron</option>
+            </select><br/>
+            Pattern: <select name="pattern" id="pattern">
+                <option>rainbow</option>
+                <option>chase</option>
+                <option>fix</option>
+                <option>wipe</option>
+                <option>scan</option>
+                <option selected="selected">fade</option>
+            </select><br/>
+            Interval: <input id="interval" name="interval" type="range" value="100" max="500" min="20" step="10"/><span id="preview" class="preview" style="height: 20px;margin:0 auto 0 auto;margin:2px">100</span><br/>
+            Color1: <input id="color1" name="color1" type="color" value="#2222FF"/><br/>
+            Color2: <input id="color2" name="color2" type="color" value="#8080FF"/><br/>
+            TransitionStep: <input id="totalStep" name="totalStep" type="number" value="80" size="3" style="width:50px"/><br/>
+            <input id="publish" name="publish" type="button" value="Send"/>
+    <script type="text/javascript">
+        var strip = document.getElementById('strip');
+        var interval = document.getElementById('interval');
+        var preview = document.getElementById('preview');
+        var pattern = document.getElementById('pattern');
+        var color1 = document.getElementById('color1');
+        var color2 = document.getElementById('color2');
+        var totalStep = document.getElementById('totalStep');
+        var publish = document.getElementById('publish');
+        interval.onchange = function(event){
+            preview.innerText=event.target.value; 
+        }
+        publish.onclick= function(){
+            console.log("im/command/"+((strip.value=='A')?'eyes':'energy')+"/"+pattern.value,JSON.stringify({'origin':'im-webpattern','rgb':color1.value.substr(1),'rgb2':color2.value.substr(1),'interval':interval.value,'totalSteps':totalStep.value}));
+            client.publish("im/command/"+((strip.value=='A')?'eyes':'energy')+"/"+pattern.value,JSON.stringify({'origin':'im-webpattern','rgb':color1.value.substr(1),'rgb2':color2.value.substr(1),'interval':interval.value,'totalSteps':totalStep.value}),console.info);
+        }
+   </script>
+</body>
+</html>
