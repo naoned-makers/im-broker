@@ -83,9 +83,12 @@ const ImPart = types.model("ImPart", {
             pClient.publish("im/event/esp8266/neopixel/"+self.hardwarePin,JSON.stringify({interval:self.pixelInterval}));   
         }
     },
-    audio(pClient){
+    audio(pClient,pFilename){
+        if(!pFilename){
+            pFilename = self.key;
+        }
         pClient.publish("im/event/rpiheart/audio", JSON.stringify({
-            filename: self.key+'.mp3'
+            filename: pFilename+'.mp3'
         }));
     },
     changePwmTo(pClient,currentPulse) {
@@ -537,15 +540,19 @@ entities.helmetEntity = function (client, entityCommand, inPayLoad) {
     }
 
     if (entityCommand == 'open') {
+        helmet.audio(client,'helmetopen');
         helmet.changePwmTo(client,SERVO_MAX_HELMET);
     } else if (entityCommand == 'close') {
+        helmet.audio(client,'helmetclose');
         helmet.changePwmTo(client,SERVO_MIN_HELMET);
         helmet.free();
     } else if (entityCommand == 'next') {
-        helmet.audio(client);
         helmet.nextPwmStep(client);
         if(helmet.pwmCurrent==SERVO_MIN_HELMET){
+            helmet.audio(client,'helmetclose');
             helmet.free();
+        }else{
+            helmet.audio(client,'helmetopen');
         }
     } else if (entityCommand == 'set') {
         let currentPulse = SERVO_MIN_HELMET + inPayLoad.absPosition/100 * (SERVO_MAX_HELMET - SERVO_MIN_HELMET);
