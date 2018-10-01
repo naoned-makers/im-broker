@@ -70,17 +70,18 @@ const ImPart = types.model("ImPart", {
             ,JSON.stringify({pattern:self.pixelPattern,color1:self.pixelColor,color2:self.pixelColor2,interval:self.pixelInterval,totalSteps:self.pixelTotalSteps})
             ,{retain: true});
     },
-    changeNeopixelTo(pClient,pColor,pInterval){
-        if(pColor && pInterval && !Number.isNaN(pColor) && !Number.isNaN(pInterval)){
+    changeNeopixelTo(pClient,pColor,pColor2){
+        //But why: i don't remember
+        if(pColor && pColor2 && !Number.isNaN(pColor) && !Number.isNaN(pColor2)){
             self.pixelColor = pColor;
-            self.pixelInterval = pInterval;
-            pClient.publish("im/event/esp8266/neopixel/"+self.hardwarePin,JSON.stringify({color1:self.pixelColor,interval:self.pixelInterval}));
+            self.pixelColor2 = pColor2;
+            pClient.publish("im/event/esp8266/neopixel/"+self.hardwarePin,JSON.stringify({color1:self.pixelColor,color2:self.pixelColor2}));
         }else if(pColor && !Number.isNaN(pColor)){
             self.pixelColor = pColor;
-            pClient.publish("im/event/esp8266/neopixel/"+self.hardwarePin,JSON.stringify({color1:self.pixelColor}));   
-        }else if(pInterval && !Number.isNaN(pInterval)){
-            self.pixelInterval = pInterval;
-            pClient.publish("im/event/esp8266/neopixel/"+self.hardwarePin,JSON.stringify({interval:self.pixelInterval}));   
+            pClient.publish("im/event/esp8266/neopixel/"+self.hardwarePin,JSON.stringify({color1:self.pixelColor}));
+        }else if(pColor2 && !Number.isNaN(pColor2)){
+            self.pixelColor2 = pColor2;
+            pClient.publish("im/event/esp8266/neopixel/"+self.hardwarePin,JSON.stringify({color2:self.pixelColor2})); 
         }
     },
     audio(pClient,pFilename){
@@ -226,10 +227,10 @@ let eyes = ImPart.create({
     key: 'eyes',
     label: 'Im eyes',
     hardwarePin: ESP8266_STRIP_EYES,
-    pixelColor:0x2222FF,
-    pixelColor2:0x8080FF,
+    pixelColor:0xAAFFEA,
+    pixelColor2:0x004030,
     pixelTotalSteps:80,
-    pixelInterval:30,
+    pixelInterval:100,
     pixelNumber:16,
     pixelPattern:PatternEnum.FADE
 })
@@ -238,9 +239,9 @@ let energy = ImPart.create({
     key: 'energy',
     label: 'Im energy ring',
     hardwarePin: ESP8266_STRIP_ENERGY,
-    pixelColor:0x2222FF,
-    pixelColor2:0x000000,
-    pixelInterval:50,
+    pixelColor:0xAAFFEA,
+    pixelColor2:0x000202,
+    pixelInterval:40,
     pixelNumber:16,
     pixelPattern:PatternEnum.THEATER_CHASE
 })
@@ -585,7 +586,7 @@ entities.eyesEntity = function (client, entityCommand, inPlayLoad) {
     const interval = parseInt(inPlayLoad.interval);
     const totalSteps = parseInt(inPlayLoad.totalSteps);
     if (entityCommand == 'colorize') {
-        eyes.changeNeopixelTo(client,color,interval);
+        eyes.changeNeopixelTo(client,color,color2);
     }else{
         switch(entityCommand){
             case 'none':
@@ -626,7 +627,7 @@ entities.energyEntity = function (client, entityCommand, inPlayLoad) {
     const interval = parseInt(inPlayLoad.interval);
     const totalSteps = parseInt(inPlayLoad.totalSteps);
     if (entityCommand == 'colorize') {
-        energy.changeNeopixelTo(client,color,interval);
+        energy.changeNeopixelTo(client,color,color2);
     }else{
         switch(entityCommand){
             case 'none':

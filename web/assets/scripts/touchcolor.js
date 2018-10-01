@@ -31,14 +31,14 @@ legosvg.addEventListener("load", function () {
     svgDoc.getElementById("energy").addEventListener("touchstart", switchColorMode, {capture: true,passive:false});
     svgDoc.getElementById("energy").addEventListener("mousedown", switchColorMode, {capture: true,passive:false});
     // attach color selection
-    attachColorTopic(svgDoc.getElementById("blue"), "03a9f5");
-    attachColorTopic(svgDoc.getElementById("greenblue"), "009788");
-    attachColorTopic(svgDoc.getElementById("green"), "8bc24a");
-    attachColorTopic(svgDoc.getElementById("yellow"), "ffeb3c");
-    attachColorTopic(svgDoc.getElementById("orange"), "ff9700");
-    attachColorTopic(svgDoc.getElementById("red"), "f44236");
-    attachColorTopic(svgDoc.getElementById("purple"), "9c28b1");
-    attachColorTopic(svgDoc.getElementById("darkpurple"), "3f51b5");
+    attachColorTopic(svgDoc.getElementById("blue")      , "1550ff","001040", "1550ff","000102");
+    attachColorTopic(svgDoc.getElementById("greenblue") , "15ffc5","6ef01e", "15ffc5","6ef001");
+    attachColorTopic(svgDoc.getElementById("green")     , "15ff15","004000", "15ff15","000200");
+    attachColorTopic(svgDoc.getElementById("yellow")    , "ffe215","403800", "ffe215","020200");
+    attachColorTopic(svgDoc.getElementById("orange")    , "ffa815","402800", "ffa815","020100");
+    attachColorTopic(svgDoc.getElementById("red")       , "d50000","400000", "d50000","020000");
+    attachColorTopic(svgDoc.getElementById("purple")    , "ff15c5","400030", "ff15c5","020002");
+    attachColorTopic(svgDoc.getElementById("darkpurple"), "2b0055","0b0015", "2b0055","010002");
 
 
 }, false);
@@ -49,8 +49,11 @@ function attachMoveTopic(elt,topic){
     elt.addEventListener("mousedown", doMove, {capture: true,passive:false});
 }
 
-function attachColorTopic(elt,color){
-    elt.imcolor = color;
+function attachColorTopic(elt,eyesimcolor,eyesimcolor2,energyimcolor,energyimcolor2){
+    elt.eyesimcolor = eyesimcolor;
+    elt.eyesimcolor2 = eyesimcolor2;
+    elt.energyimcolor = energyimcolor;
+    elt.energyimcolor2 = energyimcolor2;
     elt.addEventListener("touchstart", doColor, {capture: true,passive:false});
     elt.addEventListener("mousedown", doColor, {capture: true,passive:false});
 }
@@ -61,12 +64,12 @@ function switchColorMode(event){
     globalColorMode = !globalColorMode;
     if(globalColorMode){
         legosvg.contentDocument.getElementById("colors").style.display="block";
-        mqttPublish("eyes/fade",{'origin':'im-web','rgb':'2222ff','rgb2':'8080ff','interval':30,'totalSteps':80});
-        mqttPublish("energy/chase",{'origin':'im-web','rgb':'2222ff','rgb2':'000000','interval':50});
+        mqttPublish("eyes/fade",{'origin':'im-web','rgb':'aaffea','rgb2':'004030','interval':100,'totalSteps':80});
+        mqttPublish("energy/chase",{'origin':'im-web','rgb':'aaffea','rgb2':'000202','interval':40});
     }else{
         legosvg.contentDocument.getElementById("colors").style.display= "none";
-        mqttPublish("eyes/fade",{'origin':'im-web','rgb':'2222ff','rgb2':'8080ff','interval':30,'totalSteps':80});
-        mqttPublish("energy/chase",{'origin':'im-web','rgb':'2222ff','rgb2':'000000','interval':50});
+        mqttPublish("eyes/fade",{'origin':'im-web','rgb':'aaffea','rgb2':'004030','interval':100,'totalSteps':80});
+        mqttPublish("energy/chase",{'origin':'im-web','rgb':'aaffea','rgb2':'000202','interval':40});
     }
 }
 
@@ -103,8 +106,8 @@ function doColor(event) {
     this.querySelector("#border").fill="#FF0000";
     */
     if(globalColorMode){
-        mqttPublish("eyes/colorize",{'origin':'im-web','rgb':this.imcolor});
-        mqttPublish("energy/colorize",{'origin':'im-web','rgb':this.imcolor});
+        mqttPublish("eyes/colorize",{'origin':'im-web','rgb':this.eyesimcolor,'rgb2':this.eyesimcolor2});
+        mqttPublish("energy/colorize",{'origin':'im-web','rgb':this.energyimcolor,'rgb2':this.energyimcolor2});
         //document.getElementById("legosvg").contentDocument.getElementById("energy").querySelector("circle").setAttribute("fill", "#"+this.imcolor); 
         console.log(event.type, this.imcolor); 
     }else{

@@ -24,8 +24,8 @@ sudo apt-get install python-pip python-dev build-essential python-smbus libzmq3-
 sudo apt-get install libavahi-compat-libdnssd-dev avahi-daemon libsox-fmt-mp3 mpg123
 
 curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
-sudo apt-get install nodejs
-npm install -g pm2
+sudo apt-get install -y nodejs
+sudo npm install -g pm2
 sudo pip install paho-mqtt
 sudo pip install adafruit-pca9685
 git clone   ... cd ...
