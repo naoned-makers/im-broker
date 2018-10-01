@@ -38,7 +38,7 @@
         var urlParams = new URLSearchParams(window.location.search);
         var mqttServer = 'ws://'+window.location.hostname+':3000';
         if (urlParams.get('mqttServer')){
-            mqttServer = 'ws://'+urlParams.get('mqttServer')+':3000';
+            mqttServer = decodeURIComponent(urlParams.get('mqttServer'));
         }
         var client = mqtt.connect(mqttServer,{clientId:'webmove_'+ Math.random().toString(16).substr(2, 8)});
 

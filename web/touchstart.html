@@ -10,7 +10,7 @@
         var urlParams = new URLSearchParams(window.location.search);
         var mqttServer = 'ws://'+window.location.hostname+':3000';
         if (urlParams.get('mqttServer')){
-            mqttServer = 'ws://'+urlParams.get('mqttServer')+':3000';
+            mqttServer = decodeURIComponent(urlParams.get('mqttServer'));
         }
         document.addEventListener('DOMContentLoaded', function(){
             let svg = document.getElementById('legosvg');
