@@ -682,11 +682,11 @@ entities.imEntity = function (client, entityCommand, inPlayLoad) {
         }));
     }
     if (entityCommand == 'color') {
-        client.publish("im/command/eyes/default", JSON.stringify({
-            origin: 'im-brain'
+        client.publish("im/command/eyes/colorize", JSON.stringify({
+            origin: 'im-brain',rgb:inPlayLoad.rgb,rgb2:"222222"
         }));
-        client.publish("im/command/energy/default", JSON.stringify({
-            origin: 'im-brain'
+        client.publish("im/command/energy/colorize", JSON.stringify({
+            origin: 'im-brain',rgb:inPlayLoad.rgb,rgb2:"222222"
         }));
     }
 }
