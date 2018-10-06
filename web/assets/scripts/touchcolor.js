@@ -32,7 +32,7 @@ legosvg.addEventListener("load", function () {
     svgDoc.getElementById("energy").addEventListener("mousedown", switchColorMode, {capture: true,passive:false});
     // attach color selection
     attachColorTopic(svgDoc.getElementById("blue")      , "1550ff","001040", "1550ff","000102");
-    attachColorTopic(svgDoc.getElementById("greenblue") , "15ffc5","6ef01e", "15ffc5","6ef001");
+    attachColorTopic(svgDoc.getElementById("greenblue") , "15ffc5","004030", "15ffc5","000302");
     attachColorTopic(svgDoc.getElementById("green")     , "15ff15","004000", "15ff15","000200");
     attachColorTopic(svgDoc.getElementById("yellow")    , "ffe215","403800", "ffe215","020200");
     attachColorTopic(svgDoc.getElementById("orange")    , "ffa815","402800", "ffa815","020100");
