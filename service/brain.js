@@ -28,7 +28,7 @@ client.on('message', function (topic, strPlayload) {
     //TODO add a try catch
     var entityCode = topic.split("/")[2];
     var entityCommand = topic.split("/")[3];
-    console.log('\x1b[34m%s\x1b[0m', entityCode + "/" + entityCommand + "->" + strPlayload);
+    console.log('\x1b[34m%s\x1b[0m', entityCode + "/" + entityCommand + "->" + strPlayload.substr(0,100));
     var payLoad = JSON.parse(strPlayload);
     //for vui (local or api.ai) put parameter direclty in the payload
     if (payLoad.parameter) {
