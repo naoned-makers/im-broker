@@ -31,7 +31,7 @@ legosvg.addEventListener("load", function () {
     svgDoc.getElementById("energy").addEventListener("touchstart", switchColorMode, {capture: true,passive:false});
     svgDoc.getElementById("energy").addEventListener("mousedown", switchColorMode, {capture: true,passive:false});
     // attach color selection
-    attachColorTopic(svgDoc.getElementById("blue")      , "1550ff","001040", "1550ff","000102");
+    attachColorTopic(svgDoc.getElementById("blue")      , "aaffea","004030", "aaffea","004030");
     attachColorTopic(svgDoc.getElementById("greenblue") , "15ffc5","004030", "15ffc5","000302");
     attachColorTopic(svgDoc.getElementById("green")     , "15ff15","004000", "15ff15","000200");
     attachColorTopic(svgDoc.getElementById("yellow")    , "ffe215","403800", "ffe215","020200");
@@ -64,12 +64,12 @@ function switchColorMode(event){
     globalColorMode = !globalColorMode;
     if(globalColorMode){
         legosvg.contentDocument.getElementById("colors").style.display="block";
-        mqttPublish("eyes/fade",{'origin':'im-web','rgb':'aaffea','rgb2':'004030','interval':100,'totalSteps':80});
-        mqttPublish("energy/chase",{'origin':'im-web','rgb':'aaffea','rgb2':'000202','interval':40});
+        mqttPublish("eyes/fade",{'origin':'im-web','interval':100,'totalSteps':80});
+        mqttPublish("energy/chase",{'origin':'im-web','interval':40});
     }else{
         legosvg.contentDocument.getElementById("colors").style.display= "none";
-        mqttPublish("eyes/fade",{'origin':'im-web','rgb':'aaffea','rgb2':'004030','interval':100,'totalSteps':80});
-        mqttPublish("energy/chase",{'origin':'im-web','rgb':'aaffea','rgb2':'000202','interval':40});
+        mqttPublish("eyes/fade",{'origin':'im-web','interval':100,'totalSteps':80});
+        mqttPublish("energy/chase",{'origin':'im-web','interval':40});
     }
 }
 
