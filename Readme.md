@@ -5,7 +5,7 @@
 * A logic processing module [service/brain.js](service/brain.js) who subscribe to mqtt command topic and dispatch workout to [domain/entities.js](domain/entities.js). Entities are the nodejs statefull representation (using mobx-state-tree) of im part(head,helmet,leftarm,rightarm,lefthand,righthand,eyes,energy). Each entity is responsible to generate mqtt event response for his im-part based on im-current state and incomming solicitation.
 * A pwmhat python controller [python/pwmhat.py](python/pwmhat.py) that set the HAT pusleWithModulation value from the mqtt topic im/event/rpiheart/pwmhat/{channel} value.
 * An nodejs audio output module [service/sound.js](service/sound.js) that subscribe to im/event/rpiheart/audio mqtt topic and play matching mp3 file located located in the local [sound](sound) directory
-
+* An nodejs text to speech module [service/texttospeech.js](service/texttospeech.js) that subscribe to im/event/rpiheart/tts mqtt topic and synthesys french speech from input text
 
 **What is not inside** but that must be on the same root directory as im-broker to work
 * [im-admin](https://github.com/naoned-makers/im-admin) who take care to boot all im module via pm2 and also provide an web interface for im administration and im simulatiom
@@ -22,6 +22,7 @@
 
 sudo apt-get install python-pip python-dev build-essential python-smbus libzmq3-dev i2c-tools  git scons swig
 sudo apt-get install libavahi-compat-libdnssd-dev avahi-daemon libsox-fmt-mp3 mpg123
+sudo apt-get install libttspico0 libttspico-utils libttspico-data alsa-utils
 
 curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
 sudo apt-get install -y nodejs
@@ -102,6 +103,8 @@ im/command/im/|reset|{'origin':'im-*'}
 im/command/chat/|listenstart|{'origin':'im-*'}
 im/command/chat/|request|{'origin':'im-*','text':'la question'}
 im/command/chat/|response|{'origin':'im-*','text':'la reponse du bot'}
+im/command/mouth/|say| {'text':'Je parle'}
+
 
 ° : Optional
 Playload en json qui contient au moins un attribut origin
@@ -116,6 +119,7 @@ im/event/rpiheart/status|{brokerClients:[\< array broker client name>]}
 im/event/rpiheart/usage| { memory: { free: 12831096832, total: 16477089792, percentage: 22 },  cpuUsage: '25.12', disk:{ free: 255911464960,total: 420273078272 } }
 im/event/rpiheart/audio | { filename: \< string local filename value > }
 im/event/esp8266/neopixel/\<A or B> | {°pattern:\<int NONE =0, RAINBOW=1, CHASE=2, COLOR_WIPE=3, SCANNER=4, FADE=5, FIX=6>,°interval:\<in interval time in ms>, °color1:\<int primary color value>, °color2:\<int color value>}
+im/event/rpiheart/tts {'text':'Je parle'}
 
 ## Pixel Pattern
  * scan: The Scanner pattern consists of a single bright led scanning back and forth, leaving a trail of fading leds behind as it goes.

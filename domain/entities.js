@@ -92,6 +92,11 @@ const ImPart = types.model("ImPart", {
             filename: pFilename+'.mp3'
         }));
     },
+    speak(pClient,pText){
+        pClient.publish("im/event/rpiheart/tts", JSON.stringify({
+            text: pText
+        }));
+    },    
     changePwmTo(pClient,currentPulse) {
         self.pwmCurrent = currentPulse;
         pClient.publish("im/event/rpiheart/pwmhat/" + self.hardwarePin, JSON.stringify({
@@ -245,7 +250,10 @@ let energy = ImPart.create({
     pixelNumber:16,
     pixelPattern:PatternEnum.THEATER_CHASE
 })
-
+let mouth = ImPart.create({
+    key: 'mouth',
+    label: 'Im mouth'
+})
 im.addChild(head);
 im.addChild(helmet);
 im.addChild(leftarm);
@@ -254,6 +262,7 @@ im.addChild(lefthand);
 im.addChild(righthand);
 im.addChild(eyes);
 im.addChild(energy);
+im.addChild(mouth);
 
 // listen to new snapshots
 onSnapshot(im, (snapshot) => {
@@ -656,6 +665,17 @@ entities.energyEntity = function (client, entityCommand, inPlayLoad) {
                 break;
         }
     }  
+}
+/**
+ * mouth entity domain
+ * execute validation and consequential logic
+ */
+entities.mouthEntity = function (client, entityCommand, inPayLoad) {
+    if (entityCommand == 'say') {
+        client.publish("im/event/rpiheart/tts", JSON.stringify({
+            origin: 'im-brain',text:inPayLoad.text
+        }));
+    } 
 }
 
 
